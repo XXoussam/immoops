@@ -1,0 +1,5 @@
+# Project-level skills
+
+Place project-specific skill overrides here.
+Each skill is a folder matching the skill name (e.g. `ui-ux-pro-max/`).
+Project-level skills take priority over user-level skills in ~/.claude/skills/.

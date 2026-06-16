@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-white text-ink font-sans;
+    margin: 0;
+  }
+  * { box-sizing: border-box; }
+}
+
+@layer components {
+  /* Container */
+  .container-main {
+    @apply max-w-container mx-auto px-16;
+  }
+  @media (max-width: 1023px) {
+    .container-main { @apply px-8; }
+  }
+  @media (max-width: 767px) {
+    .container-main { @apply px-5; }
+  }
+
+  /* Section labels */
+  .label {
+    @apply font-sans text-xs font-semibold tracking-widest uppercase text-purple mb-3 block;
+    letter-spacing: 0.12em;
+  }
+  .label-white {
+    @apply font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-3 block;
+    letter-spacing: 0.12em;
+  }
+  .label-muted {
+    @apply font-sans text-xs font-semibold tracking-widest uppercase text-ink-muted mb-3 block;
+    letter-spacing: 0.12em;
+  }
+
+  /* ── Headings: Sora, weight 600/500 ── */
+  .h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 5.5rem;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #0F1117;
+  }
+  .h1-white {
+    font-family: 'Sora', sans-serif;
+    font-size: 5.5rem;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+  @media (max-width: 767px) {
+    .h1, .h1-white { font-size: 3.25rem; }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .h1, .h1-white { font-size: 4.25rem; }
+  }
+
+  .h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 3.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #0F1117;
+  }
+  .h2-white {
+    font-family: 'Sora', sans-serif;
+    font-size: 3.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+  @media (max-width: 767px) {
+    .h2, .h2-white { font-size: 2.5rem; }
+  }
+
+  .h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #0F1117;
+  }
+  .h4 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: #0F1117;
+  }
+
+  /* ── Body: Inter ── */
+  .body1 {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.2px;
+    color: #6B7280;
+  }
+  .body1-white {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.2px;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .body2 {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.16px;
+    color: #6B7280;
+  }
+
+  /* ── Buttons — liquid glass ── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 text-white font-sans font-medium text-sm px-5 py-2 rounded-btn transition-all duration-200 cursor-pointer;
+    letter-spacing: -0.1px;
+    background: rgba(109, 74, 255, 0.60);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 10px rgba(109, 74, 255, 0.25);
+  }
+  .btn-primary:hover {
+    background: rgba(109, 74, 255, 0.80);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 4px 20px rgba(109, 74, 255, 0.35);
+  }
+  .btn-primary-dark {
+    @apply inline-flex items-center gap-2 text-ink font-sans font-medium text-sm px-5 py-2 rounded-btn transition-all duration-200 cursor-pointer;
+    letter-spacing: -0.1px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.40);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  .btn-primary-dark:hover {
+    background: rgba(255, 255, 255, 0.90);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border text-ink font-sans font-medium text-sm px-5 py-2 rounded-btn transition-all duration-200 hover:border-purple hover:text-purple cursor-pointer;
+    letter-spacing: -0.1px;
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(0, 0, 0, 0.10);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  .btn-outline-white {
+    @apply inline-flex items-center gap-2 text-white font-sans font-medium text-sm px-5 py-2 rounded-btn transition-all duration-200 cursor-pointer;
+    letter-spacing: -0.1px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+  .btn-outline-white:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ── Section spacing ── */
+  .section {
+    @apply py-24 md:py-28;
+  }
+  .section-sm {
+    @apply py-16 md:py-20;
+  }
+
+  /* ── Cards — liquid glass ── */
+  .card {
+    @apply rounded-card;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+  .card-white {
+    @apply rounded-card;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+  .card-dark {
+    @apply rounded-card;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+  .glass-card {
+    @apply rounded-card;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+
+  /* ── Reveal animation ── */
+  .reveal {
+    @apply opacity-0 translate-y-5 transition-all duration-700 ease-out;
+  }
+  .reveal.visible {
+    @apply opacity-100 translate-y-0;
+  }
+}
