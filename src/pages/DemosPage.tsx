@@ -2,6 +2,16 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
+import {
+  LiveKitRoom,
+  useVoiceAssistant,
+  BarVisualizer,
+  RoomAudioRenderer,
+  useLocalParticipant,
+} from '@livekit/components-react'
+
+const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL ?? ''
+const TOKEN_URL   = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
 
 /* ─────────────────────────────── data ── */
 
@@ -16,19 +26,6 @@ const CHAT_FLOW: Message[] = [
   { role: 'bot',  text: "Super. Vous cherchez combien de pièces, et avez-vous un délai de projet ?", delay: 5800 },
   { role: 'user', text: "3 pièces minimum. On aimerait acheter avant l'été.", delay: 7400 },
   { role: 'bot',  text: "Merci ! J'ai bien noté : T3 à Lyon, 280–340 k€, avant juin. Un conseiller vous contacte dès demain matin. 🏡", delay: 9000 },
-]
-
-type VRole = 'agent' | 'caller'
-interface Line { role: VRole; text: string; delay: number }
-
-const VOICE_FLOW: Line[] = [
-  { role: 'agent',  text: "Bonsoir, agence ImmoOps, je suis votre assistant IA. Comment puis-je vous aider ?", delay: 500 },
-  { role: 'caller', text: "Bonsoir, j'appelle pour le bien en vente au 12 rue des Acacias.", delay: 2200 },
-  { role: 'agent',  text: "Ce T4 de 87 m² est toujours disponible. Souhaitez-vous programmer une visite ?", delay: 4000 },
-  { role: 'caller', text: "Oui, de préférence samedi matin.", delay: 5600 },
-  { role: 'agent',  text: "Je vous propose samedi à 10h ou 11h30. Laquelle vous convient ?", delay: 7200 },
-  { role: 'caller', text: "10h c'est parfait.", delay: 8600 },
-  { role: 'agent',  text: "Visite confirmée samedi à 10h. Vous recevrez un SMS de rappel la veille. Bonne soirée !", delay: 10200 },
 ]
 
 /* ─────────────────────────────── atoms ── */
@@ -51,32 +48,6 @@ function ChatBubble({ role, text }: { role: Role; text: string }) {
           color: isBot ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.70)',
         }}>
         {text}
-      </div>
-    </div>
-  )
-}
-
-function VoiceLine({ role, text }: { role: VRole; text: string }) {
-  const isAgent = role === 'agent'
-  return (
-    <div className={`flex gap-2.5 mb-3.5 ${isAgent ? '' : 'flex-row-reverse'}`}>
-      <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center"
-        style={{ background: isAgent ? 'rgba(109,74,255,0.28)' : 'rgba(255,255,255,0.07)', fontSize: '0.5rem', fontWeight: 700, color: isAgent ? '#C084FC' : 'rgba(255,255,255,0.45)', letterSpacing: '0.04em' }}>
-        {isAgent ? 'IA' : 'CLT'}
-      </div>
-      <div style={{ maxWidth: '78%' }}>
-        <p className="font-sans text-xs mb-1" style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.04em' }}>
-          {isAgent ? 'Agent IA' : 'Client'}
-        </p>
-        <p className="font-sans text-sm leading-relaxed px-3.5 py-2"
-          style={{
-            borderRadius: '10px',
-            background: isAgent ? 'rgba(109,74,255,0.13)' : 'rgba(255,255,255,0.07)',
-            border: `1px solid ${isAgent ? 'rgba(109,74,255,0.22)' : 'rgba(255,255,255,0.09)'}`,
-            color: 'rgba(255,255,255,0.80)',
-          }}>
-          {text}
-        </p>
       </div>
     </div>
   )
@@ -155,45 +126,41 @@ function ChatbotDemo() {
   )
 }
 
-/* ─────────────────────────────── voice demo ── */
+/* ─────────────────────────────── voice demo (LiveKit) ── */
 
-function VoiceDemo() {
-  const [lines, setLines] = useState<Line[]>([])
-  const [running, setRunning] = useState(false)
-  const [done, setDone] = useState(false)
-  const [pulse, setPulse] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
+const AGENT_STATE_LABEL: Record<string, string> = {
+  disconnected:  'Déconnecté',
+  connecting:    'Connexion…',
+  initializing:  'Initialisation…',
+  listening:     'En écoute…',
+  thinking:      'Réflexion…',
+  speaking:      'Répond…',
+}
 
-  const run = () => {
-    if (running) return
-    setLines([]); setDone(false); setRunning(true); setPulse(true)
+function VoiceAssistantUI({ onDisconnect }: { onDisconnect: () => void }) {
+  const { state, audioTrack } = useVoiceAssistant()
+  const { localParticipant } = useLocalParticipant()
+  const [muted, setMuted] = useState(false)
+
+  const isActive = state === 'listening' || state === 'speaking' || state === 'thinking'
+
+  const toggleMute = async () => {
+    await localParticipant.setMicrophoneEnabled(muted)
+    setMuted(m => !m)
   }
-
-  useEffect(() => {
-    if (!running) return
-    const timers = VOICE_FLOW.map((line, i) =>
-      setTimeout(() => {
-        setLines(prev => [...prev, line])
-        if (i === VOICE_FLOW.length - 1) { setRunning(false); setDone(true); setPulse(false) }
-      }, line.delay)
-    )
-    return () => timers.forEach(clearTimeout)
-  }, [running])
-
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [lines])
 
   return (
     <div className="flex flex-col" style={{ height: '100%' }}>
-      {/* Call indicator bar */}
+      {/* Status bar */}
       <div className="flex items-center gap-3 px-5 py-3 flex-shrink-0 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
         <div className="relative flex items-center justify-center w-8 h-8">
-          {pulse && (
+          {isActive && (
             <span className="absolute w-8 h-8 rounded-full animate-ping"
               style={{ background: 'rgba(109,74,255,0.25)' }} />
           )}
           <div className="w-8 h-8 rounded-full flex items-center justify-center relative z-10 transition-all duration-300"
-            style={{ background: pulse ? 'rgba(109,74,255,0.45)' : 'rgba(109,74,255,0.18)', border: '1px solid rgba(109,74,255,0.35)' }}>
+            style={{ background: isActive ? 'rgba(109,74,255,0.45)' : 'rgba(109,74,255,0.18)', border: '1px solid rgba(109,74,255,0.35)' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="2" strokeLinecap="round">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
               <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -203,52 +170,124 @@ function VoiceDemo() {
           </div>
         </div>
         <div>
-          <p className="font-sans text-xs font-medium" style={{ color: pulse ? '#C084FC' : 'rgba(255,255,255,0.45)', lineHeight: 1.3 }}>
-            {running ? 'Appel en cours…' : done ? 'Appel terminé · 19h34' : 'Appel simulé · 19h34'}
+          <p className="font-sans text-xs font-medium transition-colors duration-300"
+            style={{ color: isActive ? '#C084FC' : 'rgba(255,255,255,0.45)', lineHeight: 1.3 }}>
+            {AGENT_STATE_LABEL[state] ?? state}
           </p>
           <p className="font-sans" style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)' }}>
             Agent vocal ImmoOps
           </p>
         </div>
-        {(running || done) && (
-          <div className="ml-auto flex gap-0.5">
-            {[1,2,3,2,4,2,3,1,2,3].map((h, i) => (
-              <span key={i} className="inline-block rounded-sm"
-                style={{ width: 3, height: h * 4, background: running ? '#C084FC' : 'rgba(192,132,252,0.35)',
-                  transition: 'height 0.3s ease', animationDelay: `${i * 0.1}s` }} />
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Transcript */}
-      <div className="flex-1 overflow-y-auto px-5 py-4" style={{ minHeight: 0 }}>
-        {lines.length === 0 && !running && (
-          <div className="h-full flex flex-col items-center justify-center gap-2 opacity-30 py-8">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="1.5">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 1.12h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.96a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16z"/>
-            </svg>
-            <p className="font-sans text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Lancez la démo pour simuler l'appel</p>
-          </div>
-        )}
-        {lines.map((l, i) => <VoiceLine key={i} role={l.role} text={l.text} />)}
-        <div ref={bottomRef} />
+      {/* Visualizer */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 px-5">
+        <BarVisualizer
+          state={state}
+          barCount={9}
+          trackRef={audioTrack}
+          style={{ width: 180, height: 56, '--lk-va-bar-color': '#6D4AFF', '--lk-va-bar-hover-color': '#C084FC' } as React.CSSProperties}
+        />
+        <p className="font-sans text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '0.04em' }}>
+          {state === 'speaking' ? "L'agent répond en temps réel" : state === 'listening' ? 'Parlez maintenant…' : ''}
+        </p>
       </div>
 
-      {/* Launch button */}
-      <div className="px-5 pb-5 pt-3 flex-shrink-0 border-t" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
-        <button onClick={run} disabled={running}
-          className="w-full py-3 font-sans text-sm font-medium rounded-2xl transition-all duration-200"
+      {/* Controls */}
+      <div className="px-5 pb-5 pt-3 flex-shrink-0 border-t flex gap-3" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <button onClick={toggleMute}
+          className="flex-1 py-2.5 font-sans text-sm font-medium rounded-2xl transition-all duration-200"
           style={{
-            background: running ? 'rgba(109,74,255,0.10)' : 'rgba(109,74,255,0.50)',
-            border: '1px solid rgba(109,74,255,0.30)',
-            color: running ? 'rgba(255,255,255,0.35)' : '#fff',
-            cursor: running ? 'not-allowed' : 'pointer',
+            background: muted ? 'rgba(239,68,68,0.18)' : 'rgba(255,255,255,0.07)',
+            border: `1px solid ${muted ? 'rgba(239,68,68,0.35)' : 'rgba(255,255,255,0.12)'}`,
+            color: muted ? '#f87171' : 'rgba(255,255,255,0.55)',
+            cursor: 'pointer',
           }}>
-          {running ? 'Appel en cours…' : done ? "Rejouer l'appel" : "Simuler l'appel →"}
+          {muted ? '🔇 Micro coupé' : '🎙 Couper le micro'}
+        </button>
+        <button onClick={onDisconnect}
+          className="flex-1 py-2.5 font-sans text-sm font-medium rounded-2xl transition-all duration-200"
+          style={{
+            background: 'rgba(239,68,68,0.15)',
+            border: '1px solid rgba(239,68,68,0.30)',
+            color: '#f87171',
+            cursor: 'pointer',
+          }}>
+          Terminer l'appel
         </button>
       </div>
     </div>
+  )
+}
+
+function VoiceDemo() {
+  const [token, setToken] = useState<string | null>(null)
+  const [connecting, setConnecting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const connect = async () => {
+    if (!TOKEN_URL) { setError('VITE_LIVEKIT_TOKEN_URL non configuré.'); return }
+    setConnecting(true); setError(null)
+    try {
+      const resp = await fetch(TOKEN_URL)
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+      const data = await resp.json()
+      setToken(data.accessToken ?? data.token ?? null)
+    } catch {
+      setError('Impossible de se connecter. Vérifiez votre connexion.')
+    } finally {
+      setConnecting(false)
+    }
+  }
+
+  const disconnect = () => setToken(null)
+
+  if (!token) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-6 px-6" style={{ height: '100%' }}>
+        <div className="w-20 h-20 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(109,74,255,0.12)', border: '1px solid rgba(109,74,255,0.22)' }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </div>
+        <div className="text-center">
+          <p className="font-tight text-white font-semibold mb-1.5" style={{ fontSize: '1rem' }}>Agent vocal ImmoOps</p>
+          <p className="font-sans text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)', maxWidth: 260 }}>
+            Parlez directement avec notre agent IA — qualifie vos appels en temps réel, 24h/24.
+          </p>
+        </div>
+        {error && <p className="font-sans text-xs text-center" style={{ color: '#f87171' }}>{error}</p>}
+        <button onClick={connect} disabled={connecting}
+          className="w-full py-3 font-sans text-sm font-medium rounded-2xl transition-all duration-200"
+          style={{
+            background: connecting ? 'rgba(109,74,255,0.15)' : 'rgba(109,74,255,0.50)',
+            border: '1px solid rgba(109,74,255,0.35)',
+            color: connecting ? 'rgba(255,255,255,0.35)' : '#fff',
+            cursor: connecting ? 'not-allowed' : 'pointer',
+          }}>
+          {connecting ? 'Connexion…' : 'Démarrer la démo →'}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <LiveKitRoom
+      token={token}
+      serverUrl={LIVEKIT_URL}
+      connect={true}
+      audio={true}
+      video={false}
+      onDisconnected={disconnect}
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
+      <VoiceAssistantUI onDisconnect={disconnect} />
+      <RoomAudioRenderer />
+    </LiveKitRoom>
   )
 }
 
