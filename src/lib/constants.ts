@@ -62,18 +62,6 @@ export const DEMOS: Demo[] = [
     description: "Un appel entrant après 19h. L'agent vocal répond naturellement, collecte les informations clés et planifie un rappel au bon agent.",
     href: '/demos/reponse-hors-horaires',
   },
-  {
-    channel: 'Email IA',
-    title: 'Relance de prospects froids',
-    description: "Des leads inactifs depuis 30 jours reçoivent une relance personnalisée, adaptée à leur profil et à leur historique de recherche.",
-    href: '/demos/relance-prospects',
-  },
-  {
-    channel: 'WhatsApp',
-    title: 'Prise de rendez-vous automatique',
-    description: "Un prospect envoie un message WhatsApp. L'agent propose des créneaux, confirme le rendez-vous et envoie un rappel — sans intervention humaine.",
-    href: '/demos/rendez-vous-whatsapp',
-  },
 ]
 
 export interface Step {
@@ -135,6 +123,29 @@ export const FAQ_ITEMS: FaqItem[] = [
     question: 'Assurez-vous un suivi après livraison ?',
     answer: 'Absolument. Un accompagnement post-lancement est inclus dans chaque mission pour garantir que les résultats sont au rendez-vous.',
   },
+]
+
+export interface Integration {
+  name: string
+  category: 'crm' | 'llm' | 'communication' | 'automation'
+}
+
+export const INTEGRATIONS: Integration[] = [
+  { name: 'HubSpot',           category: 'crm' },
+  { name: 'Salesforce',        category: 'crm' },
+  { name: 'Apimo',             category: 'crm' },
+  { name: 'Notion',            category: 'automation' },
+  { name: 'OpenAI',            category: 'llm' },
+  { name: 'Claude AI',         category: 'llm' },
+  { name: 'Gemini',            category: 'llm' },
+  { name: 'WhatsApp',          category: 'communication' },
+  { name: 'Gmail',             category: 'communication' },
+  { name: 'Outlook',           category: 'communication' },
+  { name: 'Google Workspace',  category: 'automation' },
+  { name: 'Zapier',            category: 'automation' },
+  { name: 'Make',              category: 'automation' },
+  { name: 'Twilio',            category: 'communication' },
+  { name: 'Calendly',          category: 'automation' },
 ]
 
 export interface Channel {

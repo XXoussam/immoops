@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DEMOS } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 
@@ -24,9 +25,9 @@ export function Demos() {
         {/* Demo cards — 2×2 grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {DEMOS.map((demo) => (
-            <a
+            <Link
               key={demo.title}
-              href={demo.href}
+              to="/demos"
               className="card-dark block group"
               style={{ textDecoration: 'none' }}
             >
@@ -67,7 +68,7 @@ export function Demos() {
                   Essayer la démo
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

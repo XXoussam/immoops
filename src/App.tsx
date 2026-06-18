@@ -1,33 +1,17 @@
-import { Navbar } from './components/layout/Navbar'
-import { Footer } from './components/layout/Footer'
-import { Hero } from './components/sections/Hero'
-import { ValueProp } from './components/sections/ValueProp'
-import { Services } from './components/sections/Services'
-import { Demos } from './components/sections/Demos'
-import { ChannelsSection } from './components/sections/ChannelsSection'
-import { SmartOps } from './components/sections/SmartOps'
-import { About } from './components/sections/About'
-import { LogoStrip } from './components/sections/LogoStrip'
-import { FAQ } from './components/sections/FAQ'
-import { CTA } from './components/sections/CTA'
+import { Routes, Route } from 'react-router-dom'
+import { PixelCursorTrail } from './components/ui/pixel-trail'
+import { HomePage } from './pages/HomePage'
+import { DemosPage } from './pages/DemosPage'
 
 function App() {
   return (
     <>
-      <Navbar />
-      <main>
-        <Hero />
-        <ValueProp />
-        <Services />
-        <Demos />
-        <ChannelsSection />
-        <SmartOps />
-        <About />
-        <LogoStrip />
-        <FAQ />
-        <CTA />
-      </main>
-      <Footer />
+      <PixelCursorTrail />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/demos" element={<DemosPage />} />
+        <Route path="/demos/:slug" element={<DemosPage />} />
+      </Routes>
     </>
   )
 }

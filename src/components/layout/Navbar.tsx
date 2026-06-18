@@ -24,12 +24,12 @@ export function Navbar() {
     >
       <div className="container-main flex items-center justify-between h-[64px]">
         {/* Logo */}
-        <a
-          href="#"
-          className="font-tight text-white"
-          style={{ fontWeight: 600, fontSize: '1.1rem', letterSpacing: '-0.01em' }}
-        >
-          ImmoOps<span className="text-purple-light">AI</span>
+        <a href="#" className="flex items-center">
+          <img
+            src="/logo.png"
+            alt="ImmoOps"
+            style={{ height: '32px', width: 'auto' }}
+          />
         </a>
 
         {/* Desktop nav */}

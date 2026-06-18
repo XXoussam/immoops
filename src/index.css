@@ -139,8 +139,9 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 10px rgba(109, 74, 255, 0.25);
   }
   .btn-primary:hover {
-    background: rgba(109, 74, 255, 0.80);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 4px 20px rgba(109, 74, 255, 0.35);
+    background: rgba(109, 74, 255, 0.88);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 28px rgba(109, 74, 255, 0.55);
+    transform: scale(1.04);
   }
   .btn-primary-dark {
     @apply inline-flex items-center gap-2 text-ink font-sans font-medium text-sm px-5 py-2 rounded-btn transition-all duration-200 cursor-pointer;
@@ -176,6 +177,7 @@
   .btn-outline-white:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.03);
   }
 
   /* ── Section spacing ── */
@@ -220,6 +222,19 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10);
   }
 
+  /* ── Hero headline word accents ── */
+  .hero-word-ia {
+    color: #C084FC;
+  }
+  .hero-word-shimmer {
+    background: linear-gradient(90deg, #C084FC 0%, #e8d5ff 30%, #ffffff 50%, #a78bfa 70%, #C084FC 100%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: hero-shimmer 4s linear infinite;
+  }
+
   /* ── Reveal animation ── */
   .reveal {
     @apply opacity-0 translate-y-5 transition-all duration-700 ease-out;
@@ -227,4 +242,34 @@
   .reveal.visible {
     @apply opacity-100 translate-y-0;
   }
+}
+
+@keyframes demo-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.demo-fade-in {
+  animation: demo-fade 0.2s ease-out forwards;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes hero-shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 250% center; }
 }
