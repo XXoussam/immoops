@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
-import { useSession } from '@livekit/components-react'
+import { useSession, useVoiceAssistant } from '@livekit/components-react'
 import { TokenSource, ConnectionState } from 'livekit-client'
 import { AgentSessionProvider } from '../components/agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../components/agents-ui/agent-audio-visualizer-aura'
@@ -23,24 +23,47 @@ const PANEL_STYLE: React.CSSProperties = {
   overflow: 'hidden',
 }
 
-/* ─────────────────────────── Connected inner view ── */
-/* Must live inside AgentSessionProvider so LiveKit hooks work */
-function ConnectedView({ onDisconnect }: { onDisconnect: () => void }) {
+// Glass bar style that's visible on the dark panel
+const BAR_STYLE: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.07)',
+  border: '1px solid rgba(255,255,255,0.14)',
+}
+
+/* ─── Connected panel — inside AgentSessionProvider so LiveKit hooks resolve ── */
+function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
   const [isChatOpen, setIsChatOpen] = useState(false)
+  const { state, audioTrack } = useVoiceAssistant()
+
   return (
-    <AgentControlBar
-      variant="livekit"
-      isConnected={true}
-      onDisconnect={onDisconnect}
-      isChatOpen={isChatOpen}
-      onIsChatOpenChange={setIsChatOpen}
-      controls={{ microphone: true, leave: true, chat: true, camera: false, screenShare: false }}
-    />
+    <>
+      {/* Aura synced to agent voice */}
+      <div style={{ position: 'absolute', inset: 0, bottom: 88, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <AgentAudioVisualizerAura
+          state={state}
+          audioTrack={audioTrack}
+          color="#6D4AFF"
+          themeMode="dark"
+          size="xl"
+        />
+      </div>
+
+      {/* Control bar */}
+      <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+        <AgentControlBar
+          variant="livekit"
+          isConnected={true}
+          onDisconnect={onDisconnect}
+          isChatOpen={isChatOpen}
+          onIsChatOpenChange={setIsChatOpen}
+          controls={{ microphone: true, leave: true, chat: true, camera: false, screenShare: false }}
+          style={BAR_STYLE}
+        />
+      </div>
+    </>
   )
 }
 
 /* ─────────────────────────────── Demo panel ── */
-
 function DemoPanel() {
   const tokenSource = useMemo(() =>
     TokenSource.literal(async () => {
@@ -56,48 +79,48 @@ function DemoPanel() {
 
   return (
     <div className="dark" style={PANEL_STYLE}>
-      {/* Aura — shown at all times */}
-      <div style={{ position: 'absolute', inset: 0, bottom: 88, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <AgentAudioVisualizerAura
-          state={isConnecting ? 'connecting' : 'idle'}
-          color="#6D4AFF"
-          themeMode="dark"
-          size="xl"
-        />
-      </div>
-
-      {/* Bottom bar */}
-      <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
-        {session.isConnected ? (
-          /* Real AgentControlBar — hooks work because session is connected */
-          <AgentSessionProvider session={session}>
-            <ConnectedView onDisconnect={session.end} />
-          </AgentSessionProvider>
-        ) : (
-          /* Pre-connection: pill styled like the livekit bar with a start button */
-          <div
-            className="bg-background border-input/50 dark:border-muted flex items-center justify-center p-3 drop-shadow-md"
-            style={{ borderRadius: 31, border: '1px solid' }}
-          >
-            <button
-              onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
-              disabled={isConnecting}
-              className="font-mono text-xs font-bold tracking-wider"
-              style={{
-                padding: '6px 20px',
-                borderRadius: 999,
-                background: isConnecting ? 'rgba(34,197,94,0.12)' : 'rgba(34,197,94,0.15)',
-                color: isConnecting ? 'rgba(34,197,94,0.5)' : 'rgb(34,197,94)',
-                border: '1px solid rgba(34,197,94,0.25)',
-                cursor: isConnecting ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              {isConnecting ? 'CONNEXION…' : 'DÉMARRER'}
-            </button>
+      {session.isConnected ? (
+        <AgentSessionProvider session={session}>
+          <ConnectedPanel onDisconnect={session.end} />
+        </AgentSessionProvider>
+      ) : (
+        <>
+          {/* Aura in idle / connecting state */}
+          <div style={{ position: 'absolute', inset: 0, bottom: 88, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <AgentAudioVisualizerAura
+              state={isConnecting ? 'connecting' : 'idle'}
+              color="#6D4AFF"
+              themeMode="dark"
+              size="xl"
+            />
           </div>
-        )}
-      </div>
+
+          {/* Pre-connection pill */}
+          <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+            <div style={{ ...BAR_STYLE, borderRadius: 31, padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <button
+                onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
+                disabled={isConnecting}
+                style={{
+                  padding: '6px 28px',
+                  borderRadius: 999,
+                  fontFamily: 'monospace',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  background: isConnecting ? 'rgba(34,197,94,0.10)' : 'rgba(34,197,94,0.18)',
+                  color: isConnecting ? 'rgba(34,197,94,0.45)' : 'rgb(74,222,128)',
+                  border: '1px solid rgba(34,197,94,0.28)',
+                  cursor: isConnecting ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {isConnecting ? 'CONNEXION…' : 'DÉMARRER'}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
