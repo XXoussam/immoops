@@ -101,13 +101,13 @@ function DemoPanel() {
             />
           </div>
 
-          {/* Pre-connection: standalone call button */}
-          <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+          {/* Pre-connection: CALL + CHAT buttons */}
+          <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 12 }}>
             <button
               onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
               disabled={isConnecting}
               style={{
-                padding: '8px 32px',
+                padding: '8px 28px',
                 borderRadius: 999,
                 fontFamily: 'monospace',
                 fontSize: 11,
@@ -120,7 +120,24 @@ function DemoPanel() {
                 transition: 'all 0.2s',
               }}
             >
-              {isConnecting ? 'CONNEXION…' : 'DÉMARRER'}
+              {isConnecting ? 'CONNEXION…' : 'CALL'}
+            </button>
+            <button
+              disabled
+              style={{
+                padding: '8px 28px',
+                borderRadius: 999,
+                fontFamily: 'monospace',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                background: 'rgba(109,74,255,0.15)',
+                color: 'rgba(180,160,255,0.7)',
+                border: '1px solid rgba(109,74,255,0.25)',
+                cursor: 'not-allowed',
+              }}
+            >
+              CHAT
             </button>
           </div>
         </>
