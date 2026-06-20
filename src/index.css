@@ -19,6 +19,8 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 92%;
     --secondary-foreground: 240 5.9% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
     --radius: 0.5rem;
   }
   .dark {
@@ -37,6 +39,8 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 240 8% 18%;
     --secondary-foreground: 0 0% 98%;
+    --popover: 240 10% 10%;
+    --popover-foreground: 0 0% 95%;
     --radius: 0.5rem;
   }
 
@@ -309,4 +313,16 @@
 @keyframes hero-shimmer {
   0%   { background-position: 0% center; }
   100% { background-position: 250% center; }
+}
+
+/* Demo control bar: mic icon always white, no background */
+.demo-bar [data-slot="toggle"] {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.demo-bar [data-slot="toggle"]:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+.demo-bar [data-slot="toggle"] svg {
+  color: inherit !important;
 }

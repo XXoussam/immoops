@@ -30,6 +30,10 @@ export default {
           DEFAULT:    'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
+        popover: {
+          DEFAULT:    'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
         /* project brand tokens */
         purple: {
           DEFAULT: '#6D4AFF',

@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
-import { useSession, useVoiceAssistant } from '@livekit/components-react'
+import { useSession, useVoiceAssistant, useSessionMessages } from '@livekit/components-react'
 import { TokenSource, ConnectionState } from 'livekit-client'
 import { AgentSessionProvider } from '../components/agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../components/agents-ui/agent-audio-visualizer-aura'
 import { AgentControlBar } from '../components/agents-ui/agent-control-bar'
+import { AgentChatTranscript } from '../components/agents-ui/agent-chat-transcript'
 import { TooltipProvider } from '../components/ui/tooltip'
 
 const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
@@ -25,22 +26,32 @@ const PANEL_STYLE: React.CSSProperties = {
 /* ─── Connected panel — inside AgentSessionProvider so LiveKit hooks resolve ── */
 function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
   const { state, audioTrack } = useVoiceAssistant()
+  const { messages } = useSessionMessages()
 
   return (
-    <>
-      {/* Aura synced to agent voice */}
-      <div style={{ position: 'absolute', inset: 0, bottom: 88, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 20px' }}>
+
+      {/* Aura — smaller to leave room for transcript */}
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
         <AgentAudioVisualizerAura
           state={state}
           audioTrack={audioTrack}
           color="#6D4AFF"
           themeMode="dark"
-          size="xl"
+          size="lg"
         />
       </div>
 
-      {/* Control bar — matching the docs example exactly */}
-      <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+      {/* Transcript — grows to fill remaining space */}
+      <div style={{ flex: 1, width: '100%', overflowY: 'auto', marginBottom: 12 }}>
+        <AgentChatTranscript
+          agentState={state}
+          messages={messages}
+        />
+      </div>
+
+      {/* Control bar */}
+      <div className="demo-bar" style={{ width: '100%', flexShrink: 0 }}>
         <AgentControlBar
           variant="livekit"
           isConnected={true}
@@ -49,7 +60,7 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
           className="!bg-white/[0.08] !border-white/20"
         />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -76,7 +87,7 @@ function DemoPanel() {
       ) : (
         <>
           {/* Aura in idle / connecting state */}
-          <div style={{ position: 'absolute', inset: 0, bottom: 88, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', inset: 0, bottom: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AgentAudioVisualizerAura
               state={isConnecting ? 'connecting' : 'idle'}
               color="#6D4AFF"

@@ -9,7 +9,7 @@ interface MessageProps extends ComponentProps<'div'> {
 export function Message({ from = 'assistant', className, children, ...props }: MessageProps) {
   const isUser = from === 'user'
   return (
-    <div className={cn('flex', isUser ? 'justify-end' : 'justify-start', 'is-' + from, className)} {...props}>
+    <div className={cn('flex gap-2 px-1', isUser ? 'justify-end' : 'justify-start', className)} {...props}>
       {children}
     </div>
   )
@@ -17,7 +17,7 @@ export function Message({ from = 'assistant', className, children, ...props }: M
 
 export function MessageContent({ className, children, ...props }: ComponentProps<'div'>) {
   return (
-    <div className={cn('max-w-[80%]', className)} {...props}>
+    <div className={cn('max-w-[85%]', className)} {...props}>
       {children}
     </div>
   )
@@ -25,7 +25,7 @@ export function MessageContent({ className, children, ...props }: ComponentProps
 
 export function MessageResponse({ className, children, ...props }: ComponentProps<'p'>) {
   return (
-    <p className={cn('text-sm leading-relaxed px-3 py-2 rounded-xl', className)} {...props}>
+    <p className={cn('text-xs leading-relaxed', className)} style={{ color: 'rgba(255,255,255,0.75)' }} {...props}>
       {children}
     </p>
   )
