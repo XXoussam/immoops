@@ -31,14 +31,19 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
   return (
     <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 20px' }}>
 
-      {/* Aura — smaller to leave room for transcript */}
-      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
+      {/* Aura — large during interaction, sized by state */}
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 280 }}>
         <AgentAudioVisualizerAura
           state={state}
           audioTrack={audioTrack}
           color="#6D4AFF"
           themeMode="dark"
           size="lg"
+          className={
+            state === 'speaking' || state === 'listening'
+              ? '!h-[260px] !w-[260px]'
+              : '!h-[220px] !w-[220px]'
+          }
         />
       </div>
 
