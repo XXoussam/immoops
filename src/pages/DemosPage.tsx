@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
@@ -10,54 +10,9 @@ import { TooltipProvider } from '../components/ui/tooltip'
 
 const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
 
-/* ─────────────────────────────── Idle screen ── */
-
-function IdleScreen({ onConnect, connecting, error }: {
-  onConnect: () => void
-  connecting: boolean
-  error: string | null
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-6 px-6" style={{ height: '100%' }}>
-      <div className="w-20 h-20 rounded-full flex items-center justify-center"
-        style={{ background: 'rgba(109,74,255,0.12)', border: '1px solid rgba(109,74,255,0.22)' }}>
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeLinecap="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
-      </div>
-      <div className="text-center">
-        <p className="font-tight text-white font-semibold mb-1.5" style={{ fontSize: '1rem' }}>
-          Agents ImmoOps en direct
-        </p>
-        <p className="font-sans text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)', maxWidth: 260 }}>
-          Parlez directement avec notre agent IA — sans inscription, en temps réel.
-        </p>
-      </div>
-      {error && (
-        <p className="font-sans text-xs text-center" style={{ color: '#f87171' }}>{error}</p>
-      )}
-      <button onClick={onConnect} disabled={connecting}
-        className="w-full py-3 font-sans text-sm font-medium rounded-2xl transition-all duration-200"
-        style={{
-          background: connecting ? 'rgba(109,74,255,0.15)' : 'rgba(109,74,255,0.50)',
-          border: '1px solid rgba(109,74,255,0.35)',
-          color: connecting ? 'rgba(255,255,255,0.35)' : '#fff',
-          cursor: connecting ? 'not-allowed' : 'pointer',
-        }}>
-        {connecting ? 'Connexion…' : 'Se connecter →'}
-      </button>
-    </div>
-  )
-}
-
 /* ─────────────────────────────── Demo panel ── */
 
 function DemoPanel() {
-  const [error, setError] = useState<string | null>(null)
-
   const tokenSource = useMemo(() =>
     TokenSource.literal(async () => {
       const resp = await fetch(TOKEN_URL)
@@ -68,21 +23,11 @@ function DemoPanel() {
   )
 
   const session = useSession(tokenSource)
-
-  const isConnecting = !session.isConnected && session.connectionState === ConnectionState.Connecting
-
-  const handleConnect = async () => {
-    setError(null)
-    try {
-      await session.start({ tracks: { microphone: { enabled: true } } })
-    } catch {
-      setError('Impossible de se connecter.')
-    }
-  }
+  const isConnecting = session.connectionState === ConnectionState.Connecting
 
   return (
     <div
-      className="dark flex flex-col overflow-hidden"
+      className="dark overflow-hidden"
       style={{
         borderRadius: 20,
         background: 'rgba(255,255,255,0.04)',
@@ -90,8 +35,8 @@ function DemoPanel() {
         WebkitBackdropFilter: 'blur(32px)',
         border: '1px solid rgba(255,255,255,0.09)',
         boxShadow: '0 8px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
-        height: session.isConnected ? 480 : 340,
-        transition: 'height 0.4s ease',
+        height: 480,
+        position: 'relative',
       }}
     >
       {session.isConnected ? (
@@ -109,11 +54,37 @@ function DemoPanel() {
           </div>
         </AgentSessionProvider>
       ) : (
-        <IdleScreen
-          onConnect={handleConnect}
-          connecting={isConnecting}
-          error={error}
-        />
+        <div className="flex flex-col items-center justify-center gap-4" style={{ height: '100%' }}>
+          <p className="font-sans text-xs uppercase tracking-widest font-semibold"
+            style={{ color: 'rgba(255,255,255,0.28)', letterSpacing: '0.12em' }}>
+            {isConnecting ? 'Connexion…' : 'Agent ImmoOps'}
+          </p>
+          <button
+            onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
+            disabled={isConnecting}
+            aria-label="Démarrer l'appel"
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: '50%',
+              background: isConnecting ? 'rgba(34,197,94,0.25)' : 'rgba(34,197,94,0.85)',
+              border: '2px solid rgba(34,197,94,0.4)',
+              boxShadow: isConnecting ? 'none' : '0 0 32px rgba(34,197,94,0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: isConnecting ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white" opacity={isConnecting ? 0.4 : 1}>
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+          </button>
+          <p className="font-sans text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
+            {isConnecting ? 'Connexion en cours…' : 'Appuyez pour parler'}
+          </p>
+        </div>
       )}
     </div>
   )
