@@ -96,15 +96,17 @@ function DemoPanel() {
     >
       {session.isConnected ? (
         <AgentSessionProvider session={session}>
-          <AgentSessionView_01
-            audioVisualizerType="aura"
-            themeMode="dark"
-            audioVisualizerColor="#6D4AFF"
-            preConnectMessage="L'agent écoute, posez une question…"
-            supportsChatInput={true}
-            supportsVideoInput={false}
-            supportsScreenShare={false}
-          />
+          <div style={{ position: 'relative', width: '100%', height: '480px' }}>
+            <AgentSessionView_01
+              audioVisualizerType="aura"
+              themeMode="dark"
+              audioVisualizerColor="#6D4AFF"
+              preConnectMessage="L'agent écoute, posez une question…"
+              supportsChatInput={true}
+              supportsVideoInput={false}
+              supportsScreenShare={false}
+            />
+          </div>
         </AgentSessionProvider>
       ) : (
         <IdleScreen
