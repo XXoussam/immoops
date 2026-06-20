@@ -20,7 +20,6 @@ const PANEL_STYLE: React.CSSProperties = {
   boxShadow: '0 8px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
   height: 480,
   position: 'relative',
-  overflow: 'hidden',
 }
 
 /* ─── Connected panel — inside AgentSessionProvider so LiveKit hooks resolve ── */
@@ -46,7 +45,7 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
           variant="livekit"
           isConnected={true}
           onDisconnect={onDisconnect}
-          controls={{ leave: true, microphone: true, screenShare: false, camera: false, chat: true }}
+          controls={{ leave: true, microphone: true, screenShare: false, camera: false, chat: false }}
           className="!bg-white/[0.08] !border-white/20"
         />
       </div>
