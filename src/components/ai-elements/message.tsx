@@ -7,9 +7,8 @@ interface MessageProps extends ComponentProps<'div'> {
 }
 
 export function Message({ from = 'assistant', className, children, ...props }: MessageProps) {
-  const isUser = from === 'user'
   return (
-    <div className={cn('flex gap-2 px-1', isUser ? 'justify-end' : 'justify-start', className)} {...props}>
+    <div className={cn('flex justify-center', className)} {...props}>
       {children}
     </div>
   )
@@ -17,7 +16,7 @@ export function Message({ from = 'assistant', className, children, ...props }: M
 
 export function MessageContent({ className, children, ...props }: ComponentProps<'div'>) {
   return (
-    <div className={cn('max-w-[85%]', className)} {...props}>
+    <div className={cn('max-w-[90%] text-center', className)} {...props}>
       {children}
     </div>
   )
@@ -25,7 +24,11 @@ export function MessageContent({ className, children, ...props }: ComponentProps
 
 export function MessageResponse({ className, children, ...props }: ComponentProps<'p'>) {
   return (
-    <p className={cn('text-xs leading-relaxed', className)} style={{ color: 'rgba(255,255,255,0.75)' }} {...props}>
+    <p
+      className={cn('font-sans leading-snug', className)}
+      style={{ fontSize: 13, color: 'rgba(200, 210, 230, 0.70)' }}
+      {...props}
+    >
       {children}
     </p>
   )

@@ -1,4 +1,4 @@
-import { type ComponentProps, useEffect, useRef } from 'react'
+import { type ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
 export function Conversation({ className, children, ...props }: ComponentProps<'div'>) {
@@ -10,12 +10,8 @@ export function Conversation({ className, children, ...props }: ComponentProps<'
 }
 
 export function ConversationContent({ className, children, ...props }: ComponentProps<'div'>) {
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight
-  })
   return (
-    <div ref={ref} className={cn('flex-1 overflow-y-auto flex flex-col gap-3 px-4 py-4', className)} {...props}>
+    <div className={cn('flex flex-col gap-3 px-2 py-2', className)} {...props}>
       {children}
     </div>
   )

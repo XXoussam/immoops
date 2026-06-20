@@ -42,11 +42,11 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
         />
       </div>
 
-      {/* Transcript — grows to fill remaining space */}
-      <div style={{ flex: 1, width: '100%', overflowY: 'auto', marginBottom: 12 }}>
+      {/* Transcript — latest 3 messages only, centered, no scroll */}
+      <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', marginBottom: 12, overflow: 'hidden' }}>
         <AgentChatTranscript
           agentState={state}
-          messages={messages}
+          messages={messages.slice(-3)}
         />
       </div>
 
