@@ -42,22 +42,22 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
         />
       </div>
 
-      {/* Transcript — latest 3 messages only, centered, no scroll */}
-      <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', marginBottom: 12, overflow: 'hidden' }}>
+      {/* Transcript — latest 2 messages, 2-line clamp, no scroll */}
+      <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', marginBottom: 8, overflow: 'hidden' }}>
         <AgentChatTranscript
           agentState={state}
-          messages={messages.slice(-3)}
+          messages={messages.slice(-2)}
         />
       </div>
 
-      {/* Control bar */}
+      {/* Control bar — compact height */}
       <div className="demo-bar" style={{ width: '100%', flexShrink: 0 }}>
         <AgentControlBar
           variant="livekit"
           isConnected={true}
           onDisconnect={onDisconnect}
           controls={{ leave: true, microphone: true, screenShare: false, camera: false, chat: false }}
-          className="!bg-white/[0.08] !border-white/20"
+          className="!bg-white/[0.08] !border-white/20 !p-1.5"
         />
       </div>
     </div>

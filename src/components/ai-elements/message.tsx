@@ -25,8 +25,8 @@ export function MessageContent({ className, children, ...props }: ComponentProps
 export function MessageResponse({ className, children, ...props }: ComponentProps<'p'>) {
   return (
     <p
-      className={cn('font-sans leading-snug', className)}
-      style={{ fontSize: 13, color: 'rgba(200, 210, 230, 0.70)' }}
+      className={cn('font-sans leading-snug line-clamp-2', className)}
+      style={{ fontSize: 15, color: 'rgba(200, 210, 230, 0.70)' }}
       {...props}
     >
       {children}
