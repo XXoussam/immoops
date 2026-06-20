@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
@@ -23,15 +23,8 @@ const PANEL_STYLE: React.CSSProperties = {
   overflow: 'hidden',
 }
 
-// Glass bar style that's visible on the dark panel
-const BAR_STYLE: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.07)',
-  border: '1px solid rgba(255,255,255,0.14)',
-}
-
 /* ─── Connected panel — inside AgentSessionProvider so LiveKit hooks resolve ── */
 function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
-  const [isChatOpen, setIsChatOpen] = useState(false)
   const { state, audioTrack } = useVoiceAssistant()
 
   return (
@@ -47,16 +40,14 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
         />
       </div>
 
-      {/* Control bar */}
+      {/* Control bar — matching the docs example exactly */}
       <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
         <AgentControlBar
           variant="livekit"
           isConnected={true}
           onDisconnect={onDisconnect}
-          isChatOpen={isChatOpen}
-          onIsChatOpenChange={setIsChatOpen}
-          controls={{ microphone: true, leave: true, chat: true, camera: false, screenShare: false }}
-          style={BAR_STYLE}
+          controls={{ leave: true, microphone: true, screenShare: false, camera: false, chat: true }}
+          className="!bg-white/[0.08] !border-white/20"
         />
       </div>
     </>
@@ -95,29 +86,27 @@ function DemoPanel() {
             />
           </div>
 
-          {/* Pre-connection pill */}
-          <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
-            <div style={{ ...BAR_STYLE, borderRadius: 31, padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <button
-                onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
-                disabled={isConnecting}
-                style={{
-                  padding: '6px 28px',
-                  borderRadius: 999,
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: '0.1em',
-                  background: isConnecting ? 'rgba(34,197,94,0.10)' : 'rgba(34,197,94,0.18)',
-                  color: isConnecting ? 'rgba(34,197,94,0.45)' : 'rgb(74,222,128)',
-                  border: '1px solid rgba(34,197,94,0.28)',
-                  cursor: isConnecting ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {isConnecting ? 'CONNEXION…' : 'DÉMARRER'}
-              </button>
-            </div>
+          {/* Pre-connection: standalone call button */}
+          <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
+              disabled={isConnecting}
+              style={{
+                padding: '8px 32px',
+                borderRadius: 999,
+                fontFamily: 'monospace',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                background: isConnecting ? 'rgba(34,197,94,0.10)' : 'rgba(34,197,94,0.18)',
+                color: isConnecting ? 'rgba(34,197,94,0.45)' : 'rgb(74,222,128)',
+                border: '1px solid rgba(34,197,94,0.28)',
+                cursor: isConnecting ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              {isConnecting ? 'CONNEXION…' : 'DÉMARRER'}
+            </button>
           </div>
         </>
       )}

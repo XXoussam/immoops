@@ -15,6 +15,11 @@
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+    --primary: 253 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 92%;
+    --secondary-foreground: 240 5.9% 10%;
+    --radius: 0.5rem;
   }
   .dark {
     --background: 252 75% 4%;
@@ -28,6 +33,11 @@
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 55%;
     --destructive-foreground: 0 0% 98%;
+    --primary: 253 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 8% 18%;
+    --secondary-foreground: 0 0% 98%;
+    --radius: 0.5rem;
   }
 
   html {
