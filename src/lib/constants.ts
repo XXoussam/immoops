@@ -224,27 +224,51 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const LOGOS = ['Century 21', 'ERA Immobilier', 'Guy Hoquet', 'Laforêt', 'Orpi', 'IAD France']
 
+export interface FooterLink {
+  label: string
+  href: string
+}
+
 export interface FooterCol {
   heading: string
-  links: string[]
+  links: FooterLink[]
 }
 
 export const FOOTER_COLS: FooterCol[] = [
   {
     heading: 'Services',
-    links: ['Automatisation des workflows', 'Chatbots IA', 'Agents vocaux', 'Architecture IA', 'Qualification de leads'],
+    links: [
+      { label: 'Automatisation des workflows', href: '/#services' },
+      { label: 'Chatbots IA', href: '/#services' },
+      { label: 'Agents vocaux', href: '/#services' },
+      { label: 'Architecture IA', href: '/#services' },
+      { label: 'Qualification de leads', href: '/#services' },
+    ],
   },
   {
     heading: 'Ressources',
-    links: ['Blog', 'Études de cas', 'Webinaires', 'Documentation'],
+    links: [
+      { label: 'Blog', href: '/blog' },
+      { label: 'Études de cas', href: '/etudes-de-cas' },
+      { label: 'Webinaires', href: '/webinaires' },
+      { label: 'Documentation', href: '/documentation' },
+    ],
   },
   {
     heading: 'Entreprise',
-    links: ['À propos', 'Démos', 'Contact'],
+    links: [
+      { label: 'À propos', href: '/#a-propos' },
+      { label: 'Démos', href: '/demos' },
+      { label: 'Contact', href: '/#contact' },
+    ],
   },
   {
     heading: 'Légal',
-    links: ['Mentions légales', 'Confidentialité', 'Cookies'],
+    links: [
+      { label: 'Mentions légales', href: '/mentions-legales' },
+      { label: 'Confidentialité', href: '/confidentialite' },
+      { label: 'Cookies', href: '/cookies' },
+    ],
   },
 ]
 
