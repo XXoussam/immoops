@@ -14,8 +14,6 @@ const CASES = [
       { metric: '–65 %', label: 'de temps admin' },
       { metric: '24/7', label: 'disponibilité' },
     ],
-    quote: 'Nos agents passent maintenant leur temps sur ce qui compte vraiment. L\'IA gère tout le reste.',
-    author: 'Directeur commercial, agence parisienne',
   },
   {
     logo: 'Réseau de 3 agences',
@@ -29,8 +27,6 @@ const CASES = [
       { metric: '+180 %', label: 'de visites planifiées' },
       { metric: '3 mois', label: 'pour rentabiliser' },
     ],
-    quote: 'On ne rate plus aucune opportunité. Le chatbot répond mieux que certains appels manuels.',
-    author: 'Responsable commerciale, réseau bordelais',
   },
   {
     logo: 'Agence 6 collaborateurs',
@@ -44,8 +40,6 @@ const CASES = [
       { metric: '+55 %', label: 'taux de conversion' },
       { metric: '48h', label: 'de déploiement' },
     ],
-    quote: 'En 48h, l\'IA était opérationnelle. En 3 semaines, on ne pouvait plus s\'en passer.',
-    author: 'Directeur d\'agence, Lyon',
   },
 ]
 
@@ -102,23 +96,13 @@ export function EtudesDeCasPage() {
                 </div>
 
                 <div className="px-8 pb-8 grid md:grid-cols-2 gap-8">
-                  {/* Challenge + Solution */}
                   <div>
-                    <h3 className="font-tight font-semibold text-ink mb-2" style={{ fontSize: '0.85rem', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#9090b0' }}>Problématique</h3>
+                    <h3 className="font-tight font-semibold mb-2" style={{ fontSize: '0.85rem', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#9090b0' }}>Problématique</h3>
                     <p className="text-sm text-ink-body leading-relaxed mb-6">{c.challenge}</p>
+                  </div>
+                  <div>
                     <h3 className="font-tight font-semibold mb-2" style={{ fontSize: '0.85rem', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#9090b0' }}>Solution déployée</h3>
                     <p className="text-sm text-ink-body leading-relaxed">{c.solution}</p>
-                  </div>
-
-                  {/* Quote */}
-                  <div
-                    className="rounded-2xl p-6 flex flex-col justify-between"
-                    style={{ background: '#0F1117', border: '1px solid rgba(255,255,255,0.07)' }}
-                  >
-                    <p className="font-sans text-base leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
-                      « {c.quote} »
-                    </p>
-                    <p className="text-xs font-sans" style={{ color: 'rgba(255,255,255,0.35)' }}>{c.author}</p>
                   </div>
                 </div>
               </article>
