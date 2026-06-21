@@ -224,6 +224,8 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const LOGOS = ['Century 21', 'ERA Immobilier', 'Guy Hoquet', 'Laforêt', 'Orpi', 'IAD France']
 
+export const CAL_URL = 'https://calendly.com/immoops/discovery_call'
+
 export interface FooterLink {
   label: string
   href: string

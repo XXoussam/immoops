@@ -1,5 +1,6 @@
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
+import { CAL_URL } from '../lib/constants'
 
 const CASES = [
   {
@@ -110,8 +111,8 @@ export function EtudesDeCasPage() {
             <p className="body2 text-ink-body mb-8">
               Obtenez un audit gratuit et découvrez quel potentiel l'IA peut débloquer pour vous.
             </p>
-            <a href="mailto:saoudioussama13@gmail.com" className="btn-primary">
-              Demander un audit gratuit
+            <a href={CAL_URL} target="_blank" rel="noreferrer" className="btn-primary">
+              Réserver un créneau gratuit
             </a>
           </div>
         </section>

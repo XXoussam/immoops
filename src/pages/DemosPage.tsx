@@ -10,6 +10,7 @@ import { AgentAudioVisualizerAura } from '../components/agents-ui/agent-audio-vi
 import { AgentControlBar } from '../components/agents-ui/agent-control-bar'
 import { AgentChatTranscript } from '../components/agents-ui/agent-chat-transcript'
 import { TooltipProvider } from '../components/ui/tooltip'
+import { CAL_URL } from '../lib/constants'
 
 const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
 const CHAT_URL = '/.netlify/functions/chat'
@@ -397,7 +398,7 @@ export function DemosPage() {
             Intégrés dans votre agence en moins de 48h, sur mesure.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="mailto:saoudioussama13@gmail.com" className="btn-primary">Demander un audit gratuit</a>
+            <a href={CAL_URL} target="_blank" rel="noreferrer" className="btn-primary">Réserver un créneau gratuit</a>
             <button onClick={() => navigate('/')} className="btn-outline-white">Retour à l'accueil</button>
           </div>
         </section>

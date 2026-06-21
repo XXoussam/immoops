@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
+import { CAL_URL } from '../lib/constants'
 
 const LABELS: Record<string, string> = {
   '/blog': 'Blog',
@@ -24,7 +25,7 @@ export function ComingSoonPage() {
             Nous travaillons sur cette section. Revenez prochainement ou contactez-nous directement.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <a href="mailto:saoudioussama13@gmail.com" className="btn-primary">Nous contacter</a>
+            <a href={CAL_URL} target="_blank" rel="noreferrer" className="btn-primary">Réserver un créneau</a>
             <button onClick={() => navigate('/')} className="btn-outline-white">Retour à l'accueil</button>
           </div>
         </div>

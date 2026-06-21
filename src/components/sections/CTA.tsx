@@ -1,8 +1,8 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { CAL_URL } from '../../lib/constants'
 
 export function CTA() {
   const { ref, isVisible } = useScrollReveal()
-  const mailto = `mailto:saoudioussama13@gmail.com?subject=Prise de contact — ImmoOps AI&body=Bonjour,%0A%0AJe souhaite en savoir plus sur vos services IA pour mon agence immobilière.%0A%0ACordialement`
 
   return (
     <section id="contact" className="section-sm bg-gray-bg border-t border-gray-line">
@@ -20,7 +20,7 @@ export function CTA() {
               Essayez nos démos interactives — sans formulaire, sans inscription.
               Voyez l'IA en action avant de prendre contact.
             </p>
-            <a href="#demos" className="btn-outline">
+            <a href="/demos" className="btn-outline">
               Explorer les démos
             </a>
           </div>
@@ -34,11 +34,11 @@ export function CTA() {
               Prêt à commencer ?
             </h3>
             <p className="body2 mb-7" style={{ color: 'rgba(255,255,255,0.72)' }}>
-              Réservez un audit gratuit de 30 minutes. On cartographie vos
+              Réservez un audit gratuit de 15 minutes. On cartographie vos
               processus et identifie ce que l'IA peut automatiser dès maintenant.
             </p>
-            <a href={mailto} className="btn-primary-dark">
-              Demander l'audit gratuit
+            <a href={CAL_URL} target="_blank" rel="noreferrer" className="btn-primary-dark">
+              Réserver un créneau
             </a>
           </div>
         </div>

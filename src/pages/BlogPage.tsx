@@ -3,6 +3,7 @@ import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
 import { ARTICLES } from '../lib/articles'
+import { CAL_URL } from '../lib/constants'
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Intelligence artificielle': '#6D4AFF',
@@ -82,8 +83,8 @@ export function BlogPage() {
             <p className="body2 text-ink-body mb-8">
               Recevez nos derniers articles et conseils directement dans votre boîte mail.
             </p>
-            <a href="mailto:saoudioussama13@gmail.com" className="btn-primary">
-              S'abonner à la newsletter
+            <a href={CAL_URL} target="_blank" rel="noreferrer" className="btn-primary">
+              Réserver un créneau gratuit
             </a>
           </div>
         </section>
