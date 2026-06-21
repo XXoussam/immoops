@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
@@ -11,6 +11,7 @@ import { AgentChatTranscript } from '../components/agents-ui/agent-chat-transcri
 import { TooltipProvider } from '../components/ui/tooltip'
 
 const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
+const CHAT_URL = '/.netlify/functions/chat'
 
 const PANEL_STYLE: React.CSSProperties = {
   borderRadius: 20,
@@ -23,15 +24,159 @@ const PANEL_STYLE: React.CSSProperties = {
   position: 'relative',
 }
 
-/* ─── Connected panel — inside AgentSessionProvider so LiveKit hooks resolve ── */
+/* ─── Types ── */
+type ChatMessage = { role: 'user' | 'assistant'; content: string }
+type Mode = 'idle' | 'call' | 'chat'
+
+/* ─── Chat panel (Gemini) ── */
+function ChatPanel({ onBack }: { onBack: () => void }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: 'assistant', content: 'Bonjour ! Je suis Sophie, votre conseillère ImmoOps. Comment puis-je vous aider ?' },
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const messagesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = messagesRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages])
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+
+    const next: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    setMessages(next)
+    setInput('')
+    setLoading(true)
+
+    try {
+      const res = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: next }),
+      })
+      const data = await res.json()
+      setMessages([...next, { role: 'assistant', content: data.reply }])
+    } catch {
+      setMessages([...next, { role: 'assistant', content: 'Désolée, une erreur est survenue.' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
+  }
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px 10px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(109,74,255,0.25)', border: '1px solid rgba(109,74,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'rgba(180,160,255,0.9)', fontWeight: 600, fontFamily: 'Sora, sans-serif' }}>
+          S
+        </div>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.9)', fontFamily: 'Sora, sans-serif', lineHeight: 1 }}>Sophie</p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>Conseillère ImmoOps · IA</p>
+        </div>
+        <button
+          onClick={onBack}
+          style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.08em', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+        >
+          ← RETOUR
+        </button>
+      </div>
+
+      {/* Messages */}
+      <div ref={messagesRef} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {messages.map((m, i) => (
+          <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+            <div style={{
+              maxWidth: '80%',
+              padding: '8px 12px',
+              borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+              background: m.role === 'user' ? 'rgba(109,74,255,0.22)' : 'rgba(255,255,255,0.06)',
+              border: `1px solid ${m.role === 'user' ? 'rgba(109,74,255,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              fontSize: 13,
+              lineHeight: 1.55,
+              color: m.role === 'user' ? 'rgba(220,210,255,0.9)' : 'rgba(220,225,235,0.85)',
+              fontFamily: 'Inter, sans-serif',
+            }}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <div style={{ padding: '8px 14px', borderRadius: '14px 14px 14px 4px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <span style={{ display: 'inline-flex', gap: 4 }}>
+                {[0, 1, 2].map(i => (
+                  <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(180,160,255,0.6)', animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }} />
+                ))}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div style={{ flexShrink: 0, padding: '10px 12px', borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+        <textarea
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={onKey}
+          placeholder="Écrivez votre message…"
+          rows={1}
+          style={{
+            flex: 1,
+            resize: 'none',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 12,
+            padding: '8px 12px',
+            fontSize: 13,
+            color: 'rgba(255,255,255,0.85)',
+            fontFamily: 'Inter, sans-serif',
+            outline: 'none',
+            lineHeight: 1.5,
+          }}
+        />
+        <button
+          onClick={send}
+          disabled={!input.trim() || loading}
+          style={{
+            flexShrink: 0,
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            background: !input.trim() || loading ? 'rgba(109,74,255,0.15)' : 'rgba(109,74,255,0.7)',
+            border: '1px solid rgba(109,74,255,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: !input.trim() || loading ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s',
+          }}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity={!input.trim() || loading ? 0.4 : 1}>
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Connected voice panel ── */
 function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
   const { state, audioTrack } = useVoiceAssistant()
   const { messages } = useSessionMessages()
 
   return (
     <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 20px' }}>
-
-      {/* Aura — large during interaction, sized by state */}
       <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 280 }}>
         <AgentAudioVisualizerAura
           state={state}
@@ -46,16 +191,9 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
           }
         />
       </div>
-
-      {/* Transcript — latest 2 messages, 2-line clamp, no scroll */}
       <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', marginBottom: 8, overflow: 'hidden' }}>
-        <AgentChatTranscript
-          agentState={state}
-          messages={messages.slice(-2)}
-        />
+        <AgentChatTranscript agentState={state} messages={messages.slice(-2)} />
       </div>
-
-      {/* Control bar — compact height */}
       <div className="demo-bar" style={{ width: '100%', flexShrink: 0 }}>
         <AgentControlBar
           variant="livekit"
@@ -71,6 +209,8 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
 
 /* ─────────────────────────────── Demo panel ── */
 function DemoPanel() {
+  const [mode, setMode] = useState<Mode>('idle')
+
   const tokenSource = useMemo(() =>
     TokenSource.literal(async () => {
       const resp = await fetch(TOKEN_URL)
@@ -83,15 +223,37 @@ function DemoPanel() {
   const session = useSession(tokenSource)
   const isConnecting = session.connectionState === ConnectionState.Connecting
 
+  // Switch to call mode when session connects
+  useEffect(() => {
+    if (session.isConnected) setMode('call')
+  }, [session.isConnected])
+
+  const startCall = () => {
+    session.start({ tracks: { microphone: { enabled: true } } })
+  }
+
+  const endCall = () => {
+    session.end()
+    setMode('idle')
+  }
+
   return (
     <div className="dark" style={PANEL_STYLE}>
-      {session.isConnected ? (
+      {/* ── Chat mode ── */}
+      {mode === 'chat' && (
+        <ChatPanel onBack={() => setMode('idle')} />
+      )}
+
+      {/* ── Call mode (voice agent) ── */}
+      {mode === 'call' && session.isConnected && (
         <AgentSessionProvider session={session}>
-          <ConnectedPanel onDisconnect={session.end} />
+          <ConnectedPanel onDisconnect={endCall} />
         </AgentSessionProvider>
-      ) : (
+      )}
+
+      {/* ── Idle mode ── */}
+      {mode === 'idle' && (
         <>
-          {/* Aura in idle / connecting state */}
           <div style={{ position: 'absolute', inset: 0, bottom: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AgentAudioVisualizerAura
               state={isConnecting ? 'connecting' : 'idle'}
@@ -101,10 +263,9 @@ function DemoPanel() {
             />
           </div>
 
-          {/* Pre-connection: CALL + CHAT buttons */}
           <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 12 }}>
             <button
-              onClick={() => session.start({ tracks: { microphone: { enabled: true } } })}
+              onClick={startCall}
               disabled={isConnecting}
               style={{
                 padding: '8px 28px',
@@ -123,7 +284,7 @@ function DemoPanel() {
               {isConnecting ? 'CONNEXION…' : 'CALL'}
             </button>
             <button
-              disabled
+              onClick={() => setMode('chat')}
               style={{
                 padding: '8px 28px',
                 borderRadius: 999,
@@ -131,10 +292,11 @@ function DemoPanel() {
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: '0.1em',
-                background: 'rgba(109,74,255,0.15)',
-                color: 'rgba(180,160,255,0.7)',
-                border: '1px solid rgba(109,74,255,0.25)',
-                cursor: 'not-allowed',
+                background: 'rgba(109,74,255,0.18)',
+                color: 'rgba(180,160,255,0.9)',
+                border: '1px solid rgba(109,74,255,0.3)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
               }}
             >
               CHAT
@@ -147,7 +309,6 @@ function DemoPanel() {
 }
 
 /* ─────────────────────────────── Page ── */
-
 export function DemosPage() {
   const navigate = useNavigate()
 
@@ -155,11 +316,8 @@ export function DemosPage() {
     <TooltipProvider>
       <Navbar />
       <main style={{ background: 'linear-gradient(180deg, rgb(10,5,28) 0%, rgb(6,3,16) 100%)', minHeight: '100vh' }}>
-
         <section className="pt-32 pb-24 px-5">
           <div className="w-full max-w-[1100px] mx-auto flex flex-col lg:flex-row items-center lg:items-start gap-14">
-
-            {/* Left */}
             <div className="flex-1 lg:pt-10 text-center lg:text-left">
               <span className="label-white">Démos interactives</span>
               <h1 className="h2-white mb-5">Voyez l'IA<br />en action</h1>
@@ -167,12 +325,9 @@ export function DemosPage() {
                 Parlez directement avec nos agents — sans formulaire, sans inscription.
               </p>
             </div>
-
-            {/* Right */}
             <div style={{ flexShrink: 0, width: '100%', maxWidth: 540 }}>
               <DemoPanel />
             </div>
-
           </div>
         </section>
 
@@ -186,7 +341,6 @@ export function DemosPage() {
             <button onClick={() => navigate('/')} className="btn-outline-white">Retour à l'accueil</button>
           </div>
         </section>
-
       </main>
       <Footer />
     </TooltipProvider>

@@ -1,14 +1,25 @@
 import { useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
 import { NAV_LINKS } from '../../lib/constants'
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const isHome = location.pathname === '/'
 
   const go = (href: string) => {
     setMenuOpen(false)
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    if (isHome) {
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate('/')
+      setTimeout(() => {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
   }
 
   return (
@@ -24,13 +35,13 @@ export function Navbar() {
     >
       <div className="container-main flex items-center justify-between h-[64px]">
         {/* Logo */}
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
           <img
             src="/logo.png"
             alt="ImmoOps"
             style={{ height: '32px', width: 'auto' }}
           />
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-7">
@@ -59,9 +70,9 @@ export function Navbar() {
           >
             Se connecter
           </button>
-          <a href="#contact" className="btn-primary">
+          <button onClick={() => go('#contact')} className="btn-primary">
             Prendre contact
-          </a>
+          </button>
         </div>
 
         {/* Mobile burger */}
@@ -96,7 +107,9 @@ export function Navbar() {
               {l.label}
             </button>
           ))}
-          <a href="#contact" className="btn-primary w-full justify-center mt-2">Prendre contact</a>
+          <button onClick={() => go('#contact')} className="btn-primary w-full justify-center mt-2">
+            Prendre contact
+          </button>
         </div>
       )}
     </header>
