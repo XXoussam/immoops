@@ -3,9 +3,7 @@ import { Footer } from '../components/layout/Footer'
 
 const CASES = [
   {
-    logo: 'Agence indépendante',
-    location: 'Paris',
-    tag: 'Agent vocal IA',
+tag: 'Agent vocal IA',
     tagColor: '#6D4AFF',
     challenge: 'L\'agence recevait plus de 80 appels entrants par semaine, dont 60 % en dehors des heures d\'ouverture. Les agents passaient 30 % de leur temps à répondre à des questions répétitives au lieu de se concentrer sur les mandats.',
     solution: 'Déploiement d\'un agent vocal IA disponible 24h/24, capable de qualifier les acheteurs et vendeurs, répondre aux questions courantes et planifier des rappels.',
@@ -16,9 +14,7 @@ const CASES = [
     ],
   },
   {
-    logo: 'Réseau de 3 agences',
-    location: 'Bordeaux',
-    tag: 'Chatbot IA + Automatisation',
+tag: 'Chatbot IA + Automatisation',
     tagColor: '#10B981',
     challenge: 'Le taux de réponse aux demandes entrantes via le site web était de 45 % avec un délai moyen de 4h. Les prospects perdus représentaient un manque à gagner estimé à 60 k€ par an.',
     solution: 'Intégration d\'un chatbot IA sur le site de l\'agence avec qualification automatique, envoi de fiches de biens personnalisées et prise de rendez-vous en temps réel.',
@@ -29,9 +25,7 @@ const CASES = [
     ],
   },
   {
-    logo: 'Agence 6 collaborateurs',
-    location: 'Lyon',
-    tag: 'Workflow IA complet',
+tag: 'Workflow IA complet',
     tagColor: '#60A5FA',
     challenge: 'Gestion manuelle des relances, des estimations et du suivi post-visite. L\'équipe de 6 agents perdait en moyenne 2h par jour en tâches administratives répétitives.',
     solution: 'Mise en place d\'un workflow IA complet : qualification entrante, relances automatiques personnalisées, génération de comptes-rendus de visite et alertes nouveaux mandats.',
@@ -65,13 +59,9 @@ export function EtudesDeCasPage() {
             {CASES.map((c, i) => (
               <article key={c.logo} className="card-white overflow-hidden">
                 {/* Header */}
-                <div className="p-8 pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <div>
-                    <p className="font-tight font-semibold text-ink" style={{ fontSize: '1.15rem' }}>{c.logo}</p>
-                    <p className="text-sm text-ink-body font-sans mt-0.5">{c.location}</p>
-                  </div>
+                <div className="p-8 pb-0 flex items-center justify-between mb-6">
                   <span
-                    className="self-start sm:self-auto text-xs font-sans font-medium px-3 py-1.5 rounded-pill"
+                    className="text-xs font-sans font-medium px-3 py-1.5 rounded-pill"
                     style={{
                       background: `${c.tagColor}18`,
                       color: c.tagColor,
