@@ -1,3 +1,5 @@
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
 import { ARTICLES } from '../lib/articles'
@@ -59,8 +61,9 @@ export function BlogPage() {
                   <p className="text-sm text-ink-body leading-relaxed flex-1 mb-5">{post.excerpt}</p>
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-line">
                     <span className="text-xs text-ink-body font-sans">{post.date}</span>
-                    <span className="text-sm font-medium text-purple group-hover:text-purple-hover transition-colors">
-                      Lire l'article →
+                    <span className="text-sm font-medium text-purple group-hover:text-purple-hover transition-colors inline-flex items-center gap-1">
+                      Lire l'article
+                      <HugeiconsIcon icon={ArrowRight01Icon} size={15} strokeWidth={1.5} />
                     </span>
                   </div>
                 </div>
