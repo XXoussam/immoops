@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
@@ -26,7 +27,7 @@ const PANEL_STYLE: React.CSSProperties = {
 
 /* ─── Types ── */
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
-type Mode = 'idle' | 'call' | 'chat'
+type Mode = 'idle' | 'call' | 'chat' | 'tour'
 
 /* ─── Chat panel (Gemini) ── */
 function ChatPanel({ onBack }: { onBack: () => void }) {
@@ -104,7 +105,18 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
               color: m.role === 'user' ? 'rgba(220,210,255,0.9)' : 'rgba(220,225,235,0.85)',
               fontFamily: 'Inter, sans-serif',
             }}>
-              {m.content}
+              {m.role === 'assistant' ? (
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p style={{ margin: 0 }}>{children}</p>,
+                    strong: ({ children }) => <strong style={{ fontWeight: 600, color: 'rgba(220,225,235,1)' }}>{children}</strong>,
+                    ul: ({ children }) => <ul style={{ margin: '4px 0', paddingLeft: 16 }}>{children}</ul>,
+                    li: ({ children }) => <li style={{ marginBottom: 2 }}>{children}</li>,
+                  }}
+                >
+                  {m.content}
+                </ReactMarkdown>
+              ) : m.content}
             </div>
           </div>
         ))}
@@ -308,6 +320,51 @@ function DemoPanel() {
   )
 }
 
+/* ─────────────────────────────── 360° Tour ── */
+function TourSection() {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.async = true
+    script.setAttribute('data-short', 'MMqLrAhy2oN')
+    script.setAttribute('data-path', 'tours')
+    script.setAttribute('data-is-self-hosted', 'false')
+    script.src = 'https://app.cloudpano.com/public/shareScript.js'
+    el.appendChild(script)
+    return () => { el.innerHTML = '' }
+  }, [])
+
+  return (
+    <section className="pb-24 px-5">
+      <div className="w-full max-w-[1100px] mx-auto">
+        <div className="text-center mb-10">
+          <span className="label-white">Visite virtuelle</span>
+          <h2 className="h3 mb-3" style={{ color: 'white' }}>Explorez en 360°</h2>
+          <p className="body1-white mx-auto" style={{ maxWidth: 480 }}>
+            Naviguez dans le bien comme si vous y étiez, directement depuis votre navigateur.
+          </p>
+        </div>
+        <div
+          id="MMqLrAhy2oN"
+          ref={containerRef}
+          style={{
+            width: '100%',
+            height: 500,
+            borderRadius: 20,
+            overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.09)',
+            boxShadow: '0 8px 64px rgba(0,0,0,0.45)',
+          }}
+        />
+      </div>
+    </section>
+  )
+}
+
 /* ─────────────────────────────── Page ── */
 export function DemosPage() {
   const navigate = useNavigate()
@@ -330,6 +387,9 @@ export function DemosPage() {
             </div>
           </div>
         </section>
+
+        {/* ── 360° Tour ── */}
+        <TourSection />
 
         <section className="pb-24 text-center px-5">
           <h2 className="h3 mb-3" style={{ color: 'white' }}>Prêt à déployer ces agents ?</h2>
