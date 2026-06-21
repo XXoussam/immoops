@@ -3,8 +3,8 @@ import { Footer } from '../components/layout/Footer'
 
 const CASES = [
   {
-    logo: 'Century 21 — Agence Madeleine',
-    location: 'Paris 8e',
+    logo: 'Agence indépendante',
+    location: 'Paris',
     tag: 'Agent vocal IA',
     tagColor: '#6D4AFF',
     challenge: 'L\'agence recevait plus de 80 appels entrants par semaine, dont 60 % en dehors des heures d\'ouverture. Les agents passaient 30 % de leur temps à répondre à des questions répétitives au lieu de se concentrer sur les mandats.',
@@ -15,10 +15,10 @@ const CASES = [
       { metric: '24/7', label: 'disponibilité' },
     ],
     quote: 'Nos agents passent maintenant leur temps sur ce qui compte vraiment. L\'IA gère tout le reste.',
-    author: 'Directeur commercial, Century 21 Madeleine',
+    author: 'Directeur commercial, agence parisienne',
   },
   {
-    logo: 'Orpi — Réseau Bordeaux Lac',
+    logo: 'Réseau de 3 agences',
     location: 'Bordeaux',
     tag: 'Chatbot IA + Automatisation',
     tagColor: '#10B981',
@@ -30,10 +30,10 @@ const CASES = [
       { metric: '3 mois', label: 'pour rentabiliser' },
     ],
     quote: 'On ne rate plus aucune opportunité. Le chatbot répond mieux que certains appels manuels.',
-    author: 'Responsable commerciale, Orpi Bordeaux Lac',
+    author: 'Responsable commerciale, réseau bordelais',
   },
   {
-    logo: 'ERA Immobilier — Lyon Part-Dieu',
+    logo: 'Agence 6 collaborateurs',
     location: 'Lyon',
     tag: 'Workflow IA complet',
     tagColor: '#60A5FA',
@@ -45,7 +45,7 @@ const CASES = [
       { metric: '48h', label: 'de déploiement' },
     ],
     quote: 'En 48h, l\'IA était opérationnelle. En 3 semaines, on ne pouvait plus s\'en passer.',
-    author: 'Directeur d\'agence, ERA Lyon Part-Dieu',
+    author: 'Directeur d\'agence, Lyon',
   },
 ]
 
