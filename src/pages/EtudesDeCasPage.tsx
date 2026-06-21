@@ -58,7 +58,7 @@ export function EtudesDeCasPage() {
         <section className="pb-24 px-5">
           <div className="w-full max-w-[900px] mx-auto flex flex-col gap-16">
             {CASES.map((c, i) => (
-              <article key={c.logo} className="card-white overflow-hidden">
+              <article key={c.tag} className="card-white overflow-hidden">
                 {/* Header */}
                 <div className="p-8 pb-0 flex items-center justify-between mb-6">
                   <span
