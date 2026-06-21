@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
 import { ARTICLES } from '../lib/articles'
@@ -45,7 +47,8 @@ export function ArticlePage() {
               onMouseEnter={e => (e.currentTarget.style.color = '#6D4AFF')}
               onMouseLeave={e => (e.currentTarget.style.color = '#9090b0')}
             >
-              ← Retour au blog
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
+              Retour au blog
             </button>
             <div className="flex items-center gap-3 mb-5">
               <span
