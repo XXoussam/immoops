@@ -12,6 +12,10 @@ export function Navbar() {
 
   const go = (href: string) => {
     setMenuOpen(false)
+    if (!href.startsWith('#')) {
+      navigate(href)
+      return
+    }
     if (isHome) {
       document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
     } else {
@@ -61,15 +65,6 @@ export function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={() => go('#contact')}
-            className="text-sm font-sans font-medium cursor-pointer transition-colors duration-200"
-            style={{ color: 'rgba(255,255,255,0.45)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
-          >
-            Se connecter
-          </button>
           <button onClick={() => go('#contact')} className="btn-primary">
             Prendre contact
           </button>

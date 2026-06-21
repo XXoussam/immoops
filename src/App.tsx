@@ -6,6 +6,8 @@ import { MentionsLegalesPage } from './pages/MentionsLegalesPage'
 import { ConfidentialitePage } from './pages/ConfidentialitePage'
 import { CookiesPage } from './pages/CookiesPage'
 import { ComingSoonPage } from './pages/ComingSoonPage'
+import { BlogPage } from './pages/BlogPage'
+import { EtudesDeCasPage } from './pages/EtudesDeCasPage'
 
 function App() {
   return (
@@ -17,8 +19,8 @@ function App() {
         <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
         <Route path="/confidentialite" element={<ConfidentialitePage />} />
         <Route path="/cookies" element={<CookiesPage />} />
-        <Route path="/blog" element={<ComingSoonPage />} />
-        <Route path="/etudes-de-cas" element={<ComingSoonPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/etudes-de-cas" element={<EtudesDeCasPage />} />
         <Route path="/webinaires" element={<ComingSoonPage />} />
         <Route path="/documentation" element={<ComingSoonPage />} />
       </Routes>

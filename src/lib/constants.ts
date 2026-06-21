@@ -2,7 +2,7 @@ import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon,
 
 export const NAV_LINKS = [
   { label: 'Services', href: '#services' },
-  { label: 'Démos', href: '#demos' },
+  { label: 'Démos', href: '/demos' },
   { label: 'Comment ça marche', href: '#fonctionnement' },
   { label: 'À propos', href: '#a-propos' },
   { label: 'FAQ', href: '#faq' },
