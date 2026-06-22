@@ -1,4 +1,4 @@
-import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon } from '@hugeicons/core-free-icons'
+import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, AiLearningIcon } from '@hugeicons/core-free-icons'
 
 export const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -39,6 +39,11 @@ export const SERVICES: Service[] = [
     Icon: UserCheck01Icon,
     title: 'Qualification de leads',
     description: "Identifiez et priorisez vos meilleurs prospects grâce à l'IA, avant votre premier appel.",
+  },
+  {
+    Icon: AiLearningIcon,
+    title: 'Formation n8n',
+    description: "Apprenez à automatiser vos tâches répétitives avec n8n — sans coder. Des sessions pratiques adaptées à votre agence.",
   },
 ]
 
@@ -245,6 +250,7 @@ export const FOOTER_COLS: FooterCol[] = [
       { label: 'Agents vocaux', href: '/#services' },
       { label: 'Architecture IA', href: '/#services' },
       { label: 'Qualification de leads', href: '/#services' },
+      { label: 'Formation n8n', href: '/#services' },
     ],
   },
   {
