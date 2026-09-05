@@ -34,6 +34,11 @@ ImmoOps is a French-language marketing landing page for an AI automation platfor
 
 **Scroll reveal** — `SectionWrapper` wraps every section and wires `useScrollReveal` to a fade+slide-up animation. Sections that manage their own layout skip `SectionWrapper` and apply the hook directly.
 
+**Component rules:**
+- Named exports only — no default exports in section or UI components.
+- Wrap new sections in `SectionWrapper` (handles scroll reveal + max-width layout).
+- Static data and copy belong in `src/lib/constants.ts`, not hardcoded in JSX.
+
 ## Design system
 
 The full brand guide lives in **`brand_name/brand.md`**. All color, typography, and component decisions must follow it.
