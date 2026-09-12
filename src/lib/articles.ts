@@ -13,7 +13,7 @@ export const ARTICLES: Article[] = [
     slug: 'agents-vocaux-ia-relation-client-immobilier',
     title: 'Comment les agents vocaux IA transforment la relation client en immobilier',
     category: 'Intelligence artificielle',
-    date: '12 juin 2025',
+    date: '12 juin 2026',
     readTime: '5 min',
     excerpt: 'Les agences immobilières qui adoptent les agents vocaux IA constatent une disponibilité 24h/24 et une réduction de 60 % du temps passé à qualifier les prospects entrants.',
     content: `Un acquéreur potentiel appelle votre agence à 19h45 un vendredi soir. Personne ne décroche. Il rappelle le lundi — mais entre-temps, il a signé un mandat de recherche avec votre concurrent. Ce scénario se répète dans des centaines d'agences françaises chaque semaine. Les agents vocaux IA ne sont pas un gadget futuriste : ils sont déjà la réponse opérationnelle à ce problème précis.
@@ -48,7 +48,7 @@ Les agences qui adoptent les agents vocaux IA ne le font pas pour remplacer leur
     slug: 'automatiser-qualification-leads-agences',
     title: 'Automatiser la qualification de leads : le guide complet pour les agences',
     category: 'Automatisation',
-    date: '3 juin 2025',
+    date: '3 juin 2026',
     readTime: '7 min',
     excerpt: 'Un prospect non rappelé dans les 5 minutes a 10 fois moins de chances de convertir. Découvrez comment automatiser ce premier contact sans perdre en qualité relationnelle.',
     content: `La statistique est bien documentée : un lead immobilier contacté dans les 5 minutes suivant sa demande convertit 10 fois mieux qu'un lead rappelé une heure plus tard. Pourtant, dans la réalité d'une agence, les négociateurs sont en visite, en rendez-vous de signature, ou simplement indisponibles. Le fossé entre ce que les études recommandent et ce que les équipes peuvent livrer est structurel — sauf si vous automatisez le premier contact.
@@ -89,7 +89,7 @@ Automatiser la qualification de leads n'est pas un projet IT. C'est une décisio
     slug: 'chatbot-ia-site-agence-immobiliere',
     title: "Chatbot IA sur votre site d'agence : ce que vos concurrents font déjà",
     category: "Cas d'usage",
-    date: '24 mai 2025',
+    date: '24 mai 2026',
     readTime: '4 min',
     excerpt: "Les chatbots immobiliers ne se limitent plus à répondre aux FAQ. Ils qualifient, planifient des visites et relancent automatiquement — même le dimanche soir.",
     content: `En 2023, un chatbot sur un site immobilier répondait à « quels sont vos horaires ? » et affichait un numéro de téléphone. En 2025, ce même outil planifie des visites, qualifie des acheteurs et envoie des rappels de confirmation — sans aucune intervention humaine. La technologie a changé de catégorie. La question n'est plus « faut-il un chatbot ? » mais « que faites-vous pendant que votre concurrent en a déjà un en production ? »
@@ -126,7 +126,7 @@ Déployer un chatbot IA sur votre site en 2025 n'est plus un investissement sur 
     slug: 'roi-ia-agence-immobiliere',
     title: "ROI de l'IA en agence immobilière : les chiffres réels",
     category: 'Stratégie',
-    date: '15 mai 2025',
+    date: '15 mai 2026',
     readTime: '6 min',
     excerpt: "Nos clients constatent en moyenne un retour sur investissement en moins de 3 mois. Nous détaillons ici les économies réelles sur les coûts de prospection et de gestion administrative.",
     content: `Le discours sur l'IA dans l'immobilier regorge de promesses vagues : « gagner du temps », « améliorer la productivité », « transformer votre agence ». Ce que les directeurs d'agence veulent savoir, c'est autre chose : combien ça coûte, combien ça rapporte, et en combien de temps. Voici les chiffres que nous observons, sans enjoliver.
@@ -173,7 +173,7 @@ Les chiffres sont là. La décision est une question de priorité, pas de budget
     slug: 'gpt-vs-agents-specialises-immobilier',
     title: "GPT-4 vs agents spécialisés : pourquoi les assistants génériques ne suffisent pas en immobilier",
     category: 'Intelligence artificielle',
-    date: '6 mai 2025',
+    date: '6 mai 2026',
     readTime: '8 min',
     excerpt: "Un modèle généraliste ne connaît pas votre portefeuille, vos mandats ni vos processus internes. Voici pourquoi les agents IA spécialisés surpassent les chatbots grand public.",
     content: `Beaucoup de directeurs d'agence ont testé ChatGPT pour rédiger des annonces ou préparer des emails de relance. L'outil est impressionnant — pour des tâches génériques. Mais dès qu'on lui demande de qualifier un prospect selon les critères spécifiques de l'agence, de vérifier si un bien correspond au mandat d'un client enregistré en CRM, ou de déclencher une action dans un outil métier, il atteint une limite fondamentale : il ne sait rien de votre agence.
@@ -216,7 +216,7 @@ La distinction n'est pas une question de sophistication technologique. Elle est 
     slug: 'relances-automatiques-ne-plus-perdre-mandat',
     title: 'Relances automatiques : comment ne plus jamais perdre un mandat par manque de suivi',
     category: 'Automatisation',
-    date: '28 avril 2025',
+    date: '28 avril 2026',
     readTime: '5 min',
     excerpt: "80 % des ventes nécessitent au moins 5 points de contact. Pourtant, la plupart des agents abandonnent après 2. L'automatisation intelligente comble ce fossé.",
     content: `Il existe une statistique que tout commercial connaît mais que peu appliquent : 80 % des transactions immobilières se concluent après le 5e point de contact avec le prospect. La réalité terrain dans la plupart des agences ? Les négociateurs abandonnent après le 2e ou 3e contact, non pas par manque de motivation, mais par manque de temps et d'organisation. L'automatisation des relances ne change pas la nature du métier — elle garantit que le travail est réellement fait.
