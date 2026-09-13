@@ -220,9 +220,14 @@ function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
   )
 }
 
+const CALL_TIME_LIMIT_MS = 30_000
+
 /* ─────────────────────────────── Demo panel ── */
 function DemoPanel() {
   const [mode, setMode] = useState<Mode>('idle')
+  const [showLimitNotice, setShowLimitNotice] = useState(false)
+  const limitTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const noticeTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const tokenSource = useMemo(() =>
     TokenSource.literal(async () => {
@@ -236,18 +241,30 @@ function DemoPanel() {
   const session = useSession(tokenSource)
   const isConnecting = session.connectionState === ConnectionState.Connecting
 
-  // Switch to call mode when session connects
-  useEffect(() => {
-    if (session.isConnected) setMode('call')
-  }, [session.isConnected])
-
-  const endCall = () => {
+  const endCall = (hitLimit = false) => {
+    clearTimeout(limitTimeoutRef.current)
     session.end()
     setMode('idle')
+    if (hitLimit) {
+      setShowLimitNotice(true)
+      clearTimeout(noticeTimeoutRef.current)
+      noticeTimeoutRef.current = setTimeout(() => setShowLimitNotice(false), 6000)
+    }
   }
 
+  // Switch to call mode when session connects, and cap the call at 30s
+  useEffect(() => {
+    if (!session.isConnected) return
+    setMode('call')
+    limitTimeoutRef.current = setTimeout(() => endCall(true), CALL_TIME_LIMIT_MS)
+    return () => clearTimeout(limitTimeoutRef.current)
+  }, [session.isConnected])
+
+  useEffect(() => () => clearTimeout(noticeTimeoutRef.current), [])
+
   const startCall = () => {
-    session.start({ tracks: { microphone: { enabled: true } } }).catch(endCall)
+    setShowLimitNotice(false)
+    session.start({ tracks: { microphone: { enabled: true } } }).catch(() => endCall())
   }
 
   return (
@@ -260,13 +277,32 @@ function DemoPanel() {
       {/* ── Call mode (voice agent) ── */}
       {mode === 'call' && session.isConnected && (
         <AgentSessionProvider session={session}>
-          <ConnectedPanel onDisconnect={endCall} />
+          <ConnectedPanel onDisconnect={() => endCall()} />
         </AgentSessionProvider>
       )}
 
       {/* ── Idle mode ── */}
       {mode === 'idle' && (
         <>
+          {showLimitNotice && (
+            <div style={{
+              position: 'absolute',
+              top: 14,
+              left: 14,
+              right: 14,
+              padding: '10px 14px',
+              borderRadius: 12,
+              background: 'rgba(109,74,255,0.16)',
+              border: '1px solid rgba(109,74,255,0.3)',
+              color: 'rgba(220,210,255,0.95)',
+              fontSize: 12,
+              fontFamily: 'Inter, sans-serif',
+              textAlign: 'center',
+              zIndex: 1,
+            }}>
+              Démo limitée à 30 secondes. Réservez un créneau pour un appel complet.
+            </div>
+          )}
           <div style={{ position: 'absolute', inset: 0, bottom: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AgentAudioVisualizerAura
               state={isConnecting ? 'connecting' : 'idle'}
