@@ -241,13 +241,13 @@ function DemoPanel() {
     if (session.isConnected) setMode('call')
   }, [session.isConnected])
 
-  const startCall = () => {
-    session.start({ tracks: { microphone: { enabled: true } } })
-  }
-
   const endCall = () => {
     session.end()
     setMode('idle')
+  }
+
+  const startCall = () => {
+    session.start({ tracks: { microphone: { enabled: true } } }).catch(endCall)
   }
 
   return (

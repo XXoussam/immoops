@@ -1,4 +1,4 @@
-const { AccessToken, AgentDispatchClient } = require('livekit-server-sdk');
+const { AccessToken, RoomAgentDispatch, RoomConfiguration } = require('livekit-server-sdk');
 const { randomBytes } = require('crypto');
 
 exports.handler = async () => {
@@ -10,13 +10,11 @@ exports.handler = async () => {
     { identity: `user-${randomBytes(3).toString('hex')}`, name: 'Visiteur' }
   );
   token.addGrant({ roomJoin: true, room: roomName });
-
-  const dispatch = new AgentDispatchClient(
-    process.env.LIVEKIT_URL,
-    process.env.LIVEKIT_API_KEY,
-    process.env.LIVEKIT_API_SECRET
-  );
-  await dispatch.createDispatch(roomName, 'immoops-ines');
+  // Dispatch via the token, not AgentDispatchClient: the client SDK fetches tokens it
+  // never uses (prepareConnection, end), which would otherwise spawn orphan agent jobs.
+  token.roomConfig = new RoomConfiguration({
+    agents: [new RoomAgentDispatch({ agentName: 'immoops-ines' })],
+  });
 
   return {
     statusCode: 200,

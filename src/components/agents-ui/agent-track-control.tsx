@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 
 const selectVariants = cva(
   [
-    'rounded-l-none shadow-none pl-2 ',
+    'rounded-l-none shadow-none pl-1.5',
     'text-foreground hover:text-muted-foreground',
     'peer-data-[state=on]/track:bg-muted peer-data-[state=on]/track:hover:bg-foreground/10',
     'peer-data-[state=off]/track:text-destructive',
@@ -284,7 +284,7 @@ export function AgentTrackControl({
         pending={pending}
         disabled={disabled}
         onPressedChange={onPressedChange}
-        className="peer/track group/track focus:z-10 has-[.audiovisualizer]:w-auto has-[.audiovisualizer]:px-3 has-[~_button]:rounded-r-none has-[~_button]:border-r-0 has-[~_button]:pr-2 has-[~_button]:pl-3"
+        className="peer/track group/track focus:z-10 has-[.audiovisualizer]:w-auto has-[.audiovisualizer]:px-3 has-[~_button]:rounded-r-none has-[~_button]:border-r-0 has-[~_button]:pr-1 has-[~_button]:pl-3"
       >
         {audioTrack && (
           <AgentAudioVisualizerBar
