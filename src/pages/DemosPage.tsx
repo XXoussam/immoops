@@ -12,7 +12,7 @@ import { AgentChatTranscript } from '../components/agents-ui/agent-chat-transcri
 import { TooltipProvider } from '../components/ui/tooltip'
 import { CAL_URL } from '../lib/constants'
 
-const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? ''
+const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? '/.netlify/functions/token'
 const CHAT_URL = '/.netlify/functions/chat'
 
 const PANEL_STYLE: React.CSSProperties = {
