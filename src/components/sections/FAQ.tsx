@@ -14,20 +14,11 @@ export function FAQ() {
         ref={ref}
         className={`container-main transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
       >
-        {/* Big "FAQ" title — EliseAI style */}
-        <h2
-          className="text-center mb-14"
-          style={{
-            fontFamily: "'Inter Tight', Inter, Arial, sans-serif",
-            fontSize: 'clamp(5rem, 10vw, 9rem)',
-            fontWeight: 450,
-            lineHeight: 1.0,
-            letterSpacing: '-0.03em',
-            color: '#181819',
-          }}
-        >
-          FAQ
-        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-16">
+        <div>
+          <span className="label">[FAQ]</span>
+          <h2 className="h2">Questions fréquentes</h2>
+        </div>
 
         {/* Accordion */}
         <div className="w-full border-t border-gray-line">
@@ -64,6 +55,7 @@ export function FAQ() {
               </div>
             )
           })}
+        </div>
         </div>
       </div>
     </section>

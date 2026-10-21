@@ -2,6 +2,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { PlayCircle02Icon } from '@hugeicons/core-free-icons'
 import { CHANNELS } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SectionHeader } from '../ui/SectionHeader'
 
 export function ChannelsSection() {
   const { ref, isVisible } = useScrollReveal()
@@ -12,19 +13,17 @@ export function ChannelsSection() {
         className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
       >
         {/* Heading — contained */}
-        <div className="container-main text-center mb-14">
-          <span className="label-white">Communication multicanale</span>
-          <h2 className="h2-white mb-5">
-            Plusieurs canaux, un seul<br />assistant IA
-          </h2>
-          <p className="body1-white max-w-[520px] mx-auto">
-            Votre assistant IA gère les échanges sur tous les canaux : réponses instantanées,
-            relances automatiques et qualification des prospects.
-          </p>
+        <div className="container-main">
+          <SectionHeader
+            dark
+            label="Communication multicanale"
+            title={<>Plusieurs canaux, un seul<br />assistant IA</>}
+            description="Votre assistant IA gère les échanges sur tous les canaux : réponses instantanées, relances automatiques et qualification des prospects."
+          />
         </div>
 
         {/* Grid — wider, less padding so videos breathe */}
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="container-main">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-10">
             {CHANNELS.map((ch) => (
               <div key={ch.label}>
@@ -34,7 +33,6 @@ export function ChannelsSection() {
                   className="relative w-full overflow-hidden mb-5"
                   style={{
                     aspectRatio: '16 / 9',
-                    borderRadius: '8px',
                     background: 'linear-gradient(135deg, #ede8ff 0%, #ddd4ff 55%, #cfc4ff 100%)',
                   }}
                 >
@@ -70,7 +68,7 @@ export function ChannelsSection() {
                       {/* Placeholder */}
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center"
+                          className="w-12 h-12 flex items-center justify-center"
                           style={{ background: 'rgba(109,74,255,0.12)', border: '1px solid rgba(109,74,255,0.28)' }}
                         >
                           <HugeiconsIcon icon={PlayCircle02Icon} size={22} color="#6D4AFF" strokeWidth={1.5} />

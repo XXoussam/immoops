@@ -62,8 +62,10 @@ Accent colors (use sparingly): `#8B5CF6` electric purple, `#60A5FA` sky blue, `#
 
 ### Typography
 
-- **Headings (`h1`–`h4`):** Sora — `font-tight` alias in Tailwind
-- **Body / UI:** Inter — `font-sans` alias in Tailwind
+Style reference: galadrim.fr — geometric sans + mono labels, square geometry.
+
+- **Headings (`h1`–`h4`) and body:** Jost — `font-tight` / `font-sans` aliases in Tailwind (headings weight 500)
+- **Labels, buttons, tags:** Fira Mono, uppercase — `font-mono` alias
 
 ### CSS utility classes
 
@@ -71,17 +73,18 @@ Accent colors (use sparingly): `#8B5CF6` electric purple, `#60A5FA` sky blue, `#
 
 | Class | Purpose |
 |---|---|
-| `.h1` `.h2` `.h3` `.h4` | Headings (Sora, weight 500) |
+| `.h1` `.h2` `.h3` `.h4` | Headings (Jost, weight 500) |
 | `.h1-white` `.h2-white` | White variants for dark sections |
-| `.body1` `.body2` | Body text (Inter) |
+| `.body1` `.body2` | Body text (Jost) |
 | `.body1-white` | White body for dark sections |
 | `.label` `.label-muted` `.label-white` | Section eyebrow labels |
-| `.btn-primary` | Purple glass button — `#6D4AFF`, `border-radius: 16px` |
+| `.btn-primary` | Solid square purple button — `#6D4AFF`, 44px tall, mono uppercase |
 | `.btn-primary-dark` | White glass button for dark sections |
 | `.btn-outline` | Frosted light-bg outline button |
 | `.btn-outline-white` | Frosted dark-bg outline button |
-| `.card` `.card-white` `.card-dark` `.glass-card` | Liquid glass cards |
-| `.container-main` | Max-width `1200px`, centered, responsive padding |
+| `.card` `.card-white` `.card-dark` `.glass-card` | Square hairline cards with `+` corner marks |
+| `.tag` | Square mono uppercase chip (set bg/text colour per use) |
+| `.container-main` | The frame column: `min(1272px, 100% − 2×gutter)`, centered, inner padding `--frame-pad` |
 | `.section` `.section-sm` | Vertical section spacing |
 | `.reveal` | Scroll-reveal base state (paired with `.visible`) |
 
@@ -89,11 +92,15 @@ Accent colors (use sparingly): `#8B5CF6` electric purple, `#60A5FA` sky blue, `#
 
 ### Button radius
 
-All buttons use `border-radius: 16px` (`rounded-2xl`). Do not use `rounded-btn` (4px) for any user-facing button.
+All buttons, cards, tags and labels have square corners (`rounded-btn` / `rounded-card` / `rounded-pill` are all `0px`). Do not add `rounded-*` classes or inline `borderRadius` to them. Only true circles stay round (avatars, status dots, visualizer bars).
 
-### Cards — liquid glass
+### Cards — hairline frames
 
-All cards use `backdrop-filter: blur()` with semi-transparent backgrounds and an inset top-edge highlight. See `brand_name/brand.md` for full specs. Use `.card-white` on light sections, `.card-dark` on dark sections.
+Cards are flat, square, with a 1px hairline border and small `+` cross marks on each corner (drawn by the card classes' `::after`, so don't give cards `overflow-hidden` if you want the marks). See `brand_name/brand.md` for full specs. Use `.card-white` on light sections, `.card-dark` on dark sections.
+
+### Layout — one centred column (Galadrim)
+
+All content sits in a single centred frame column. `.page-frame` (wraps the whole app in `App.tsx`) draws dashed vertical rails at the column edges down the full page, plus `+` marks where sections meet. Section backgrounds may be full-bleed; content always goes inside `.container-main`. Start sections with `<SectionHeader label title description dark? />` (`src/components/ui/SectionHeader.tsx`): `[LABEL]` + title left, description right. Text is left-aligned inside the column; don't centre section headers.
 
 ### Icons
 

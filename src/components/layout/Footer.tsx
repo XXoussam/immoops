@@ -22,6 +22,12 @@ export function Footer() {
               saoudioussama13@gmail.com
             </a>
             <a
+              href="mailto:saoudi@immoops.com"
+              className="text-sm text-purple hover:text-purple-hover transition-colors block mb-2"
+            >
+              saoudi@immoops.com
+            </a>
+            <a
               href="https://wa.me/33753674929"
               target="_blank"
               rel="noreferrer"

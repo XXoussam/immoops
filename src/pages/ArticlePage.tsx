@@ -53,7 +53,7 @@ export function ArticlePage() {
             </button>
             <div className="flex items-center gap-3 mb-5">
               <span
-                className="text-xs font-sans font-medium px-3 py-1 rounded-pill"
+                className="tag"
                 style={{ background: `${color}18`, color, border: `1px solid ${color}30` }}
               >
                 {article.category}
@@ -97,7 +97,7 @@ export function ArticlePage() {
 
             {/* CTA */}
             <div
-              className="mt-16 rounded-2xl p-10 text-center"
+              className="mt-16 p-10 text-center"
               style={{ background: 'linear-gradient(135deg, #F7F5FF 0%, #EDE9FF 100%)', border: '1px solid rgba(109,74,255,0.12)' }}
             >
               <h3 className="h4 mb-3">Vous souhaitez déployer ces solutions ?</h3>

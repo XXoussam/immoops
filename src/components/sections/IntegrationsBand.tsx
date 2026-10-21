@@ -44,7 +44,7 @@ export function IntegrationsBand() {
             <div key={i} className="flex-shrink-0 flex items-center gap-6 px-6">
               <div className="flex items-center gap-2">
                 <span
-                  className="inline-block rounded-full flex-shrink-0"
+                  className="inline-block flex-shrink-0"
                   style={{
                     width: 6,
                     height: 6,

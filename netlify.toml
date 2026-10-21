@@ -9,7 +9,9 @@
   targetPort = 5173
   framework = "vite"
 
+# Prerendered routes are served as real files (dist/<route>/index.html).
+# Anything else falls back to the noindex SPA shell instead of the homepage.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/app.html"
   status = 200

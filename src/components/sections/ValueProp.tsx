@@ -7,7 +7,7 @@ export function ValueProp() {
       <div className="container-main">
         <div
           ref={ref}
-          className={`text-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+          className={`max-w-[1040px] transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
           <p className="h2">
             <span

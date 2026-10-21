@@ -43,7 +43,7 @@ export function VideoPlaceholder() {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-5">
             {/* Play button */}
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
+              className="w-16 h-16 flex items-center justify-center"
               style={{ background: 'rgba(109,74,255,0.18)', border: '1px solid rgba(109,74,255,0.35)' }}
             >
               <HugeiconsIcon icon={PlayCircle02Icon} size={24} color="#ad88fc" strokeWidth={1.5} />

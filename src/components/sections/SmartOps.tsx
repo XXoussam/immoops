@@ -1,6 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { SMART_OPS } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SectionHeader } from '../ui/SectionHeader'
 
 export function SmartOps() {
   const { ref, isVisible } = useScrollReveal()
@@ -11,16 +12,13 @@ export function SmartOps() {
         className={`container-main transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
       >
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="label-white">Excellence pilotée par l'IA</span>
-          <h2 className="h2-white mb-5">
-            Des opérations plus intelligentes,<br />propulsées par l'IA
-          </h2>
-          <p className="body2 mx-auto" style={{ color: 'rgba(255,255,255,0.55)', maxWidth: 520 }}>
-            Révolutionnez vos workflows, améliorez la communication
-            et délivrez des résultats exceptionnels.
-          </p>
-        </div>
+        <SectionHeader
+          dark
+          className="mb-16"
+          label="Excellence pilotée par l'IA"
+          title={<>Des opérations plus intelligentes,<br />propulsées par l'IA</>}
+          description="Révolutionnez vos workflows, améliorez la communication et délivrez des résultats exceptionnels."
+        />
 
         {/* Divider grid — EliseAI style */}
         <div

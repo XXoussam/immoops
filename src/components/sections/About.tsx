@@ -8,21 +8,25 @@ export function About() {
         ref={ref}
         className={`container-main transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
       >
-        <div className="max-w-2xl mx-auto">
-          {/* Text */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-8 lg:gap-16">
           <div>
-            <span className="label">À propos</span>
-            <h2 className="h2 mb-5">
+            <span className="label">[À propos]</span>
+            <h2 className="h2">
               Votre partenaire IA<br />en immobilier
             </h2>
+          </div>
+          {/* Text */}
+          <div className="lg:pt-8">
             <p className="body1 mb-4">
-              Je suis consultant spécialisé en intelligence artificielle pour les agences immobilières.
-              Mon objectif : vous faire gagner du temps sur les tâches répétitives pour que vous
-              puissiez vous concentrer sur ce qui compte : conclure des ventes et satisfaire vos clients.
+              ImmoOps AI conçoit et déploie des agents IA dédiés aux agences immobilières.
+              Réponse aux prospects, relances, qualification, prise de rendez-vous : nous automatisons
+              les tâches répétitives pour que vos équipes se consacrent aux mandats, aux visites
+              et à la relation client.
             </p>
             <p className="body1 mb-8">
-              De l'automatisation des workflows à la mise en place d'agents vocaux, j'interviens
-              de bout en bout pour livrer des solutions concrètes, mesurables et adaptées à votre réalité terrain.
+              De l'audit de vos processus à l'intégration dans vos outils, nous pilotons chaque projet
+              de bout en bout. Chaque solution est construite sur mesure, suivie sur des indicateurs
+              concrets et optimisée après la mise en production.
             </p>
 
             {/* Quote */}
@@ -40,7 +44,7 @@ export function About() {
               {['Expertise terrain', 'Solutions sur-mesure', 'Résultats mesurables'].map(tag => (
                 <span
                   key={tag}
-                  className="text-xs font-sans px-3 py-1.5 rounded-pill bg-purple-pale text-purple"
+                  className="tag bg-purple-pale text-purple"
                   style={{ border: '1px solid rgba(109,74,255,0.2)' }}
                 >
                   {tag}

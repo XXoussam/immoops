@@ -84,7 +84,7 @@ export const HOW_IT_WORKS_STEPS: Step[] = [
   {
     number: '02',
     title: 'Conception de la solution',
-    description: 'Je conçois une architecture IA sur mesure, adaptée à votre agence et à vos outils existants.',
+    description: 'Nous concevons une architecture IA sur mesure, adaptée à votre agence et à vos outils existants.',
   },
   {
     number: '03',
@@ -94,7 +94,7 @@ export const HOW_IT_WORKS_STEPS: Step[] = [
   {
     number: '04',
     title: 'Formation & suivi',
-    description: 'Votre équipe est formée, et je reste disponible pour mesurer et optimiser en continu.',
+    description: 'Votre équipe est formée, et nous restons à vos côtés pour mesurer et optimiser en continu.',
   },
 ]
 
@@ -110,7 +110,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     question: 'Dois-je avoir des compétences techniques ?',
-    answer: 'Non. Je m\'occupe de tout, de la conception à l\'intégration. Vous utilisez les outils livrés, pas le code qui les fait fonctionner.',
+    answer: 'Non. Nous prenons tout en charge, de la conception à l\'intégration. Vous utilisez les outils livrés, pas le code qui les fait fonctionner.',
   },
   {
     question: 'Combien de temps faut-il pour voir des résultats ?',
@@ -122,7 +122,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     question: 'Quel est le tarif moyen ?',
-    answer: 'Chaque projet est unique. Contactez-moi pour un audit gratuit et un devis personnalisé, sans engagement.',
+    answer: 'Chaque projet est unique. Contactez-nous pour un audit gratuit et un devis personnalisé, sans engagement.',
   },
   {
     question: 'Assurez-vous un suivi après livraison ?',
@@ -228,6 +228,19 @@ export const TESTIMONIALS: Testimonial[] = [
 ]
 
 export const LOGOS = ['Century 21', 'ERA Immobilier', 'Guy Hoquet', 'Laforêt', 'Orpi', 'IAD France']
+
+export interface HeroSlide {
+  src: string
+  alt: string
+  position?: string
+}
+
+/** Hero photo slideshow (right half of the hero), shown top to bottom */
+export const HERO_SLIDES: HeroSlide[] = [
+  { src: '/hero-1.webp', alt: "L'équipe en séance de travail autour d'une grande table", position: '50% 45%' },
+  { src: '/hero-2.webp', alt: "Deux membres de l'équipe travaillent face à face sur leurs ordinateurs", position: '72% 45%' },
+  { src: '/hero-3.webp', alt: "Un membre de l'équipe concentré à son poste de travail", position: '45% 50%' },
+]
 
 export const CAL_URL = 'https://calendly.com/immoops/discovery_call'
 

@@ -16,14 +16,20 @@ const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? '/.netlify/functions
 const CHAT_URL = '/.netlify/functions/chat'
 
 const PANEL_STYLE: React.CSSProperties = {
-  borderRadius: 20,
+  height: 480,
+  position: 'relative',
+  border: '1px solid transparent',
+  transition: 'background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
+}
+
+/* Frame only for chat mode — the idle/call visual floats freely */
+const CHAT_FRAME_STYLE: React.CSSProperties = {
+  borderRadius: 0,
   background: 'rgba(255,255,255,0.04)',
   backdropFilter: 'blur(32px)',
   WebkitBackdropFilter: 'blur(32px)',
-  border: '1px solid rgba(255,255,255,0.09)',
+  borderColor: 'rgba(255,255,255,0.09)',
   boxShadow: '0 8px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
-  height: 480,
-  position: 'relative',
 }
 
 /* ─── Types ── */
@@ -76,16 +82,16 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
     <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px 10px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(109,74,255,0.25)', border: '1px solid rgba(109,74,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'rgba(180,160,255,0.9)', fontWeight: 600, fontFamily: 'Sora, sans-serif' }}>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(109,74,255,0.25)', border: '1px solid rgba(109,74,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'rgba(180,160,255,0.9)', fontWeight: 600, fontFamily: 'Jost, sans-serif' }}>
           S
         </div>
         <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.9)', fontFamily: 'Sora, sans-serif', lineHeight: 1 }}>Sophie</p>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontFamily: 'Inter, sans-serif', marginTop: 2 }}>Conseillère ImmoOps · IA</p>
+          <p style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.9)', fontFamily: 'Jost, sans-serif', lineHeight: 1 }}>Sophie</p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontFamily: 'Jost, sans-serif', marginTop: 2 }}>Conseillère ImmoOps · IA</p>
         </div>
         <button
           onClick={onBack}
-          style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.08em', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+          style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Fira Mono', monospace", fontWeight: 700, letterSpacing: '0.08em', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
         >
           ← RETOUR
         </button>
@@ -98,13 +104,13 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
             <div style={{
               maxWidth: '80%',
               padding: '8px 12px',
-              borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+              borderRadius: 0,
               background: m.role === 'user' ? 'rgba(109,74,255,0.22)' : 'rgba(255,255,255,0.06)',
               border: `1px solid ${m.role === 'user' ? 'rgba(109,74,255,0.3)' : 'rgba(255,255,255,0.08)'}`,
               fontSize: 13,
               lineHeight: 1.55,
               color: m.role === 'user' ? 'rgba(220,210,255,0.9)' : 'rgba(220,225,235,0.85)',
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Jost, sans-serif',
             }}>
               {m.role === 'assistant' ? (
                 <ReactMarkdown
@@ -123,7 +129,7 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
         ))}
         {loading && (
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-            <div style={{ padding: '8px 14px', borderRadius: '14px 14px 14px 4px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ padding: '8px 14px', borderRadius: 0, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <span style={{ display: 'inline-flex', gap: 4 }}>
                 {[0, 1, 2].map(i => (
                   <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(180,160,255,0.6)', animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }} />
@@ -147,11 +153,11 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
             resize: 'none',
             background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 12,
+            borderRadius: 0,
             padding: '8px 12px',
             fontSize: 13,
             color: 'rgba(255,255,255,0.85)',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Jost, sans-serif',
             outline: 'none',
             lineHeight: 1.5,
           }}
@@ -163,7 +169,7 @@ function ChatPanel({ onBack }: { onBack: () => void }) {
             flexShrink: 0,
             width: 36,
             height: 36,
-            borderRadius: '50%',
+            borderRadius: 0,
             background: !input.trim() || loading ? 'rgba(109,74,255,0.15)' : 'rgba(109,74,255,0.7)',
             border: '1px solid rgba(109,74,255,0.3)',
             display: 'flex',
@@ -268,7 +274,7 @@ function DemoPanel() {
   }
 
   return (
-    <div className="dark" style={PANEL_STYLE}>
+    <div className="dark" style={mode === 'chat' ? { ...PANEL_STYLE, ...CHAT_FRAME_STYLE } : PANEL_STYLE}>
       {/* ── Chat mode ── */}
       {mode === 'chat' && (
         <ChatPanel onBack={() => setMode('idle')} />
@@ -291,19 +297,19 @@ function DemoPanel() {
               left: 14,
               right: 14,
               padding: '10px 14px',
-              borderRadius: 12,
+              borderRadius: 0,
               background: 'rgba(109,74,255,0.16)',
               border: '1px solid rgba(109,74,255,0.3)',
               color: 'rgba(220,210,255,0.95)',
               fontSize: 12,
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Jost, sans-serif',
               textAlign: 'center',
               zIndex: 1,
             }}>
               Démo limitée à 30 secondes. Réservez un créneau pour un appel complet.
             </div>
           )}
-          <div style={{ position: 'absolute', inset: 0, bottom: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="float-soft" style={{ position: 'absolute', inset: 0, bottom: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AgentAudioVisualizerAura
               state={isConnecting ? 'connecting' : 'idle'}
               color="#6D4AFF"
@@ -318,8 +324,8 @@ function DemoPanel() {
               disabled={isConnecting}
               style={{
                 padding: '8px 28px',
-                borderRadius: 999,
-                fontFamily: 'monospace',
+                borderRadius: 0,
+                fontFamily: "'Fira Mono', monospace",
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: '0.1em',
@@ -336,8 +342,8 @@ function DemoPanel() {
               onClick={() => setMode('chat')}
               style={{
                 padding: '8px 28px',
-                borderRadius: 999,
-                fontFamily: 'monospace',
+                borderRadius: 0,
+                fontFamily: "'Fira Mono', monospace",
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: '0.1em',
@@ -391,7 +397,7 @@ function TourSection() {
           style={{
             width: '100%',
             height: 500,
-            borderRadius: 20,
+            borderRadius: 0,
             overflow: 'hidden',
             border: '1px solid rgba(255,255,255,0.09)',
             boxShadow: '0 8px 64px rgba(0,0,0,0.45)',

@@ -59,9 +59,9 @@ export default {
         },
       },
       fontFamily: {
-        sans:    ['Inter', 'Arial', 'sans-serif'],
-        tight:   ['Sora', 'Inter', 'sans-serif'],
-        mono:    ['"IBM Plex Mono"', 'monospace'],
+        sans:    ['Jost', 'Arial', 'sans-serif'],
+        tight:   ['Jost', 'Arial', 'sans-serif'],
+        mono:    ['"Fira Mono"', 'monospace'],
       },
       fontSize: {
         'h1': ['5.5rem',  { lineHeight: '1.05', letterSpacing: '-0.01em' }],
@@ -80,9 +80,10 @@ export default {
         'container': '1200px',
       },
       borderRadius: {
-        'btn':  '16px',
-        'card': '16px',
-        'pill': '6.25rem',
+        /* Galadrim-style geometry: square corners everywhere */
+        'btn':  '0px',
+        'card': '0px',
+        'pill': '0px',
       },
       boxShadow: {
         'card':  '0 2px 12px rgba(0,0,0,0.06)',

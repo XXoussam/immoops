@@ -38,9 +38,9 @@ export function BlogPage() {
                 className="card-white flex flex-col group"
                 style={{ textDecoration: 'none' }}
               >
-                <div className="p-7 pb-0 flex items-center justify-between mb-4">
+                <div className="p-7 pb-0 flex items-center justify-between gap-3 mb-4">
                   <span
-                    className="text-xs font-sans font-medium px-3 py-1 rounded-pill"
+                    className="tag"
                     style={{
                       background: `${CATEGORY_COLORS[post.category] ?? '#6D4AFF'}18`,
                       color: CATEGORY_COLORS[post.category] ?? '#6D4AFF',
@@ -49,7 +49,7 @@ export function BlogPage() {
                   >
                     {post.category}
                   </span>
-                  <span className="text-xs text-ink-body font-sans">{post.readTime} de lecture</span>
+                  <span className="text-xs text-ink-body font-sans whitespace-nowrap shrink-0">{post.readTime} de lecture</span>
                 </div>
 
                 <div className="p-7 pt-3 flex flex-col flex-1">
@@ -76,7 +76,7 @@ export function BlogPage() {
         {/* Newsletter CTA */}
         <section className="pb-24 px-5">
           <div
-            className="w-full max-w-[700px] mx-auto text-center rounded-2xl p-12"
+            className="w-full max-w-[700px] mx-auto text-center rounded-none p-12"
             style={{ background: 'linear-gradient(135deg, #F7F5FF 0%, #EDE9FF 100%)', border: '1px solid rgba(109,74,255,0.12)' }}
           >
             <h2 className="h3 mb-3">Restez informé</h2>

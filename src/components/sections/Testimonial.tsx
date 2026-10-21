@@ -23,7 +23,7 @@ export function Testimonial() {
           {/* Arrow — left */}
           <button
             onClick={prev}
-            className="flex-shrink-0 flex items-center justify-center rounded-full transition-colors duration-200"
+            className="flex-shrink-0 flex items-center justify-center transition-colors duration-200"
             style={{
               width: 44, height: 44,
               background: 'rgba(255,255,255,0.07)',
@@ -77,7 +77,7 @@ export function Testimonial() {
                 <button
                   key={i}
                   onClick={() => setActive(i)}
-                  className="rounded-full transition-all duration-300"
+                  className="transition-all duration-300"
                   style={{
                     width: i === active ? 22 : 7,
                     height: 7,
@@ -91,7 +91,7 @@ export function Testimonial() {
           {/* Arrow — right */}
           <button
             onClick={next}
-            className="flex-shrink-0 flex items-center justify-center rounded-full transition-colors duration-200"
+            className="flex-shrink-0 flex items-center justify-center transition-colors duration-200"
             style={{
               width: 44, height: 44,
               background: 'rgba(255,255,255,0.07)',

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
 import { CAL_URL } from '../lib/constants'
@@ -12,7 +12,8 @@ const LABELS: Record<string, string> = {
 
 export function ComingSoonPage() {
   const navigate = useNavigate()
-  const label = LABELS[window.location.pathname] ?? 'Cette page'
+  const { pathname } = useLocation()
+  const label = LABELS[pathname] ?? 'Cette page'
 
   return (
     <>

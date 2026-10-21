@@ -52,32 +52,36 @@ border: 1px solid rgba(255, 255, 255, 0.18);
 
 ## Typography
 
-**Headings:** Sora — modern, AI-focused, premium  
-**Body:** Inter — clean, readable, trusted
+Style reference: [galadrim.fr](https://galadrim.fr) — geometric sans with mono labels.
+
+**Headings + body:** Jost — geometric, Futura-like (headings weight 500, tight tracking)  
+**Labels, buttons, tags:** Fira Mono — uppercase, 11–12px, letter-spacing 0.04em
 
 ```css
-font-family: 'Sora', sans-serif;   /* h1–h4 */
-font-family: 'Inter', sans-serif;  /* body, labels, UI */
+font-family: 'Jost', sans-serif;       /* h1–h4, body */
+font-family: 'Fira Mono', monospace;   /* eyebrow labels, buttons, tags */
 ```
 
 Load from Google Fonts:
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 ```
 
 ---
 
 ## Buttons
 
+Square, solid, mono uppercase. Height 44px, padding 0 20px, `border-radius: 0`.
+
 ### Primary
 
 ```css
 background: #6D4AFF;
 color: #FFFFFF;
-border-radius: 16px;
-padding: 10px 20px;
-font-family: Inter;
-font-weight: 500;
+border-radius: 0;
+font: 500 12px 'Fira Mono', monospace;
+text-transform: uppercase;
+letter-spacing: 0.04em;
 ```
 
 ### Hover
@@ -90,45 +94,39 @@ box-shadow: 0 4px 20px rgba(109, 74, 255, 0.35);
 ### Outline (light bg)
 
 ```css
-background: rgba(255, 255, 255, 0.55);
-backdrop-filter: blur(8px);
-border: 1px solid #E8EAF0;
-color: #0F1117;
-border-radius: 16px;
+background: transparent;
+border: 1px solid rgba(15, 17, 23, 0.22);
+color: #0F1117;   /* hover: border + text #6D4AFF */
 ```
 
 ### Outline (dark bg)
 
 ```css
-background: rgba(255, 255, 255, 0.08);
-backdrop-filter: blur(8px);
-border: 1px solid rgba(255, 255, 255, 0.18);
-color: #FFFFFF;
-border-radius: 16px;
+background: transparent;
+border: 1px solid rgba(255, 255, 255, 0.3);
+color: #FFFFFF;   /* hover: background rgba(255,255,255,0.08) */
 ```
 
 ---
 
 ## Card System
 
+Flat, square, 1px hairline border, with small `+` cross marks centred on each corner (purple at 55% on light, `#C084FC` at 60% on dark).
+
 ### Light card (white sections)
 
 ```css
-background: rgba(255, 255, 255, 0.72);
-backdrop-filter: blur(20px) saturate(160%);
-border: 1px solid rgba(255, 255, 255, 0.85);
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 1);
-border-radius: 16px;
+background: #FFFFFF;
+border: 1px solid #E8EAF0;   /* hover: rgba(109, 74, 255, 0.45) */
+border-radius: 0;
 ```
 
 ### Dark card (dark sections)
 
 ```css
-background: rgba(255, 255, 255, 0.07);
-backdrop-filter: blur(24px) saturate(180%);
-border: 1px solid rgba(255, 255, 255, 0.12);
-box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10);
-border-radius: 16px;
+background: rgba(255, 255, 255, 0.04);
+border: 1px solid rgba(255, 255, 255, 0.10);   /* hover: rgba(192, 132, 252, 0.45) */
+border-radius: 0;
 ```
 
 ---
@@ -136,7 +134,7 @@ border-radius: 16px;
 ## Implementation Notes
 
 - Dark sections use `#0F1117` as background (replaces `#0f042d`)
-- Keep glass/blur effects across all cards and buttons (Apple liquid glass)
-- Never use `rounded-btn` (4px) — all interactive elements use `rounded-2xl` (16px)
+- Square corners everywhere (buttons, cards, tags, labels); only true circles (avatars, dots) stay round
+- Labels, buttons and tags are set in Fira Mono uppercase
 - Purple glow shadows: `0 4px 20px rgba(109, 74, 255, 0.35)`
 - Neutral shadows: `0 2px 12px rgba(0, 0, 0, 0.07)`

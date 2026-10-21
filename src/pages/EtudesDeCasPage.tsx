@@ -60,9 +60,9 @@ export function EtudesDeCasPage() {
             {CASES.map((c, i) => (
               <article key={c.tag} className="card-white overflow-hidden">
                 {/* Header */}
-                <div className="p-8 pb-0 flex items-center justify-between mb-6">
+                <div className="p-8 pb-0 flex items-center justify-between gap-3 mb-6">
                   <span
-                    className="text-xs font-sans font-medium px-3 py-1.5 rounded-pill"
+                    className="tag"
                     style={{
                       background: `${c.tagColor}18`,
                       color: c.tagColor,
@@ -75,7 +75,7 @@ export function EtudesDeCasPage() {
 
                 {/* Results bar */}
                 <div
-                  className="mx-8 rounded-2xl p-6 mb-8 grid grid-cols-3 gap-4 text-center"
+                  className="mx-8 p-6 mb-8 grid grid-cols-3 gap-4 text-center"
                   style={{ background: 'linear-gradient(135deg, #F7F5FF 0%, #EDE9FF 100%)', border: '1px solid rgba(109,74,255,0.10)' }}
                 >
                   {c.results.map(r => (
@@ -104,7 +104,7 @@ export function EtudesDeCasPage() {
         {/* CTA */}
         <section className="pb-24 px-5">
           <div
-            className="w-full max-w-[700px] mx-auto text-center rounded-2xl p-12"
+            className="w-full max-w-[700px] mx-auto text-center p-12"
             style={{ background: 'linear-gradient(135deg, #F7F5FF 0%, #EDE9FF 100%)', border: '1px solid rgba(109,74,255,0.12)' }}
           >
             <h2 className="h3 mb-3">Votre agence, prochaine étude de cas ?</h2>
