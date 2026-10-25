@@ -1,4 +1,6 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { LeadPipeline } from './LeadPipeline'
+import { LEAD_PIPELINE } from '../../lib/constants'
 
 export function ValueProp() {
   const { ref, isVisible } = useScrollReveal()
@@ -24,6 +26,10 @@ export function ValueProp() {
             pendant que vous vous concentrez sur la vente.
           </p>
         </div>
+
+        {/* Lead pipeline illustration — with vs without AI */}
+        <p className="body2 mt-10 mb-6 max-w-[620px]">{LEAD_PIPELINE.intro}</p>
+        <LeadPipeline />
       </div>
     </section>
   )

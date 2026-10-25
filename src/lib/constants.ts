@@ -299,3 +299,41 @@ export const SMART_OPS = [
   { Icon: BarChartIcon, title: 'Plateforme centralisée', description: 'Gérez toutes vos communications et opérations depuis une interface unifiée.' },
   { Icon: Clock01Icon, title: 'Disponibilité 24/7', description: "Vos agents IA ne dorment jamais. Vos prospects reçoivent une réponse à n'importe quelle heure." },
 ]
+
+/* ── Lead pipeline illustration (homepage, under the value statement) ── */
+export const LEAD_PIPELINE = {
+  withLabel: 'Avec IA',
+  withoutLabel: 'Sans IA',
+  intro: "Déplacez le curseur : à gauche, l'IA capte et relance chaque prospect. Au-delà de la ligne, sans IA, la plupart décrochent en route.",
+  legend: { visitor: 'Nouveau visiteur', active: 'Lead actif', lost: 'Lead perdu' },
+  mandate: 'MANDAT',
+  counter: (signed: number, total: number) => `${signed} signés · ${total} leads`,
+  ariaSlider: "Comparer le parcours des leads sans IA et avec IA",
+  ariaCanvas: "Animation : des leads traversent quatre étapes de gauche à droite. Avec l'IA ils deviennent violets et atteignent le mandat signé ; au-delà de la ligne, sans IA, ils deviennent sombres, affichent la raison de leur perte et disparaissent.",
+  stages: [['01', 'CAPTER', 0.22], ['02', 'RELANCER', 0.42], ['03', 'CONVAINCRE', 0.62], ['04', 'MESURER', 0.82]] as [string, string, number][],
+  chipsWith: [
+    ['Trafic du site converti en leads', 'Trafic → leads'],
+    ['Leads relancés automatiquement', 'Relance auto'],
+    ['Estimation rédigée en minutes', 'Estimation rapide'],
+    ['Conversion mesurée 24h/24', 'Mesuré 24h/24'],
+  ] as [string, string][],
+  chipsWithout: [
+    ['Les visiteurs repartent sans trace', 'Visiteurs perdus'],
+    ['Leads oubliés après quelques jours', 'Leads oubliés'],
+    ['Devis envoyé une semaine trop tard', 'Devis en retard'],
+    ['Résultats jamais mesurés', 'Non mesuré'],
+  ] as [string, string][],
+  names: ['Charlotte', 'Céline', 'Aurélie', 'Pauline', 'Manon', 'Camille', 'Justine', 'Margaux', 'Sophie', 'Amélie', 'Élodie', 'Inès', 'Sarah', 'Élise', 'Noémie', 'Clémence', 'Julie', 'Léa', 'Chloé', 'Emma', 'Laura', 'Mathilde', 'Lucie', 'Anaïs', 'Marion', 'Claire', 'Agathe', 'Héloïse'],
+  reasons: [
+    'prix annoncé sans justification',
+    'second rendez-vous jamais fixé',
+    'aucune relance après le premier appel',
+    "estimation envoyée 9 jours plus tard",
+    'jamais rappelée',
+    'demande de visite restée sans réponse',
+    'devis arrivé après un concurrent',
+    "aucun rappel avant l'échéance",
+  ],
+  aiCapture: { label: 'Capture IA', items: ['visiteuse transformée en lead', 'formulaire rempli pour elle', 'demande de rappel enregistrée'] },
+  aiFollow: { label: 'Relance IA', items: ['relance envoyée automatiquement', 'visite planifiée pour elle', 'estimation envoyée en 10 min', 'second rendez-vous fixé'] },
+}
