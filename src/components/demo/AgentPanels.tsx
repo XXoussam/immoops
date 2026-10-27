@@ -1,9 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { useVoiceAssistant, useSessionMessages } from '@livekit/components-react'
-import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
-import { AgentControlBar } from '../agents-ui/agent-control-bar'
-import { AgentChatTranscript } from '../agents-ui/agent-chat-transcript'
 import { AiMessageBubble } from '../ui/message-bubble'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowUp02Icon, Calendar03Icon, Cancel01Icon, LinkSquare02Icon, MinusSignIcon, RefreshIcon } from '@hugeicons/core-free-icons'
@@ -204,43 +200,6 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
           </button>
         </div>
       </form>
-    </div>
-  )
-}
-
-/* ─── Connected voice panel ── */
-export function ConnectedPanel({ onDisconnect }: { onDisconnect: () => void }) {
-  const { state, audioTrack } = useVoiceAssistant()
-  const { messages } = useSessionMessages()
-
-  return (
-    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 20px' }}>
-      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 280 }}>
-        <AgentAudioVisualizerAura
-          state={state}
-          audioTrack={audioTrack}
-          color="#6D4AFF"
-          themeMode="dark"
-          size="lg"
-          className={
-            state === 'speaking' || state === 'listening'
-              ? '!h-[260px] !w-[260px]'
-              : '!h-[220px] !w-[220px]'
-          }
-        />
-      </div>
-      <div style={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', marginBottom: 8, overflow: 'hidden' }}>
-        <AgentChatTranscript agentState={state} messages={messages.slice(-2)} />
-      </div>
-      <div className="demo-bar" style={{ width: '100%', flexShrink: 0 }}>
-        <AgentControlBar
-          variant="livekit"
-          isConnected={true}
-          onDisconnect={onDisconnect}
-          controls={{ leave: true, microphone: true, screenShare: false, camera: false, chat: false }}
-          className="!bg-white/[0.08] !border-white/20 !p-1.5"
-        />
-      </div>
     </div>
   )
 }

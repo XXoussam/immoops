@@ -1,4 +1,4 @@
-import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon } from '@hugeicons/core-free-icons'
+import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon, Mail01Icon, Call02Icon, WhatsappIcon, InstagramIcon, Message01Icon, Globe02Icon, UserIcon, UserMultipleIcon, PlugSocketIcon } from '@hugeicons/core-free-icons'
 import { N8nIcon } from './icons'
 
 export const NAV_LINKS = [
@@ -49,10 +49,10 @@ export const SERVICES: Service[] = [
 ]
 
 export interface Demo {
+  agent: 'chat' | 'phone'
   channel: string
   title: string
   description: string
-  href: string
 }
 
 export const DEMOS: Demo[] = [
@@ -60,13 +60,13 @@ export const DEMOS: Demo[] = [
     channel: 'Chatbot IA',
     title: "Qualification d'un acheteur entrant",
     description: "Un prospect arrive sur votre site à 23h. Le chatbot identifie son budget, sa zone et son délai de projet — et qualifie le lead avant l'ouverture.",
-    href: '/demos/qualification-acheteur',
+    agent: 'chat',
   },
   {
     channel: 'Agent vocal',
     title: 'Réponse automatique hors horaires',
     description: "Un appel entrant après 19h. L'agent vocal répond naturellement, collecte les informations clés et planifie un rappel au bon agent.",
-    href: '/demos/reponse-hors-horaires',
+    agent: 'phone',
   },
 ]
 
@@ -265,7 +265,7 @@ export const AGENT_BUBBLES = {
   close: 'Fermer',
 }
 
-/* Sophie chat window (floating chat bubble + /demos) */
+/* Sophie chat window (floating chat bubble) */
 export const CHAT_WIDGET = {
   name: 'Sophie',
   status: 'En ligne',
@@ -385,4 +385,205 @@ export const LEAD_PIPELINE = {
   ],
   aiCapture: { label: 'Capture IA', items: ['visiteuse transformée en lead', 'formulaire rempli pour elle', 'demande de rappel enregistrée'] },
   aiFollow: { label: 'Relance IA', items: ['relance envoyée automatiquement', 'visite planifiée pour elle', 'estimation envoyée en 10 min', 'second rendez-vous fixé'] },
+}
+
+/* ─── /demos: where the agents work, and how it all lands in one CRM ─── */
+
+export type ChannelKey = 'email' | 'phone' | 'whatsapp' | 'social' | 'sms' | 'web'
+
+export interface AgentChannel {
+  key: ChannelKey
+  label: string
+  Icon: object
+  short: string
+  does: string[]
+  /** example exchange: `client` is the prospect, `agent` the AI */
+  exchange: { from: 'client' | 'agent'; text: string }[]
+  /** fields the exchange writes to the CRM */
+  crm: { field: string; value: string }[]
+}
+
+export const AGENT_CHANNELS: AgentChannel[] = [
+  {
+    key: 'email',
+    label: 'Email',
+    Icon: Mail01Icon,
+    short: 'Demandes des portails et boîte de l\'agence',
+    does: [
+      'Répond aux demandes SeLoger, Leboncoin et du site en moins de 2 minutes',
+      'Pose les questions de qualification qui manquent',
+      'Relance automatiquement sans réponse sous 48 h',
+    ],
+    exchange: [
+      { from: 'client', text: 'Bonjour, le T3 rue Garibaldi est-il toujours disponible ?' },
+      { from: 'agent', text: 'Bonjour Thomas, oui. Pour vous proposer une visite : quel est votre budget et votre délai d\'achat ?' },
+    ],
+    crm: [
+      { field: 'Source', value: 'Email · SeLoger' },
+      { field: 'Bien', value: 'T3 rue Garibaldi' },
+      { field: 'Statut', value: 'À qualifier' },
+    ],
+  },
+  {
+    key: 'phone',
+    label: 'Téléphone',
+    Icon: Call02Icon,
+    short: 'Appels entrants, 24 h/24',
+    does: [
+      'Décroche dès la première sonnerie, même le soir et le week-end',
+      'Qualifie acheteur ou vendeur à la voix',
+      'Réserve la visite ou le rappel dans le bon agenda',
+    ],
+    exchange: [
+      { from: 'client', text: 'Bonjour, j\'appelle pour faire estimer mon appartement.' },
+      { from: 'agent', text: 'Avec plaisir. Quelle est l\'adresse et la surface du bien ? Je peux vous proposer un rendez-vous mardi à 14 h.' },
+    ],
+    crm: [
+      { field: 'Type', value: 'Vendeur' },
+      { field: 'Demande', value: 'Estimation' },
+      { field: 'Rendez-vous', value: 'Mardi 14 h' },
+    ],
+  },
+  {
+    key: 'whatsapp',
+    label: 'WhatsApp',
+    Icon: WhatsappIcon,
+    short: 'Le canal préféré de vos clients',
+    does: [
+      'Envoie fiches de biens, photos et plans en un message',
+      'Confirme et rappelle les visites la veille',
+      'Passe la main à un conseiller dès que le client le demande',
+    ],
+    exchange: [
+      { from: 'client', text: 'Les charges sont de combien ?' },
+      { from: 'agent', text: '180 € par mois, chauffage compris. Je vous envoie la fiche complète avec les plans 📄' },
+    ],
+    crm: [
+      { field: 'Canal préféré', value: 'WhatsApp' },
+      { field: 'Documents', value: 'Fiche + plans envoyés' },
+      { field: 'Intérêt', value: 'Élevé' },
+    ],
+  },
+  {
+    key: 'social',
+    label: 'Réseaux sociaux',
+    Icon: InstagramIcon,
+    short: 'Messages Instagram et Facebook',
+    does: [
+      'Répond aux messages privés et aux commentaires sous vos annonces',
+      'Transforme un simple « intéressé » en lead qualifié',
+      'Propose directement une visite ou un appel',
+    ],
+    exchange: [
+      { from: 'client', text: 'Elle est toujours dispo la maison à Caluire ?' },
+      { from: 'agent', text: 'Oui ! Souhaitez-vous la visiter ? Je peux vous proposer samedi à 10 h ou 11 h.' },
+    ],
+    crm: [
+      { field: 'Source', value: 'Instagram' },
+      { field: 'Bien', value: 'Maison Caluire' },
+      { field: 'Statut', value: 'Visite proposée' },
+    ],
+  },
+  {
+    key: 'sms',
+    label: 'SMS',
+    Icon: Message01Icon,
+    short: 'Rappels et relances',
+    does: [
+      'Rappelle chaque rendez-vous la veille',
+      'Relance les leads froids au bon moment',
+      'Fonctionne sans application, sur tous les téléphones',
+    ],
+    exchange: [
+      { from: 'agent', text: 'Rappel : visite demain à 10 h, 12 rue Garibaldi. Répondez 1 pour confirmer, 2 pour décaler.' },
+      { from: 'client', text: '1' },
+    ],
+    crm: [
+      { field: 'Visite', value: 'Confirmée' },
+      { field: 'Relance', value: 'Aucune nécessaire' },
+    ],
+  },
+  {
+    key: 'web',
+    label: 'Site web',
+    Icon: Globe02Icon,
+    short: 'Chat sur votre site',
+    does: [
+      'Répond aux visiteurs à toute heure, sans formulaire',
+      'Propose les biens qui correspondent aux critères',
+      'Recueille les coordonnées avec le consentement du visiteur',
+    ],
+    exchange: [
+      { from: 'client', text: 'Je cherche un T3 à Lyon 6e, budget 450 000 €.' },
+      { from: 'agent', text: 'J\'ai 3 biens qui correspondent. Je vous les envoie par email ou par WhatsApp ?' },
+    ],
+    crm: [
+      { field: 'Budget', value: '450 000 €' },
+      { field: 'Recherche', value: 'T3 · Lyon 6e' },
+      { field: 'Consentement', value: 'Oui' },
+    ],
+  },
+]
+
+export const DEMOS_PAGE = {
+  hero: {
+    label: 'Démos',
+    title: 'Un agent IA sur tous vos canaux, un seul CRM',
+    description: "Email, téléphone, WhatsApp, réseaux sociaux, SMS, site web : l'agent répond partout avec la même qualité, et chaque échange arrive dans votre CRM.",
+    tryChat: 'Discuter avec Sophie',
+    tryCall: 'Appeler Inès',
+  },
+  hub: {
+    channelsLabel: 'Vos canaux',
+    agentLabel: 'Agent IA',
+    agentTitle: 'ImmoOps',
+    agentSteps: ['Comprend la demande', 'Qualifie : budget, zone, délai', 'Agit : répond, relance, planifie'],
+    crmLabel: 'Votre CRM',
+    crmFields: ['Contact', 'Projet et budget', 'Historique complet', 'Prochaine action'],
+  },
+  channels: {
+    label: 'Canal par canal',
+    title: 'Ce que fait l\'agent, partout où vos clients écrivent',
+    description: 'Choisissez un canal pour voir un échange type et ce qui est envoyé dans votre CRM.',
+    doesTitle: 'Ce que fait l\'agent',
+    exchangeTitle: 'Exemple d\'échange',
+    crmTitle: 'Envoyé au CRM',
+    client: 'Client',
+    agent: 'Agent IA',
+  },
+  crm: {
+    label: 'Un seul CRM',
+    title: 'Chaque échange arrive au même endroit',
+    description: 'Peu importe le canal : une seule fiche par client, avec tout l\'historique, à jour en temps réel.',
+    example: 'Exemple de fiche lead',
+    lead: { initials: 'TM', name: 'Thomas Martin', tags: ['Acheteur', 'T3 · Lyon 6e', '450 000 €'], score: 'Lead chaud' },
+    timeline: [
+      { channel: 'email', time: 'Lun 09:12', text: 'Demande via SeLoger pour le T3 rue Garibaldi' },
+      { channel: 'email', time: 'Lun 09:13', text: 'Réponse de l\'agent : budget 450 k€, achat sous 3 mois' },
+      { channel: 'whatsapp', time: 'Lun 18:40', text: 'Fiche du bien et plans envoyés' },
+      { channel: 'phone', time: 'Mar 11:05', text: 'Visite réservée jeudi 10 h dans l\'agenda de Marc' },
+      { channel: 'sms', time: 'Mer 18:00', text: 'Rappel de visite confirmé par le client' },
+      { channel: 'advisor', time: 'Jeu 10:45', text: 'Marc : visite faite, offre en préparation' },
+    ] as { channel: ChannelKey | 'advisor'; time: string; text: string }[],
+    advisor: 'Conseiller',
+    nextAction: 'Prochaine action : relancer l\'offre vendredi',
+    sync: [
+      { Icon: UserIcon, title: 'Une fiche par client', description: 'Même personne par email, WhatsApp ou téléphone ? Une seule fiche, sans doublon.' },
+      { Icon: Clock01Icon, title: 'Historique complet', description: 'Messages, appels avec transcription et relances, tout est horodaté.' },
+      { Icon: UserMultipleIcon, title: 'Votre équipe au bon moment', description: 'Visites dans le bon agenda, conseiller notifié dès qu\'un lead est chaud.' },
+      { Icon: PlugSocketIcon, title: 'Votre CRM actuel', description: 'HubSpot, Salesforce, Apimo, Airtable… On se branche sur ce que vous utilisez déjà.' },
+    ],
+  },
+  live: {
+    label: 'Essayez en direct',
+    title: 'Parlez à nos agents maintenant',
+    description: 'Les deux démos sont aussi disponibles à tout moment dans les bulles en bas à droite.',
+    chat: { title: 'Chat avec Sophie', description: 'Posez une question sur un achat, une vente ou une location. Réponse immédiate.', cta: 'Ouvrir le chat' },
+    call: { title: 'Appel avec Inès', description: 'Un appel de 30 secondes depuis votre navigateur. Autorisez le micro et parlez.', cta: 'Lancer l\'appel' },
+  },
+  tour: {
+    label: 'Visite virtuelle',
+    title: 'Explorez un bien en 360°',
+    description: 'Naviguez dans le bien comme si vous y étiez, directement depuis votre navigateur.',
+  },
 }

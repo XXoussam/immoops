@@ -93,9 +93,9 @@ const STATIC: Record<string, Omit<SeoData, 'path'>> = {
     jsonLd: [organization, website, ...services, faqPage],
   },
   '/demos': {
-    title: "Démo agent vocal et chatbot IA pour agence immobilière — ImmoOps AI",
+    title: 'Agents IA sur tous vos canaux, un seul CRM — ImmoOps AI',
     description:
-      "Testez en direct un agent vocal IA et un chatbot conçus pour les agences immobilières : réponse aux appels, qualification des prospects et prise de rendez-vous.",
+      "Email, téléphone, WhatsApp, réseaux sociaux, SMS, site web : voyez où un agent IA intervient dans votre agence immobilière et comment tout arrive dans votre CRM.",
     jsonLd: [organization, breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Démos', path: '/demos' }])],
   },
   '/blog': {

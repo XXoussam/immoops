@@ -483,21 +483,6 @@
   .slide-progress-thumb { transition: none; }
 }
 
-/* Gentle floating motion (demo illustration) */
-@keyframes float-soft {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-14px); }
-}
-.float-soft {
-  animation: float-soft 6s ease-in-out infinite;
-  /* fade the visualizer canvas edges so no square shows behind the aura */
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 42%, transparent 68%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 42%, transparent 68%);
-}
-@media (prefers-reduced-motion: reduce) {
-  .float-soft { animation: none; }
-}
-
 @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -515,17 +500,6 @@
   100% { background-position: 250% center; }
 }
 
-/* Demo control bar: mic icon always white, no background */
-.demo-bar [data-slot="toggle"] {
-  background-color: transparent !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-}
-.demo-bar [data-slot="toggle"]:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-}
-.demo-bar [data-slot="toggle"] svg {
-  color: inherit !important;
-}
 
 /* ── Floating agent bubbles (chat + phone), bottom-right on every page ── */
 .agent-bubbles {
@@ -625,4 +599,26 @@
   .agent-bubble:hover { transform: none; }
   .agent-popup { animation: none; }
   .agent-face-eyes { animation: none; }
+}
+
+/* ── /demos hub: channels → agent → CRM, with dashes flowing toward the CRM ── */
+@keyframes hub-flow   { to { background-position: 12px 0; } }
+@keyframes hub-flow-v { to { background-position: 0 12px; } }
+.hub-line {
+  height: 1px;
+  flex-shrink: 0;
+  background-image: linear-gradient(90deg, rgba(192, 132, 252, 0.85) 50%, transparent 50%);
+  background-size: 12px 1px;
+  animation: hub-flow 0.8s linear infinite;
+}
+.hub-line-v {
+  width: 1px;
+  height: 32px;
+  margin: 0 auto;
+  background-image: linear-gradient(180deg, rgba(192, 132, 252, 0.85) 50%, transparent 50%);
+  background-size: 1px 12px;
+  animation: hub-flow-v 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-line, .hub-line-v { animation: none; }
 }

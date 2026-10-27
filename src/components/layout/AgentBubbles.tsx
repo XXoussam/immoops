@@ -8,8 +8,9 @@ import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-au
 import { ChatPanel, LimitNotice } from '../demo/AgentPanels'
 import { useVoiceDemo } from '../../hooks/useVoiceDemo'
 import { AGENT_BUBBLES } from '../../lib/constants'
+import { OPEN_AGENT_EVENT, type AgentKind } from '../../lib/agentEvents'
 
-type Panel = 'chat' | 'phone' | null
+type Panel = AgentKind | null
 
 /* Gradient arc colours per bubble (brand purple for chat, emerald → sky for the voice agent) */
 const FACE_GRADIENTS = {
@@ -211,6 +212,17 @@ export function AgentBubbles() {
     setOpen(null)
     setMounted(m => ({ ...m, [panel]: false }))
   }
+
+  /* Buttons elsewhere on the site (e.g. /demos) open a bubble through openAgent() */
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const panel = (e as CustomEvent<AgentKind>).detail
+      setMounted(m => ({ ...m, [panel]: true }))
+      setOpen(panel)
+    }
+    window.addEventListener(OPEN_AGENT_EVENT, onOpen)
+    return () => window.removeEventListener(OPEN_AGENT_EVENT, onOpen)
+  }, [])
 
   useEffect(() => {
     if (!open) return

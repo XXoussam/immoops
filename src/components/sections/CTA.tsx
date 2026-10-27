@@ -1,5 +1,6 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { CAL_URL } from '../../lib/constants'
+import { openAgent } from '../../lib/agentEvents'
 
 export function CTA() {
   const { ref, isVisible } = useScrollReveal()
@@ -11,18 +12,18 @@ export function CTA() {
         className={`container-main transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Left card — secondary: explore demos */}
+          {/* Left card — secondary: try the chat agent (opens the chat bubble) */}
           <div className="card-white p-8 md:p-10">
             <h3 className="h3 mb-3">
               Pas encore convaincu ?
             </h3>
             <p className="body2 mb-7">
-              Essayez nos démos interactives — sans formulaire, sans inscription.
+              Parlez à nos agents IA — sans formulaire, sans inscription.
               Voyez l'IA en action avant de prendre contact.
             </p>
-            <a href="/demos" className="btn-outline">
-              Explorer les démos
-            </a>
+            <button type="button" onClick={() => openAgent('chat')} className="btn-outline">
+              Discuter avec Sophie
+            </button>
           </div>
 
           {/* Right card — primary: book audit */}

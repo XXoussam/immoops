@@ -1,4 +1,5 @@
 import { DEMOS } from '../../lib/constants'
+import { openAgent } from '../../lib/agentEvents'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { SectionHeader } from '../ui/SectionHeader'
 import { PixelReveal } from '../ui/PixelReveal'
@@ -26,11 +27,11 @@ export function Demos() {
         {/* Demo cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {DEMOS.map((demo) => (
-            <a
+            <button
               key={demo.title}
-              href="/demos"
-              className="card-dark block group"
-              style={{ textDecoration: 'none' }}
+              type="button"
+              onClick={() => openAgent(demo.agent)}
+              className="card-dark block group w-full text-left"
             >
               <div className="p-7">
                 {/* Channel badge */}
@@ -69,7 +70,7 @@ export function Demos() {
                   Essayer la démo
                 </span>
               </div>
-            </a>
+            </button>
           ))}
         </div>
         </div>
