@@ -9,6 +9,7 @@ const LIMIT_NOTICE_MS = 6_000
 /* Voice agent session (LiveKit), capped at 30s per call to limit API spend */
 export function useVoiceDemo() {
   const [showLimitNotice, setShowLimitNotice] = useState(false)
+  const [starting, setStarting] = useState(false)  // covers the token fetch, before LiveKit reports Connecting
   const limitTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const noticeTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
@@ -22,10 +23,11 @@ export function useVoiceDemo() {
   )
 
   const session = useSession(tokenSource)
-  const isConnecting = session.connectionState === ConnectionState.Connecting
+  const isConnecting = starting || session.connectionState === ConnectionState.Connecting
 
   const endCall = (hitLimit = false) => {
     clearTimeout(limitTimeoutRef.current)
+    setStarting(false)
     session.end()
     if (hitLimit) {
       setShowLimitNotice(true)
@@ -45,7 +47,10 @@ export function useVoiceDemo() {
 
   const startCall = () => {
     setShowLimitNotice(false)
-    session.start({ tracks: { microphone: { enabled: true } } }).catch(() => endCall())
+    setStarting(true)
+    session.start({ tracks: { microphone: { enabled: true } } })
+      .catch(() => endCall())
+      .finally(() => setStarting(false))
   }
 
   return { session, isConnecting, isConnected: session.isConnected, showLimitNotice, startCall, endCall }

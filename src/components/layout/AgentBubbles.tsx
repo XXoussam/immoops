@@ -1,9 +1,11 @@
 import { useEffect, useId, useState } from 'react'
+import { useTrackToggle, useVoiceAssistant } from '@livekit/components-react'
+import { Track } from 'livekit-client'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Call02Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
+import { AudioWave01Icon, BubbleChatIcon, Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon } from '@hugeicons/core-free-icons'
 import { AgentSessionProvider } from '../agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
-import { ChatPanel, ConnectedPanel, LimitNotice } from '../demo/AgentPanels'
+import { ChatPanel, LimitNotice } from '../demo/AgentPanels'
 import { useVoiceDemo } from '../../hooks/useVoiceDemo'
 import { AGENT_BUBBLES } from '../../lib/constants'
 
@@ -57,7 +59,117 @@ function BubbleFace({ kind }: { kind: Exclude<Panel, null> }) {
   )
 }
 
-/* ─── Voice call popup — mounted only while open, so no LiveKit room exists until then ── */
+const CALL_LIMIT_S = 30
+const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+
+function RoundButton({ label, icon, onClick, disabled, tone }: {
+  label: string
+  icon: typeof Call02Icon
+  onClick: () => void
+  disabled?: boolean
+  tone: 'neutral' | 'danger' | 'go'
+}) {
+  const tones = {
+    neutral: 'bg-gray-bg text-ink hover:bg-gray-bgalt',
+    danger: 'bg-[#EF4444] text-white hover:bg-[#DC2626]',
+    go: 'bg-[#10B981] text-white hover:bg-[#059669]',
+  }
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} className="flex flex-col items-center gap-2 text-[13px] text-ink disabled:opacity-50">
+      <span className={`flex size-12 items-center justify-center rounded-full transition-colors ${tones[tone]}`}>
+        <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} />
+      </span>
+      {label}
+    </button>
+  )
+}
+
+/* Shared frame of the call view: visualiser, agent name, status line, controls */
+function CallLayout({ visualizer, status, controls, onClose, notice }: {
+  visualizer: React.ReactNode
+  status: React.ReactNode
+  controls: React.ReactNode
+  onClose: () => void
+  notice?: React.ReactNode
+}) {
+  const copy = AGENT_BUBBLES.phone
+  return (
+    <div className="absolute inset-0 flex flex-col bg-white font-sans text-ink">
+      <div className="flex shrink-0 justify-end p-3">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={AGENT_BUBBLES.close}
+          title={AGENT_BUBBLES.close}
+          className="flex size-8 items-center justify-center rounded-full border border-gray-line text-ink-body transition-colors hover:text-ink"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={16} strokeWidth={1.5} />
+        </button>
+      </div>
+      {notice}
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 text-center">
+        <div className="flex h-[200px] w-[200px] items-center justify-center">{visualizer}</div>
+        <p className="mt-2 flex items-center gap-2 text-[22px] font-semibold leading-tight">
+          {copy.title}
+          <span className="rounded-md bg-ink px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white">{copy.badge}</span>
+        </p>
+        <p className="mt-1 text-[14px] text-ink-body">{copy.subtitle}</p>
+        <div className="mt-4 min-h-[22px] text-[14px] text-ink-body">{status}</div>
+      </div>
+      <div className="flex shrink-0 justify-center gap-10 pb-6 pt-2">{controls}</div>
+    </div>
+  )
+}
+
+function StatusLine({ label, seconds }: { label: string; seconds?: number }) {
+  return (
+    <span className="flex items-center gap-2">
+      {label}
+      <span className="flex items-center gap-[3px]" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <span key={i} className="size-1 rounded-full bg-purple" style={{ animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }} />
+        ))}
+      </span>
+      {seconds !== undefined && <span className="ml-2 tabular-nums">{mmss(seconds)} / {mmss(CALL_LIMIT_S)}</span>}
+    </span>
+  )
+}
+
+/* Live call: needs the session context for the agent state and the mic toggle; mounted only while connected */
+function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => void }) {
+  const { state, audioTrack } = useVoiceAssistant()
+  const mic = useTrackToggle({ source: Track.Source.Microphone })
+  const copy = AGENT_BUBBLES.phone
+  const [seconds, setSeconds] = useState(0)
+
+  useEffect(() => {
+    const startedAt = Date.now()
+    const id = setInterval(() => setSeconds(Math.min(CALL_LIMIT_S, Math.floor((Date.now() - startedAt) / 1000))), 250)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <CallLayout
+      onClose={onClose}
+      visualizer={<AgentAudioVisualizerAura state={state} audioTrack={audioTrack} color="#6D4AFF" themeMode="light" size="lg" />}
+      status={<StatusLine label={copy.status[state] ?? copy.status.listening} seconds={seconds} />}
+      controls={
+        <>
+          <RoundButton
+            label={mic.enabled ? copy.mute : copy.unmute}
+            icon={mic.enabled ? Mic01Icon : MicOff01Icon}
+            onClick={() => mic.toggle()}
+            disabled={mic.pending}
+            tone="neutral"
+          />
+          <RoundButton label={copy.hangUp} icon={CallEnd01Icon} onClick={onHangUp} tone="danger" />
+        </>
+      }
+    />
+  )
+}
+
+/* ─── Voice call view — mounted on first open, so no LiveKit room exists until then ── */
 function PhonePanel({ onClose }: { onClose: () => void }) {
   const { session, isConnecting, isConnected, showLimitNotice, startCall, endCall } = useVoiceDemo()
   const copy = AGENT_BUBBLES.phone
@@ -65,59 +177,40 @@ function PhonePanel({ onClose }: { onClose: () => void }) {
   if (isConnected) {
     return (
       <AgentSessionProvider session={session}>
-        <ConnectedPanel onDisconnect={() => endCall()} />
+        <LiveCall onHangUp={() => endCall()} onClose={onClose} />
       </AgentSessionProvider>
     )
   }
 
   return (
-    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column' }}>
-      <div className="agent-popup-head">
-        <div className="agent-popup-avatar">{copy.title[0]}</div>
-        <div>
-          <p className="agent-popup-name">{copy.title}</p>
-          <p className="agent-popup-sub">{copy.subtitle}</p>
-        </div>
-        <button onClick={onClose} className="agent-popup-close" aria-label={AGENT_BUBBLES.close}>
-          <HugeiconsIcon icon={Cancel01Icon} size={16} strokeWidth={1.5} />
-        </button>
-      </div>
-
-      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
-        {showLimitNotice && <LimitNotice />}
-        <div className="float-soft" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <AgentAudioVisualizerAura
-            state={isConnecting ? 'connecting' : 'idle'}
-            color="#6D4AFF"
-            themeMode="dark"
-            size="lg"
-          />
-        </div>
-      </div>
-
-      <div style={{ flexShrink: 0, padding: '0 20px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-        <p className="agent-popup-sub" style={{ textAlign: 'center', fontSize: 12, lineHeight: 1.5, marginTop: 0 }}>
-          {copy.intro}
-        </p>
-        <button onClick={startCall} disabled={isConnecting} className="agent-call-btn">
-          <HugeiconsIcon icon={Call02Icon} size={14} strokeWidth={1.5} />
-          {isConnecting ? copy.connecting : copy.cta}
-        </button>
-      </div>
-    </div>
+    <CallLayout
+      onClose={onClose}
+      notice={showLimitNotice && <div className="relative mx-4 h-0"><LimitNotice /></div>}
+      visualizer={<AgentAudioVisualizerAura state={isConnecting ? 'connecting' : 'idle'} color="#6D4AFF" themeMode="light" size="lg" />}
+      status={isConnecting
+        ? <StatusLine label={copy.status.connecting} />
+        : <p className="mx-auto max-w-[260px] text-[13px] leading-snug">{copy.intro}</p>}
+      controls={isConnecting
+        ? <RoundButton label={copy.hangUp} icon={CallEnd01Icon} onClick={() => endCall()} tone="danger" />
+        : <RoundButton label={copy.cta} icon={Call02Icon} onClick={startCall} tone="go" />}
+    />
   )
 }
 
 /* ─────────────────────────────── Floating chat + phone bubbles ── */
 export function AgentBubbles() {
   const [open, setOpen] = useState<Panel>(null)
-  /* The chat stays mounted once opened, so minimising keeps the conversation; closing resets it */
-  const [chatMounted, setChatMounted] = useState(false)
-  const toggle = (panel: Exclude<Panel, null>) => {
-    if (panel === 'chat') setChatMounted(true)
-    setOpen(o => (o === panel ? null : panel))
+  /* Panels stay mounted once opened: minimising (or switching tab) keeps the conversation and any live call; closing resets */
+  const [mounted, setMounted] = useState({ chat: false, phone: false })
+  const show = (panel: Exclude<Panel, null>) => {
+    setMounted(m => ({ ...m, [panel]: true }))
+    setOpen(panel)
   }
-  const closeChat = () => { setOpen(null); setChatMounted(false) }
+  const toggle = (panel: Exclude<Panel, null>) => (open === panel ? setOpen(null) : show(panel))
+  const close = (panel: Exclude<Panel, null>) => {
+    setOpen(null)
+    setMounted(m => ({ ...m, [panel]: false }))
+  }
 
   useEffect(() => {
     if (!open) return
@@ -126,16 +219,48 @@ export function AgentBubbles() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  const tabs = [
+    { panel: 'chat' as const, label: AGENT_BUBBLES.chat.tab, icon: BubbleChatIcon },
+    { panel: 'phone' as const, label: AGENT_BUBBLES.phone.tab, icon: AudioWave01Icon },
+  ]
+
   return (
     <>
-      {chatMounted && (
-        <div className="agent-popup agent-popup-chat demo-fade-in" role="dialog" aria-label={AGENT_BUBBLES.chat.label} hidden={open !== 'chat'}>
-          <ChatPanel onMinimize={() => setOpen(null)} onClose={closeChat} />
-        </div>
-      )}
-      {open === 'phone' && (
-        <div className="agent-popup dark demo-fade-in" role="dialog" aria-label={AGENT_BUBBLES.phone.label}>
-          <PhonePanel onClose={() => setOpen(null)} />
+      {(mounted.chat || mounted.phone) && (
+        <div className="agent-popup demo-fade-in" role="dialog" aria-label={open ? AGENT_BUBBLES[open].label : undefined} hidden={!open}>
+          <div className="relative min-h-0 flex-1">
+            {mounted.chat && (
+              <div className="absolute inset-0" hidden={open !== 'chat'}>
+                <ChatPanel onMinimize={() => setOpen(null)} onClose={() => close('chat')} />
+              </div>
+            )}
+            {mounted.phone && (
+              <div className="absolute inset-0" hidden={open !== 'phone'}>
+                <PhonePanel onClose={() => close('phone')} />
+              </div>
+            )}
+          </div>
+
+          <div className="grid shrink-0 grid-cols-2 border-t border-gray-line" role="tablist">
+            {tabs.map(({ panel, label, icon }) => (
+              <button
+                key={panel}
+                type="button"
+                role="tab"
+                aria-selected={open === panel}
+                onClick={() => show(panel)}
+                className={`-mt-px flex flex-col items-center gap-1 border-t-2 py-2.5 text-[13px] transition-colors ${
+                  open === panel ? 'border-ink font-medium text-ink' : 'border-transparent text-ink-body hover:text-ink'
+                }`}
+              >
+                <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} />
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="shrink-0 bg-gray-bg py-2 text-center font-sans text-[12px] text-ink-body">
+            {AGENT_BUBBLES.poweredBy} <span className="font-semibold text-ink">ImmoOps</span>
+          </p>
         </div>
       )}
 

@@ -246,15 +246,22 @@ export const CAL_URL = 'https://calendly.com/immoops/discovery_call'
 
 /* Floating chat / phone bubbles (bottom-right, every page) */
 export const AGENT_BUBBLES = {
-  chat: { label: 'Discuter avec Sophie, notre agent IA' },
+  chat: { label: 'Discuter avec Sophie, notre agent IA', tab: 'Chat' },
   phone: {
     label: 'Appeler Inès, notre agent vocal IA',
+    tab: 'Appel',
     title: 'Inès',
-    subtitle: 'Agente vocale ImmoOps · IA',
-    intro: 'Parlez à notre agent vocal directement depuis votre navigateur. Autorisez le micro pour démarrer.',
+    badge: 'IA',
+    subtitle: 'Agente vocale ImmoOps',
+    intro: 'Parlez à notre agent vocal depuis votre navigateur. Autorisez le micro pour démarrer.',
     cta: 'Appeler',
     connecting: 'Connexion…',
+    status: { listening: 'Écoute', thinking: 'Réflexion', speaking: 'Parle', connecting: 'Connexion…' } as Record<string, string>,
+    mute: 'Muet',
+    unmute: 'Réactiver',
+    hangUp: 'Raccrocher',
   },
+  poweredBy: 'Propulsé par',
   close: 'Fermer',
 }
 
