@@ -4,16 +4,23 @@ import { useVoiceAssistant, useSessionMessages } from '@livekit/components-react
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
 import { AgentControlBar } from '../agents-ui/agent-control-bar'
 import { AgentChatTranscript } from '../agents-ui/agent-chat-transcript'
+import { AiMessageBubble } from '../ui/message-bubble'
 
 const CHAT_URL = '/.netlify/functions/chat'
 
 /* ─── Types ── */
-type ChatMessage = { role: 'user' | 'assistant'; content: string }
+type ChatMessage = { role: 'user' | 'assistant'; content: string; at: Date }
+
+const SOPHIE_AVATAR = (
+  <div className="flex size-7 items-center justify-center rounded-full border border-purple/40 bg-purple/25 font-sans text-xs font-semibold text-purple-light">
+    S
+  </div>
+)
 
 /* ─── Chat panel (Gemini) ── */
 export function ChatPanel({ onBack, backLabel = '← RETOUR', backAriaLabel }: { onBack: () => void; backLabel?: React.ReactNode; backAriaLabel?: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: 'Bonjour ! Je suis Sophie, votre conseillère ImmoOps. Comment puis-je vous aider ?' },
+    { role: 'assistant', content: 'Bonjour ! Je suis Sophie, votre conseillère ImmoOps. Comment puis-je vous aider ?', at: new Date() },
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -28,7 +35,7 @@ export function ChatPanel({ onBack, backLabel = '← RETOUR', backAriaLabel }: {
     const text = input.trim()
     if (!text || loading) return
 
-    const next: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    const next: ChatMessage[] = [...messages, { role: 'user', content: text, at: new Date() }]
     setMessages(next)
     setInput('')
     setLoading(true)
@@ -37,12 +44,12 @@ export function ChatPanel({ onBack, backLabel = '← RETOUR', backAriaLabel }: {
       const res = await fetch(CHAT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next.map(({ role, content }) => ({ role, content })) }),
       })
       const data = await res.json()
-      setMessages([...next, { role: 'assistant', content: data.reply }])
+      setMessages([...next, { role: 'assistant', content: data.reply, at: new Date() }])
     } catch {
-      setMessages([...next, { role: 'assistant', content: 'Désolée, une erreur est survenue.' }])
+      setMessages([...next, { role: 'assistant', content: 'Désolée, une erreur est survenue.', at: new Date() }])
     } finally {
       setLoading(false)
     }
@@ -73,46 +80,30 @@ export function ChatPanel({ onBack, backLabel = '← RETOUR', backAriaLabel }: {
       </div>
 
       {/* Messages */}
-      <div ref={messagesRef} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div ref={messagesRef} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {messages.map((m, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-            <div style={{
-              maxWidth: '80%',
-              padding: '8px 12px',
-              borderRadius: 0,
-              background: m.role === 'user' ? 'rgba(109,74,255,0.22)' : 'rgba(255,255,255,0.06)',
-              border: `1px solid ${m.role === 'user' ? 'rgba(109,74,255,0.3)' : 'rgba(255,255,255,0.08)'}`,
-              fontSize: 13,
-              lineHeight: 1.55,
-              color: m.role === 'user' ? 'rgba(220,210,255,0.9)' : 'rgba(220,225,235,0.85)',
-              fontFamily: 'Jost, sans-serif',
-            }}>
-              {m.role === 'assistant' ? (
-                <ReactMarkdown
-                  components={{
-                    p: ({ children }) => <p style={{ margin: 0 }}>{children}</p>,
-                    strong: ({ children }) => <strong style={{ fontWeight: 600, color: 'rgba(220,225,235,1)' }}>{children}</strong>,
-                    ul: ({ children }) => <ul style={{ margin: '4px 0', paddingLeft: 16 }}>{children}</ul>,
-                    li: ({ children }) => <li style={{ marginBottom: 2 }}>{children}</li>,
-                  }}
-                >
-                  {m.content}
-                </ReactMarkdown>
-              ) : m.content}
-            </div>
-          </div>
+          <AiMessageBubble
+            key={i}
+            role={m.role}
+            content={m.content}
+            timestamp={m.at}
+            avatar={m.role === 'assistant' ? SOPHIE_AVATAR : undefined}
+          >
+            {m.role === 'assistant' && (
+              <ReactMarkdown
+                components={{
+                  p: ({ children }) => <p style={{ margin: 0 }}>{children}</p>,
+                  strong: ({ children }) => <strong style={{ fontWeight: 600 }}>{children}</strong>,
+                  ul: ({ children }) => <ul style={{ margin: '4px 0', paddingLeft: 16, listStyle: 'disc' }}>{children}</ul>,
+                  li: ({ children }) => <li style={{ marginBottom: 2 }}>{children}</li>,
+                }}
+              >
+                {m.content}
+              </ReactMarkdown>
+            )}
+          </AiMessageBubble>
         ))}
-        {loading && (
-          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-            <div style={{ padding: '8px 14px', borderRadius: 0, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span style={{ display: 'inline-flex', gap: 4 }}>
-                {[0, 1, 2].map(i => (
-                  <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(180,160,255,0.6)', animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }} />
-                ))}
-              </span>
-            </div>
-          </div>
-        )}
+        {loading && <AiMessageBubble role="assistant" avatar={SOPHIE_AVATAR} isStreaming />}
       </div>
 
       {/* Input */}
