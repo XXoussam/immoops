@@ -529,6 +529,7 @@
 
 /* ── Floating agent bubbles (chat + phone), bottom-right on every page ── */
 .agent-bubbles {
+  --bubble-step: 66px;  /* bubble height + gap: how far the top bubble travels to reach the bottom slot */
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -536,6 +537,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  pointer-events: none;  /* the empty top slot must not block clicks on the panel */
 }
 .agent-bubble {
   width: 56px;
@@ -546,17 +548,32 @@
   border: none;
   border-radius: 50%;  /* a face, not a box */
   background: radial-gradient(circle at 50% 35%, #1C1830 0%, #0A0812 75%);
+  position: relative;
+  pointer-events: auto;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, box-shadow 0.25s ease;
 }
 .agent-bubble-chat  { --glow: rgba(109, 74, 255, 0.45); }
 .agent-bubble-phone { --glow: rgba(16, 185, 129, 0.35); }
 .agent-bubble { box-shadow: 0 10px 30px -6px var(--glow), 0 2px 8px rgba(10, 8, 18, 0.35); }
+.agent-bubble:hover { transform: translateY(-2px) scale(1.04); }
 .agent-bubble:hover,
 .agent-bubble.is-open {
-  transform: translateY(-2px) scale(1.04);
   box-shadow: 0 14px 38px -6px var(--glow), 0 0 0 4px rgba(255, 255, 255, 0.06);
 }
+
+/* While a panel is open the two bubbles fold into the bottom slot: the active one in front,
+   the other shrinks away behind it, freeing the top slot for the panel */
+.agent-bubbles[data-open] .agent-bubble.is-open { z-index: 2; }
+.agent-bubbles[data-open="phone"] .agent-bubble-phone { transform: translateY(var(--bubble-step)); }
+.agent-bubbles[data-open="phone"] .agent-bubble-chat,
+.agent-bubbles[data-open="chat"] .agent-bubble-phone {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+.agent-bubbles[data-open="phone"] .agent-bubble-chat  { transform: scale(0.7); }
+.agent-bubbles[data-open="chat"] .agent-bubble-phone { transform: translateY(var(--bubble-step)) scale(0.7); }
 .agent-bubble:focus-visible { outline: 2px solid #C084FC; outline-offset: 3px; }
 
 /* eyes blink every few seconds */
@@ -574,12 +591,12 @@
 .agent-popup {
   position: fixed;
   right: 20px;
-  bottom: 144px;  /* clears both bubbles */
+  bottom: 88px;  /* clears the folded bubble (20 + 56 + 12) */
   z-index: 60;
   display: flex;
   flex-direction: column;
   width: min(380px, calc(100vw - 40px));
-  height: min(640px, calc(100dvh - 176px));
+  height: min(680px, calc(100dvh - 112px));
   min-height: 420px;
   overflow: hidden;
   border-radius: 20px;
@@ -587,14 +604,25 @@
   box-shadow: 0 24px 64px -12px rgba(15, 17, 23, 0.28), 0 0 0 1px rgba(15, 17, 23, 0.06);
 }
 .agent-popup[hidden] { display: none; }
+/* Opens just after the bubbles have folded, growing out of the bubble corner */
+@keyframes agent-popup-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+.agent-popup {
+  transform-origin: bottom right;
+  animation: agent-popup-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.18s both;
+}
 /* Quick-reply chips scroll sideways without a visible scrollbar */
 .agent-chips { scrollbar-width: none; }
 .agent-chips::-webkit-scrollbar { display: none; }
 @media (max-width: 767px) {
   .agent-bubbles { right: 12px; bottom: 12px; }
-  .agent-popup { right: 12px; bottom: 136px; width: calc(100vw - 24px); height: calc(100dvh - 160px); }
+  .agent-popup { right: 12px; bottom: 80px; width: calc(100vw - 24px); height: calc(100dvh - 96px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .agent-bubble, .agent-bubble:hover, .agent-bubble.is-open { transition: none; transform: none; }
+  .agent-bubble { transition: none; }
+  .agent-bubble:hover { transform: none; }
+  .agent-popup { animation: none; }
   .agent-face-eyes { animation: none; }
 }

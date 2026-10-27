@@ -222,7 +222,7 @@ export function AgentBubbles() {
   return (
     <>
       {(mounted.chat || mounted.phone) && (
-        <div className="agent-popup demo-fade-in" role="dialog" aria-label={open ? AGENT_BUBBLES[open].label : undefined} hidden={!open}>
+        <div className="agent-popup" role="dialog" aria-label={open ? AGENT_BUBBLES[open].label : undefined} hidden={!open}>
           <div className="relative min-h-0 flex-1">
             {mounted.chat && (
               <div className="absolute inset-0" hidden={open !== 'chat'}>
@@ -242,13 +242,15 @@ export function AgentBubbles() {
         </div>
       )}
 
-      <div className="agent-bubbles">
+      {/* While a panel is open, both bubbles fold into the bottom slot (see .agent-bubbles[data-open]) */}
+      <div className="agent-bubbles" data-open={open ?? undefined}>
         <button
           onClick={() => toggle('phone')}
           className={`agent-bubble agent-bubble-phone${open === 'phone' ? ' is-open' : ''}`}
           aria-label={AGENT_BUBBLES.phone.label}
           aria-expanded={open === 'phone'}
           title={AGENT_BUBBLES.phone.label}
+          {...(open && open !== 'phone' ? { tabIndex: -1, 'aria-hidden': true } : {})}
         >
           <BubbleFace kind="phone" />
         </button>
@@ -258,6 +260,7 @@ export function AgentBubbles() {
           aria-label={AGENT_BUBBLES.chat.label}
           aria-expanded={open === 'chat'}
           title={AGENT_BUBBLES.chat.label}
+          {...(open && open !== 'chat' ? { tabIndex: -1, 'aria-hidden': true } : {})}
         >
           <BubbleFace kind="chat" />
         </button>
