@@ -1,4 +1,5 @@
-import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, AiLearningIcon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon } from '@hugeicons/core-free-icons'
+import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon } from '@hugeicons/core-free-icons'
+import { N8nIcon } from './icons'
 
 export const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -41,7 +42,7 @@ export const SERVICES: Service[] = [
     description: "Identifiez et priorisez vos meilleurs prospects grâce à l'IA, avant votre premier appel.",
   },
   {
-    Icon: AiLearningIcon,
+    Icon: N8nIcon,
     title: 'Formation n8n',
     description: "Apprenez à automatiser vos tâches répétitives avec n8n — sans coder. Des sessions pratiques adaptées à votre agence.",
   },
