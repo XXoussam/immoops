@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from 'react'
 import { useTrackToggle, useVoiceAssistant } from '@livekit/components-react'
 import { Track } from 'livekit-client'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { AudioWave01Icon, BubbleChatIcon, Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon } from '@hugeicons/core-free-icons'
+import { Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon } from '@hugeicons/core-free-icons'
 import { AgentSessionProvider } from '../agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
 import { ChatPanel, LimitNotice } from '../demo/AgentPanels'
@@ -200,7 +200,7 @@ function PhonePanel({ onClose }: { onClose: () => void }) {
 /* ─────────────────────────────── Floating chat + phone bubbles ── */
 export function AgentBubbles() {
   const [open, setOpen] = useState<Panel>(null)
-  /* Panels stay mounted once opened: minimising (or switching tab) keeps the conversation and any live call; closing resets */
+  /* Panels stay mounted once opened: minimising (or opening the other bubble) keeps the conversation and any live call; closing resets */
   const [mounted, setMounted] = useState({ chat: false, phone: false })
   const show = (panel: Exclude<Panel, null>) => {
     setMounted(m => ({ ...m, [panel]: true }))
@@ -219,11 +219,6 @@ export function AgentBubbles() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  const tabs = [
-    { panel: 'chat' as const, label: AGENT_BUBBLES.chat.tab, icon: BubbleChatIcon },
-    { panel: 'phone' as const, label: AGENT_BUBBLES.phone.tab, icon: AudioWave01Icon },
-  ]
-
   return (
     <>
       {(mounted.chat || mounted.phone) && (
@@ -241,24 +236,7 @@ export function AgentBubbles() {
             )}
           </div>
 
-          <div className="grid shrink-0 grid-cols-2 border-t border-gray-line" role="tablist">
-            {tabs.map(({ panel, label, icon }) => (
-              <button
-                key={panel}
-                type="button"
-                role="tab"
-                aria-selected={open === panel}
-                onClick={() => show(panel)}
-                className={`-mt-px flex flex-col items-center gap-1 border-t-2 py-2.5 text-[13px] transition-colors ${
-                  open === panel ? 'border-ink font-medium text-ink' : 'border-transparent text-ink-body hover:text-ink'
-                }`}
-              >
-                <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} />
-                {label}
-              </button>
-            ))}
-          </div>
-          <p className="shrink-0 bg-gray-bg py-2 text-center font-sans text-[12px] text-ink-body">
+          <p className="shrink-0 border-t border-gray-line bg-gray-bg py-2 text-center font-sans text-[12px] text-ink-body">
             {AGENT_BUBBLES.poweredBy} <span className="font-semibold text-ink">ImmoOps</span>
           </p>
         </div>
