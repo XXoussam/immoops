@@ -244,6 +244,20 @@ export const HERO_SLIDES: HeroSlide[] = [
 
 export const CAL_URL = 'https://calendly.com/immoops/discovery_call'
 
+/* Floating chat / phone bubbles (bottom-right, every page) */
+export const AGENT_BUBBLES = {
+  chat: { label: 'Discuter avec Sophie, notre agent IA' },
+  phone: {
+    label: 'Appeler Inès, notre agent vocal IA',
+    title: 'Inès',
+    subtitle: 'Agente vocale ImmoOps · IA',
+    intro: 'Parlez à notre agent vocal directement depuis votre navigateur. Autorisez le micro pour démarrer.',
+    cta: 'Appeler',
+    connecting: 'Connexion…',
+  },
+  close: 'Fermer',
+}
+
 export interface FooterLink {
   label: string
   href: string

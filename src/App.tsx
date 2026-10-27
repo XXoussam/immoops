@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { PixelCursorTrail } from './components/ui/pixel-trail'
 import { SeoHead } from './components/layout/SeoHead'
+import { AgentBubbles } from './components/layout/AgentBubbles'
 import { HomePage } from './pages/HomePage'
 import { DemosPage } from './pages/DemosPage'
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage'
@@ -28,6 +29,7 @@ function App() {
         <Route path="/webinaires" element={<ComingSoonPage />} />
         <Route path="/documentation" element={<ComingSoonPage />} />
       </Routes>
+      <AgentBubbles />
     </div>
   )
 }
