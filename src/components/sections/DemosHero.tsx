@@ -1,7 +1,51 @@
 import { HugeiconsIcon } from '@hugeicons/react'
-import { AiBrain01Icon, CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icons'
 import { AGENT_CHANNELS, DEMOS_PAGE } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+
+/* The agent: two floating eyes reading rows of data while a beam sweeps under their gaze */
+function ScanningEyes() {
+  /* bar widths per row; each row spans x = 4 → 92 */
+  const rows = [
+    [8, 16, 24, 10, 18],
+    [12, 10, 22, 14, 18],
+    [18, 12, 10, 22, 14],
+  ]
+  return (
+    <div className="scan-eyes" aria-hidden="true">
+      <svg viewBox="0 0 96 64" width="112" height="75" fill="none">
+        <defs>
+          <linearGradient id="scan-beam" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="#C084FC" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#C084FC" stopOpacity="0.9" />
+            <stop offset="1" stopColor="#C084FC" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* data being read */}
+        {rows.map((widths, r) => {
+          let x = 4
+          return widths.map((w, i) => {
+            const bar = <rect key={`${r}-${i}`} x={x} y={40 + r * 8} width={w} height="3" rx="1.5" fill="#C084FC" opacity="0.28" />
+            x += w + 3
+            return bar
+          })
+        })}
+
+        {/* beam sweeping the rows, in step with the gaze */}
+        <rect className="scan-eyes-beam" x="0" y="36" width="20" height="26" fill="url(#scan-beam)" opacity="0.55" />
+
+        {/* eyes: look left and right, blink now and then */}
+        <g className="scan-eyes-look">
+          <g className="agent-face-eyes" fill="#FFFFFF">
+            <rect x="29" y="6" width="12" height="20" rx="6" />
+            <rect x="55" y="6" width="12" height="20" rx="6" />
+          </g>
+        </g>
+      </svg>
+    </div>
+  )
+}
 
 /* Channels on the left feed one agent, which writes everything to one CRM */
 function AgentHub() {
@@ -34,7 +78,7 @@ function AgentHub() {
         className="flex flex-col justify-center border border-purple/50 px-7 py-8 lg:w-[26%]"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
-        <HugeiconsIcon icon={AiBrain01Icon} size={28} color="#C084FC" strokeWidth={1.5} />
+        <ScanningEyes />
         <p className="label-white mt-5">[{hub.agentLabel}]</p>
         <p className="h4 text-white">{hub.agentTitle}</p>
         <ol className="mt-5 flex flex-col gap-3">
