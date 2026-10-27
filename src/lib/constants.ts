@@ -1,4 +1,4 @@
-import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, AiLearningIcon } from '@hugeicons/core-free-icons'
+import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, AiLearningIcon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon } from '@hugeicons/core-free-icons'
 
 export const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -256,6 +256,34 @@ export const AGENT_BUBBLES = {
     connecting: 'Connexion…',
   },
   close: 'Fermer',
+}
+
+/* Sophie chat window (floating chat bubble + /demos) */
+export const CHAT_WIDGET = {
+  name: 'Sophie',
+  status: 'En ligne',
+  greeting: 'Bonjour ! Je suis Sophie, votre conseillère ImmoOps. Comment puis-je vous aider ?',
+  error: 'Désolée, une erreur est survenue.',
+  placeholder: 'Posez votre question…',
+  send: 'Envoyer',
+  reset: 'Nouvelle conversation',
+  minimize: 'Réduire',
+  close: 'Fermer',
+  /* Quick replies above the input: `ask` goes to Sophie, `booking` answers with the Calendly card */
+  chips: [
+    { label: 'Acheter', Icon: Home01Icon, ask: 'Je souhaite acheter un bien.' },
+    { label: 'Vendre', Icon: SaleTag01Icon, ask: 'Je souhaite vendre mon bien.' },
+    { label: 'Louer', Icon: Key01Icon, ask: 'Je cherche une location.' },
+    { label: 'Estimer', Icon: MoneyBag02Icon, ask: 'Pouvez-vous estimer mon bien ?' },
+    { label: 'Réserver une démo', Icon: Calendar03Icon, booking: true },
+  ],
+  booking: {
+    ask: 'Je voudrais réserver une démo.',
+    reply: 'Avec plaisir ! Voici le lien pour choisir le créneau qui vous convient :',
+    title: 'Réserver une démo — ImmoOps',
+    domain: 'calendly.com',
+    description: 'Appel découverte de 30 minutes avec notre équipe.',
+  },
 }
 
 export interface FooterLink {

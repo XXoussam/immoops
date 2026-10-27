@@ -16,14 +16,12 @@ const PANEL_STYLE: React.CSSProperties = {
   transition: 'background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
 }
 
-/* Frame only for chat mode — the idle/call visual floats freely */
-const CHAT_FRAME_STYLE: React.CSSProperties = {
-  borderRadius: 0,
-  background: 'rgba(255,255,255,0.04)',
-  backdropFilter: 'blur(32px)',
-  WebkitBackdropFilter: 'blur(32px)',
-  borderColor: 'rgba(255,255,255,0.09)',
-  boxShadow: '0 8px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
+/* Chat mode: the chat window brings its own white rounded frame, and needs a bit more height */
+const CHAT_PANEL_STYLE: React.CSSProperties = {
+  ...PANEL_STYLE,
+  height: 560,
+  borderRadius: 20,
+  boxShadow: '0 20px 64px rgba(0,0,0,0.45)',
 }
 
 type Mode = 'idle' | 'chat'
@@ -34,10 +32,10 @@ function DemoPanel() {
   const { session, isConnecting, isConnected, showLimitNotice, startCall, endCall } = useVoiceDemo()
 
   return (
-    <div className="dark" style={mode === 'chat' ? { ...PANEL_STYLE, ...CHAT_FRAME_STYLE } : PANEL_STYLE}>
+    <div className="dark" style={mode === 'chat' ? CHAT_PANEL_STYLE : PANEL_STYLE}>
       {/* ── Chat mode ── */}
       {mode === 'chat' && (
-        <ChatPanel onBack={() => setMode('idle')} />
+        <ChatPanel onClose={() => setMode('idle')} />
       )}
 
       {/* ── Call mode (voice agent) ── */}

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Copy01Icon, Tick02Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { Copy01Icon, Robot01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,13 @@ interface AiMessageBubbleProps {
   provider?: Provider;
   timestamp?: Date;
   avatar?: React.ReactNode;
+  /** Hide the avatar but keep its space, for consecutive messages from the same side */
+  showAvatar?: boolean;
   isStreaming?: boolean;
+  /** Rendered under the bubble, e.g. a link card */
+  attachment?: React.ReactNode;
+  copyLabel?: string;
+  copiedLabel?: string;
   className?: string;
   children?: React.ReactNode;
 }
@@ -62,7 +68,11 @@ export function AiMessageBubble({
   provider,
   timestamp,
   avatar,
+  showAvatar = true,
   isStreaming = false,
+  attachment,
+  copyLabel = "Copier",
+  copiedLabel = "Copié",
   className,
   children,
 }: AiMessageBubbleProps) {
@@ -78,33 +88,17 @@ export function AiMessageBubble({
 
   const ProviderLogo = provider ? PROVIDER_LOGOS[provider] : null;
 
-  const defaultAvatar = isUser ? (
-    <div className="flex size-7 items-center justify-center border bg-foreground text-background">
-      <HugeiconsIcon icon={UserIcon} className="size-3.5" strokeWidth={1.5} />
-    </div>
-  ) : ProviderLogo ? (
-    <div className="flex size-7 items-center justify-center border bg-background">
-      <ProviderLogo className="size-3.5" />
-    </div>
-  ) : (
-    <div className="flex size-7 items-center justify-center border bg-background">
-      <svg
-        className="size-3.5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <title>AI</title>
-        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z" />
-        <path d="M7.5 13a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z" />
-        <path d="M13.5 13a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z" />
-        <path d="M8 17h8" />
-      </svg>
+  const defaultAvatar = isUser ? null : (
+    <div className="flex size-7 items-center justify-center rounded-full bg-ink text-white">
+      {ProviderLogo ? (
+        <ProviderLogo className="size-3.5" />
+      ) : (
+        <HugeiconsIcon icon={Robot01Icon} className="size-3.5" strokeWidth={1.5} />
+      )}
     </div>
   );
+  const avatarNode = avatar ?? defaultAvatar;
+  const isEmpty = !children && !content;
 
   return (
     <div
@@ -112,36 +106,58 @@ export function AiMessageBubble({
       role="article"
       aria-label={isUser ? "Votre message" : "Réponse de l'IA"}
       className={cn(
-        "group flex gap-3 font-sans",
+        "flex items-end gap-2.5 font-sans",
         isUser && "flex-row-reverse",
         className,
       )}
     >
-      <div className="shrink-0">{avatar || defaultAvatar}</div>
+      {avatarNode && (
+        <div className="w-7 shrink-0">{showAvatar && avatarNode}</div>
+      )}
 
       <div
         className={cn(
-          "relative max-w-[80%] px-3 py-2",
-          isUser ? "border bg-foreground text-background" : "text-foreground",
+          "flex min-w-0 max-w-[82%] flex-col gap-1.5",
+          isUser ? "items-end" : "items-start",
         )}
       >
-        <div aria-live={isStreaming ? "polite" : undefined}>
+        <div
+          aria-live={isStreaming ? "polite" : undefined}
+          className={cn(
+            "px-3.5 py-2.5 text-[14px] leading-relaxed",
+            isUser
+              ? "rounded-[18px] bg-purple text-white"
+              : "rounded-2xl border border-gray-line bg-white text-ink",
+          )}
+        >
           {children ? (
-            <div className="prose prose-xs dark:prose-invert max-w-none text-[13px] leading-relaxed [&_h1]:text-base [&_h2]:text-sm [&_h3]:text-[13px] [&_h4]:text-[13px] [&_p]:text-[13px] [&_li]:text-[13px] [&_code]:text-xs [&_pre]:text-xs">
+            <div className="[&_a]:text-purple [&_a]:underline [&_p]:m-0">
               {children}
             </div>
           ) : (
-            <p className="m-0 whitespace-pre-wrap text-[13px] leading-relaxed">
-              {content}
-            </p>
+            !isEmpty && <p className="m-0 whitespace-pre-wrap">{content}</p>
           )}
           {isStreaming && (
-            <span className="ml-1 inline-block h-3.5 w-[2px] animate-pulse bg-current" />
+            isEmpty ? (
+              <span className="flex h-[22px] items-center gap-1" aria-label="En train d'écrire">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="size-1.5 rounded-full bg-ink-body"
+                    style={{ animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }}
+                  />
+                ))}
+              </span>
+            ) : (
+              <span className="ml-1 inline-block h-3.5 w-[2px] animate-pulse bg-current" />
+            )
           )}
         </div>
 
+        {attachment}
+
         {timestamp && (
-          <time className="mt-2 block font-mono text-[10px] uppercase tracking-wider opacity-60">
+          <time className="font-mono text-[10px] uppercase tracking-wider text-ink-body">
             {timestamp.toLocaleTimeString("fr-FR", {
               hour: "2-digit",
               minute: "2-digit",
@@ -149,14 +165,14 @@ export function AiMessageBubble({
           </time>
         )}
 
-        {!isUser && !isStreaming && (
+        {!isUser && !isStreaming && content && (
           <button
             type="button"
-            className="absolute -right-8 top-0.5 flex size-6 items-center justify-center border bg-background opacity-0 transition-opacity hover:bg-muted focus-visible:opacity-100 group-hover:opacity-100"
+            className="flex items-center gap-1 px-0.5 text-[13px] text-ink-body transition-colors hover:text-ink"
             onClick={handleCopy}
           >
-            <HugeiconsIcon icon={copied ? Tick02Icon : Copy01Icon} className="size-3" strokeWidth={1.5} />
-            <span className="sr-only">Copier le message</span>
+            <HugeiconsIcon icon={copied ? Tick02Icon : Copy01Icon} className="size-3.5" strokeWidth={1.5} />
+            {copied ? copiedLabel : copyLabel}
           </button>
         )}
       </div>

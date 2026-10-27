@@ -576,13 +576,25 @@
   right: 20px;
   bottom: 144px;  /* clears both bubbles */
   z-index: 60;
-  width: min(360px, calc(100vw - 40px));
+  width: min(380px, calc(100vw - 40px));
   height: min(480px, calc(100dvh - 216px));
   min-height: 320px;
+  overflow: hidden;
+  border-radius: 20px;
   background: rgb(10, 5, 28);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 16px 64px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
+/* Light chat window (Sophie) */
+.agent-popup-chat {
+  height: min(600px, calc(100dvh - 176px));
+  background: #FFFFFF;
+  border: none;
+  box-shadow: 0 24px 64px -12px rgba(15, 17, 23, 0.28), 0 0 0 1px rgba(15, 17, 23, 0.06);
+}
+/* Quick-reply chips scroll sideways without a visible scrollbar */
+.agent-chips { scrollbar-width: none; }
+.agent-chips::-webkit-scrollbar { display: none; }
 .agent-popup-head {
   flex-shrink: 0;
   display: flex;
@@ -652,6 +664,7 @@
 @media (max-width: 767px) {
   .agent-bubbles { right: 12px; bottom: 12px; }
   .agent-popup { right: 12px; bottom: 136px; width: calc(100vw - 24px); }
+  .agent-popup-chat { height: calc(100dvh - 160px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .agent-bubble, .agent-bubble:hover, .agent-bubble.is-open { transition: none; transform: none; }

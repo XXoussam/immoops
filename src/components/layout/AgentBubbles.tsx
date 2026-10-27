@@ -111,7 +111,13 @@ function PhonePanel({ onClose }: { onClose: () => void }) {
 /* ─────────────────────────────── Floating chat + phone bubbles ── */
 export function AgentBubbles() {
   const [open, setOpen] = useState<Panel>(null)
-  const toggle = (panel: Exclude<Panel, null>) => setOpen(o => (o === panel ? null : panel))
+  /* The chat stays mounted once opened, so minimising keeps the conversation; closing resets it */
+  const [chatMounted, setChatMounted] = useState(false)
+  const toggle = (panel: Exclude<Panel, null>) => {
+    if (panel === 'chat') setChatMounted(true)
+    setOpen(o => (o === panel ? null : panel))
+  }
+  const closeChat = () => { setOpen(null); setChatMounted(false) }
 
   useEffect(() => {
     if (!open) return
@@ -122,11 +128,14 @@ export function AgentBubbles() {
 
   return (
     <>
-      {open && (
-        <div className="agent-popup dark demo-fade-in" role="dialog" aria-label={AGENT_BUBBLES[open].label}>
-          {open === 'chat'
-            ? <ChatPanel onBack={() => setOpen(null)} backLabel={<HugeiconsIcon icon={Cancel01Icon} size={16} strokeWidth={1.5} />} backAriaLabel={AGENT_BUBBLES.close} />
-            : <PhonePanel onClose={() => setOpen(null)} />}
+      {chatMounted && (
+        <div className="agent-popup agent-popup-chat demo-fade-in" role="dialog" aria-label={AGENT_BUBBLES.chat.label} hidden={open !== 'chat'}>
+          <ChatPanel onMinimize={() => setOpen(null)} onClose={closeChat} />
+        </div>
+      )}
+      {open === 'phone' && (
+        <div className="agent-popup dark demo-fade-in" role="dialog" aria-label={AGENT_BUBBLES.phone.label}>
+          <PhonePanel onClose={() => setOpen(null)} />
         </div>
       )}
 
