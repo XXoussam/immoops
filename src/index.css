@@ -538,34 +538,43 @@
   gap: 10px;
 }
 .agent-bubble {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid transparent;
+  border: none;
+  border-radius: 50%;  /* a face, not a box */
+  background: radial-gradient(circle at 50% 35%, #1C1830 0%, #0A0812 75%);
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(15, 17, 23, 0.28);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.agent-bubble:hover { transform: translateY(-2px); }
+.agent-bubble-chat  { --glow: rgba(109, 74, 255, 0.45); }
+.agent-bubble-phone { --glow: rgba(16, 185, 129, 0.35); }
+.agent-bubble { box-shadow: 0 10px 30px -6px var(--glow), 0 2px 8px rgba(10, 8, 18, 0.35); }
+.agent-bubble:hover,
+.agent-bubble.is-open {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 14px 38px -6px var(--glow), 0 0 0 4px rgba(255, 255, 255, 0.06);
+}
 .agent-bubble:focus-visible { outline: 2px solid #C084FC; outline-offset: 3px; }
-.agent-bubble-chat {
-  background: #6D4AFF;
-  color: #FFFFFF;
+
+/* eyes blink every few seconds */
+@keyframes agent-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
 }
-.agent-bubble-chat:hover { background: #7F5FFF; }
-.agent-bubble-phone {
-  background: #0F1117;
-  color: #10B981;
-  border-color: rgba(255, 255, 255, 0.14);
+.agent-face-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: agent-blink 4.5s ease-in-out infinite;
 }
-.agent-bubble-phone:hover { background: #1A1D26; }
+.agent-bubble-phone .agent-face-eyes { animation-delay: 1.6s; }
 
 .agent-popup {
   position: fixed;
   right: 20px;
-  bottom: 136px;  /* clears both bubbles */
+  bottom: 144px;  /* clears both bubbles */
   z-index: 60;
   width: min(360px, calc(100vw - 40px));
   height: min(480px, calc(100dvh - 216px));
@@ -642,8 +651,9 @@
 }
 @media (max-width: 767px) {
   .agent-bubbles { right: 12px; bottom: 12px; }
-  .agent-popup { right: 12px; bottom: 128px; width: calc(100vw - 24px); }
+  .agent-popup { right: 12px; bottom: 136px; width: calc(100vw - 24px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .agent-bubble, .agent-bubble:hover { transition: none; transform: none; }
+  .agent-bubble, .agent-bubble:hover, .agent-bubble.is-open { transition: none; transform: none; }
+  .agent-face-eyes { animation: none; }
 }
