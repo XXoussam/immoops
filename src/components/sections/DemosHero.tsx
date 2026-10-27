@@ -1,7 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { AiBrain01Icon, CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icons'
 import { AGENT_CHANNELS, DEMOS_PAGE } from '../../lib/constants'
-import { openAgent } from '../../lib/agentEvents'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 /* Channels on the left feed one agent, which writes everything to one CRM */
@@ -83,13 +82,7 @@ export function DemosHero() {
             <span className="label-white">[{hero.label}]</span>
             <h1 className="h2-white">{hero.title}</h1>
           </div>
-          <div>
-            <p className="body2 mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>{hero.description}</p>
-            <div className="flex flex-wrap gap-3">
-              <button type="button" onClick={() => openAgent('chat')} className="btn-primary-dark">{hero.tryChat}</button>
-              <button type="button" onClick={() => openAgent('phone')} className="btn-outline-white">{hero.tryCall}</button>
-            </div>
-          </div>
+          <p className="body2 lg:pb-2 lg:text-right" style={{ color: 'rgba(255,255,255,0.6)' }}>{hero.description}</p>
         </div>
 
         <AgentHub />

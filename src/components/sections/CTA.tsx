@@ -22,7 +22,7 @@ export function CTA() {
               Voyez l'IA en action avant de prendre contact.
             </p>
             <button type="button" onClick={() => openAgent('chat')} className="btn-outline">
-              Discuter avec Sophie
+              Écrire à Camille
             </button>
           </div>
 

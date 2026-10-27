@@ -12,9 +12,9 @@ type ChatMessage = { role: 'user' | 'assistant'; content: string; card?: 'bookin
 
 const GREETING: ChatMessage = { role: 'assistant', content: CHAT_WIDGET.greeting }
 
-const SOPHIE_AVATAR = (
+const AGENT_AVATAR = (
   <div className="flex size-7 items-center justify-center rounded-full bg-ink font-sans text-xs font-semibold text-white">
-    S
+    {CHAT_WIDGET.name[0]}
   </div>
 )
 
@@ -63,6 +63,7 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
   const [loading, setLoading] = useState(false)
   const messagesRef = useRef<HTMLDivElement>(null)
   const conversationRef = useRef(0)  // bumped on reset so late replies from the old conversation are dropped
+  const leadSavedRef = useRef(false)  // once the visitor's details are saved, Camille stops asking for them
 
   useEffect(() => {
     const el = messagesRef.current
@@ -83,10 +84,11 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
       const res = await fetch(CHAT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next.map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({ messages: next.map(({ role, content }) => ({ role, content })), leadSaved: leadSavedRef.current }),
       })
       const data = await res.json()
       reply = data.reply ?? reply
+      if (data.leadSaved && conversation === conversationRef.current) leadSavedRef.current = true
     } catch {
       /* keep the error reply */
     }
@@ -103,6 +105,7 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
 
   const reset = () => {
     conversationRef.current++
+    leadSavedRef.current = false
     setMessages([GREETING])
     setInput('')
     setLoading(false)
@@ -141,7 +144,7 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
             key={i}
             role={m.role}
             content={m.content}
-            avatar={m.role === 'assistant' ? SOPHIE_AVATAR : undefined}
+            avatar={m.role === 'assistant' ? AGENT_AVATAR : undefined}
             showAvatar={m.role !== 'assistant' || (messages[i + 1]?.role !== 'assistant' && !(loading && i === messages.length - 1))}
             attachment={m.card === 'booking' ? <BookingCard /> : undefined}
           >
@@ -161,7 +164,7 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
             )}
           </AiMessageBubble>
         ))}
-        {loading && <AiMessageBubble role="assistant" avatar={SOPHIE_AVATAR} isStreaming />}
+        {loading && <AiMessageBubble role="assistant" avatar={AGENT_AVATAR} isStreaming />}
       </div>
 
       {/* Quick replies */}

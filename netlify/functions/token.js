@@ -13,7 +13,7 @@ exports.handler = async () => {
   // Dispatch via the token, not AgentDispatchClient: the client SDK fetches tokens it
   // never uses (prepareConnection, end), which would otherwise spawn orphan agent jobs.
   token.roomConfig = new RoomConfiguration({
-    agents: [new RoomAgentDispatch({ agentName: 'immoops-ines' })],
+    agents: [new RoomAgentDispatch({ agentName: process.env.LIVEKIT_AGENT_NAME || 'immoops-ines' })],
   });
 
   return {

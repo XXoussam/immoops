@@ -1,4 +1,4 @@
-import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Home01Icon, SaleTag01Icon, Key01Icon, MoneyBag02Icon, Calendar03Icon, Mail01Icon, Call02Icon, WhatsappIcon, InstagramIcon, Message01Icon, Globe02Icon, UserIcon, UserMultipleIcon, PlugSocketIcon } from '@hugeicons/core-free-icons'
+import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Calendar03Icon, Mail01Icon, Call02Icon, WhatsappIcon, InstagramIcon, Message01Icon, Globe02Icon, UserIcon, UserMultipleIcon, PlugSocketIcon } from '@hugeicons/core-free-icons'
 import { N8nIcon } from './icons'
 
 export const NAV_LINKS = [
@@ -247,13 +247,13 @@ export const CAL_URL = 'https://calendly.com/immoops/discovery_call'
 
 /* Floating chat / phone bubbles (bottom-right, every page) */
 export const AGENT_BUBBLES = {
-  chat: { label: 'Discuter avec Sophie, notre agent IA' },
+  chat: { label: 'Écrire à Camille, notre assistante IA' },
   phone: {
-    label: 'Appeler Inès, notre agent vocal IA',
-    title: 'Inès',
+    label: 'Appeler Camille, notre assistante IA',
+    title: 'Camille',
     badge: 'IA',
-    subtitle: 'Agente vocale ImmoOps',
-    intro: 'Parlez à notre agent vocal depuis votre navigateur. Autorisez le micro pour démarrer.',
+    subtitle: 'Assistante IA ImmoOps',
+    intro: 'Parlez à Camille de votre agence, directement depuis votre navigateur. Autorisez le micro pour démarrer.',
     cta: 'Appeler',
     connecting: 'Connexion…',
     status: { listening: 'Écoute', thinking: 'Réflexion', speaking: 'Parle', connecting: 'Connexion…' } as Record<string, string>,
@@ -265,23 +265,23 @@ export const AGENT_BUBBLES = {
   close: 'Fermer',
 }
 
-/* Sophie chat window (floating chat bubble) */
+/* Camille's chat window (floating chat bubble) */
 export const CHAT_WIDGET = {
-  name: 'Sophie',
+  name: 'Camille',
   status: 'En ligne',
-  greeting: 'Bonjour ! Je suis Sophie, votre conseillère ImmoOps. Comment puis-je vous aider ?',
+  greeting: "Bonjour ! Je suis Camille, l'assistante IA d'ImmoOps. On aide les agences immobilières à gagner du temps avec l'IA : agents vocaux, chatbots, relances automatiques… Qu'est-ce qui vous amène ?",
   error: 'Désolée, une erreur est survenue.',
   placeholder: 'Posez votre question…',
   send: 'Envoyer',
   reset: 'Nouvelle conversation',
   minimize: 'Réduire',
   close: 'Fermer',
-  /* Quick replies above the input: `ask` goes to Sophie, `booking` answers with the Calendly card */
+  /* Quick replies above the input: `ask` goes to Camille, `booking` answers with the Calendly card */
   chips: [
-    { label: 'Acheter', Icon: Home01Icon, ask: 'Je souhaite acheter un bien.' },
-    { label: 'Vendre', Icon: SaleTag01Icon, ask: 'Je souhaite vendre mon bien.' },
-    { label: 'Louer', Icon: Key01Icon, ask: 'Je cherche une location.' },
-    { label: 'Estimer', Icon: MoneyBag02Icon, ask: 'Pouvez-vous estimer mon bien ?' },
+    { label: 'Nos services', Icon: WorkflowSquare01Icon, ask: 'Quels services proposez-vous aux agences immobilières ?' },
+    { label: 'Agent vocal', Icon: VoiceIcon, ask: 'Comment fonctionne votre agent vocal ?' },
+    { label: 'Chatbot', Icon: MessageProgrammingIcon, ask: 'Comment fonctionne votre chatbot pour une agence ?' },
+    { label: 'Formation n8n', Icon: N8nIcon, ask: 'Parlez-moi de la formation n8n.' },
     { label: 'Réserver une démo', Icon: Calendar03Icon, booking: true },
   ],
   booking: {
@@ -372,7 +372,7 @@ export const LEAD_PIPELINE = {
     ['Devis envoyé une semaine trop tard', 'Devis en retard'],
     ['Résultats jamais mesurés', 'Non mesuré'],
   ] as [string, string][],
-  names: ['Charlotte', 'Céline', 'Aurélie', 'Pauline', 'Manon', 'Camille', 'Justine', 'Margaux', 'Sophie', 'Amélie', 'Élodie', 'Inès', 'Sarah', 'Élise', 'Noémie', 'Clémence', 'Julie', 'Léa', 'Chloé', 'Emma', 'Laura', 'Mathilde', 'Lucie', 'Anaïs', 'Marion', 'Claire', 'Agathe', 'Héloïse'],
+  names: ['Charlotte', 'Céline', 'Aurélie', 'Pauline', 'Manon', 'Clara', 'Justine', 'Margaux', 'Sophie', 'Amélie', 'Élodie', 'Inès', 'Sarah', 'Élise', 'Noémie', 'Clémence', 'Julie', 'Léa', 'Chloé', 'Emma', 'Laura', 'Mathilde', 'Lucie', 'Anaïs', 'Marion', 'Claire', 'Agathe', 'Héloïse'],
   reasons: [
     'prix annoncé sans justification',
     'second rendez-vous jamais fixé',
@@ -530,8 +530,6 @@ export const DEMOS_PAGE = {
     label: 'Démos',
     title: 'Un agent IA sur tous vos canaux, un seul CRM',
     description: "Email, téléphone, WhatsApp, réseaux sociaux, SMS, site web : l'agent répond partout avec la même qualité, et chaque échange arrive dans votre CRM.",
-    tryChat: 'Discuter avec Sophie',
-    tryCall: 'Appeler Inès',
   },
   hub: {
     channelsLabel: 'Vos canaux',
@@ -573,13 +571,6 @@ export const DEMOS_PAGE = {
       { Icon: UserMultipleIcon, title: 'Votre équipe au bon moment', description: 'Visites dans le bon agenda, conseiller notifié dès qu\'un lead est chaud.' },
       { Icon: PlugSocketIcon, title: 'Votre CRM actuel', description: 'HubSpot, Salesforce, Apimo, Airtable… On se branche sur ce que vous utilisez déjà.' },
     ],
-  },
-  live: {
-    label: 'Essayez en direct',
-    title: 'Parlez à nos agents maintenant',
-    description: 'Les deux démos sont aussi disponibles à tout moment dans les bulles en bas à droite.',
-    chat: { title: 'Chat avec Sophie', description: 'Posez une question sur un achat, une vente ou une location. Réponse immédiate.', cta: 'Ouvrir le chat' },
-    call: { title: 'Appel avec Inès', description: 'Un appel de 30 secondes depuis votre navigateur. Autorisez le micro et parlez.', cta: 'Lancer l\'appel' },
   },
   tour: {
     label: 'Visite virtuelle',
