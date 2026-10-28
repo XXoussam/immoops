@@ -525,6 +525,7 @@ export const DEMOS_PAGE = {
     agentLabel: 'Agent IA',
     agentTitle: 'ImmoOps',
     agentSteps: ['Comprend la demande', 'Qualifie : budget, zone, délai', 'Agit : répond, relance, planifie'],
+    slogan: 'On voit tout.',
     crmLabel: 'Votre CRM',
     crmFields: ['Contact', 'Projet et budget', 'Historique complet', 'Prochaine action'],
   },

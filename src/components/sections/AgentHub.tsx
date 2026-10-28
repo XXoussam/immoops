@@ -2,26 +2,58 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icons'
 import { AGENT_CHANNELS, DEMOS_PAGE } from '../../lib/constants'
 
-/* The agent: two floating eyes whose pupils dart around, mostly reading downward, and dilate now and then */
-function FloatingEyes() {
-  const eyes = [20, 44]  // eye centres (x); both eyes are 16 × 26, centred on y = 20
+/* The agent: a searchlight sweeps a dark screen and one eye follows it, blinking now and then */
+function SearchlightEye({ slogan }: { slogan: string }) {
+  /* lens-like tick marks on the iris: two bars at each diagonal */
+  const ticks = [40, 52, 130, 142, 220, 232, 310, 322]
   return (
-    <div className="floating-eyes" aria-hidden="true">
-      <svg viewBox="0 0 64 40" width="96" height="60" fill="none">
+    <div className="relative aspect-[2/1] w-full overflow-hidden border border-white/10 bg-[#050507]">
+      <svg viewBox="0 0 240 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <defs>
+          <filter id="searchlight-blur" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="7" />
+          </filter>
+          <clipPath id="searchlight-almond">
+            <path d="M62 58 Q120 14 178 58 Q120 102 62 58 Z" />
+          </clipPath>
+        </defs>
+
+        {/* the beam: a soft slanted band of light sweeping the frame */}
+        <g className="searchlight-beam">
+          <polygon points="10,-20 90,-20 150,140 70,140" fill="#FFFFFF" opacity="0.85" filter="url(#searchlight-blur)" />
+        </g>
+
+        {/* the eye, blinking (agent-face-eyes) */}
         <g className="agent-face-eyes">
-          {eyes.map((cx) => (
-            <g key={cx}>
-              <rect x={cx - 8} y="7" width="16" height="26" rx="8" fill="#FFFFFF" />
-              <g className="floating-eyes-pupil">
-                <g className="floating-eyes-iris">
-                  <circle cx={cx} cy="21" r="4.2" fill="#0F1117" />
-                  <circle cx={cx - 1.4} cy="19.4" r="1.2" fill="#FFFFFF" />
-                </g>
-              </g>
+          <path d="M62 58 Q120 14 178 58 Q120 102 62 58 Z" fill="#F4F4F6" stroke="#0B0B10" strokeWidth="1.6" />
+          <g clipPath="url(#searchlight-almond)">
+            <g className="searchlight-iris">
+              <circle cx="120" cy="58" r="22" fill="#0B0B10" />
+              {ticks.map((deg) => (
+                <rect
+                  key={deg}
+                  x="118.6"
+                  y="38"
+                  width="2.8"
+                  height="7"
+                  rx="0.8"
+                  fill="#FFFFFF"
+                  opacity="0.9"
+                  transform={`rotate(${deg} 120 58)`}
+                />
+              ))}
+              <circle cx="120" cy="58" r="8" fill="#FFFFFF" />
+              <circle cx="120" cy="58" r="8" fill="none" stroke="#0B0B10" strokeWidth="1.5" />
             </g>
-          ))}
+          </g>
         </g>
       </svg>
+
+      <p className="absolute bottom-2.5 left-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em]">
+        <span className="searchlight-rec size-1.5 rounded-full bg-purple-light" aria-hidden="true" />
+        {/* inverts against the beam, so it stays readable when the light passes over it */}
+        <span className="text-white mix-blend-difference">{slogan}</span>
+      </p>
     </div>
   )
 }
@@ -57,7 +89,7 @@ export function AgentHub({ agentTitle }: { agentTitle?: string }) {
         className="flex flex-col justify-center border border-purple/50 px-7 py-8 lg:w-[26%]"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
-        <FloatingEyes />
+        <SearchlightEye slogan={hub.slogan} />
         <p className="label-white mt-5">[{hub.agentLabel}]</p>
         <p className="h4 text-white">{agentTitle ?? hub.agentTitle}</p>
         <ol className="mt-5 flex flex-col gap-3">

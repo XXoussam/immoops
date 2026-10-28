@@ -623,39 +623,24 @@
   .hub-line, .hub-line-v { animation: none; }
 }
 
-/* ── /demos agent card: floating eyes with lively pupils ── */
-@keyframes eyes-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-/* Gaze path: short darts between pauses, mostly reading downward, with the odd glance up or aside.
-   Every point keeps the (dilated) pupil inside the eye. */
-@keyframes pupil-wander {
-  0%, 6%    { transform: translate(0, 0); }
-  9%, 19%   { transform: translate(-2.5px, 5px); }
-  22%, 30%  { transform: translate(2.5px, 5px); }
-  33%, 41%  { transform: translate(0, 6px); }
-  44%, 50%  { transform: translate(-2.8px, -1.5px); }
-  53%, 59%  { transform: translate(2.8px, -4px); }
-  62%, 66%  { transform: translate(0, -5.5px); }
-  69%, 79%  { transform: translate(-1.5px, 3px); }
-  82%, 88%  { transform: translate(2.8px, 0.5px); }
-  92%, 100% { transform: translate(0, 0); }
-}
-@keyframes pupil-dilate { 0%, 70%, 100% { transform: scale(1); } 80%, 88% { transform: scale(1.1); } }
-.floating-eyes {
-  width: fit-content;
-  animation: eyes-float 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 14px rgba(192, 132, 252, 0.45));
-}
-.floating-eyes-pupil {
+/* ── Agent card (homepage + /demos): a searchlight sweeps, the eye follows it ── */
+@keyframes searchlight-sweep { from { transform: translateX(-130px); } to { transform: translateX(200px); } }
+@keyframes searchlight-follow { from { transform: translateX(-9px); } to { transform: translateX(9px); } }
+@keyframes searchlight-rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+/* beam and gaze share one timing so the eye tracks the light */
+.searchlight-beam,
+.searchlight-iris {
   transform-box: view-box;
-  animation: pupil-wander 9s ease-in-out infinite;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
-.floating-eyes-iris {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pupil-dilate 5.3s ease-in-out infinite;  /* off-beat with the gaze so it never repeats in step */
-}
+.searchlight-beam { animation-name: searchlight-sweep; }
+.searchlight-iris { animation-name: searchlight-follow; }
+.searchlight-rec { animation: searchlight-rec 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .floating-eyes, .floating-eyes-pupil, .floating-eyes-iris { animation: none; }
+  .searchlight-beam, .searchlight-iris, .searchlight-rec { animation: none; }
 }
 
 /* ── Homepage Camille section: the agent image, large and faint in the background ── */
