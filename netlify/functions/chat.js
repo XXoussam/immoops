@@ -14,21 +14,30 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+/* GEMINI_MODEL can override the model without a code change */
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+
 async function generate(systemPrompt, contents, withTools) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents,
-        ...(withTools && { tools: [{ functionDeclarations: [SAVE_LEAD_TOOL] }] }),
-        generationConfig: { temperature: 0.7, maxOutputTokens: 600 },
-      }),
-    }
-  );
-  return res.json();
+  if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not set');
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
+    method: 'POST',
+    // key in a header rather than the URL, so it never shows up in logged URLs
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents,
+      ...(withTools && { tools: [{ functionDeclarations: [SAVE_LEAD_TOOL] }] }),
+      // no thinking: 2.5 Flash otherwise spends the output budget (and seconds) before replying,
+      // which can leave an empty answer or hit Netlify's 10 s function timeout
+      generationConfig: { temperature: 0.7, maxOutputTokens: 1024, thinkingConfig: { thinkingBudget: 0 } },
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    // e.g. 400 API_KEY_INVALID (revoked key), 403 PERMISSION_DENIED, 404 model not found, 429 quota
+    throw new Error(`Gemini ${res.status} ${data.error?.status ?? ''}: ${data.error?.message ?? 'no details'}`);
+  }
+  return data;
 }
 
 exports.handler = async (event) => {
@@ -64,6 +73,7 @@ exports.handler = async (event) => {
 
       if (!call) {
         reply = parts.map((p) => p.text).filter(Boolean).join('');
+        if (!reply) console.error('chat fn: empty reply from Gemini', data.candidates?.[0]?.finishReason ?? data.promptFeedback);
         break;
       }
       const transcript = messages
