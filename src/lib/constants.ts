@@ -48,27 +48,13 @@ export const SERVICES: Service[] = [
   },
 ]
 
-export interface Demo {
-  agent: 'chat' | 'phone'
-  channel: string
-  title: string
-  description: string
+/* Homepage section: Camille, one assistant across every channel (the diagram is shared with /demos) */
+export const HOME_CAMILLE = {
+  label: 'Camille',
+  title: 'Une seule assistante IA, sur tous vos canaux',
+  description: "Camille montre ce que nous installons dans votre agence : une seule IA qui répond sur tous vos canaux et range chaque échange dans votre CRM. Parlez-lui avec les bulles en bas à droite.",
+  link: 'Voir Camille canal par canal',
 }
-
-export const DEMOS: Demo[] = [
-  {
-    channel: 'Chatbot IA',
-    title: "Qualification d'un acheteur entrant",
-    description: "Un prospect arrive sur votre site à 23h. Le chatbot identifie son budget, sa zone et son délai de projet — et qualifie le lead avant l'ouverture.",
-    agent: 'chat',
-  },
-  {
-    channel: 'Agent vocal',
-    title: 'Réponse automatique hors horaires',
-    description: "Un appel entrant après 19h. L'agent vocal répond naturellement, collecte les informations clés et planifie un rappel au bon agent.",
-    agent: 'phone',
-  },
-]
 
 export interface Step {
   number: string
