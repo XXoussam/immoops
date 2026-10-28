@@ -206,26 +206,3 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
     </div>
   )
 }
-
-/* ─── Shown after a voice call hits the 30s demo cap ── */
-export function LimitNotice() {
-  return (
-    <div style={{
-      position: 'absolute',
-      top: 14,
-      left: 14,
-      right: 14,
-      padding: '10px 14px',
-      borderRadius: 0,
-      background: 'rgba(109,74,255,0.16)',
-      border: '1px solid rgba(109,74,255,0.3)',
-      color: 'rgba(220,210,255,0.95)',
-      fontSize: 12,
-      fontFamily: 'Jost, sans-serif',
-      textAlign: 'center',
-      zIndex: 1,
-    }}>
-      Démo limitée à 30 secondes. Réservez un créneau pour un appel complet.
-    </div>
-  )
-}

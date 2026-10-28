@@ -1,17 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSession } from '@livekit/components-react'
 import { TokenSource, ConnectionState } from 'livekit-client'
 
 const TOKEN_URL = import.meta.env.VITE_LIVEKIT_TOKEN_URL ?? '/.netlify/functions/token'
-const CALL_TIME_LIMIT_MS = 30_000
-const LIMIT_NOTICE_MS = 6_000
 
-/* Voice agent session (LiveKit), capped at 30s per call to limit API spend */
+/* Voice agent session (LiveKit) */
 export function useVoiceDemo() {
-  const [showLimitNotice, setShowLimitNotice] = useState(false)
   const [starting, setStarting] = useState(false)  // covers the token fetch, before LiveKit reports Connecting
-  const limitTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const noticeTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const tokenSource = useMemo(() =>
     TokenSource.literal(async () => {
@@ -25,28 +20,12 @@ export function useVoiceDemo() {
   const session = useSession(tokenSource)
   const isConnecting = starting || session.connectionState === ConnectionState.Connecting
 
-  const endCall = (hitLimit = false) => {
-    clearTimeout(limitTimeoutRef.current)
+  const endCall = () => {
     setStarting(false)
     session.end()
-    if (hitLimit) {
-      setShowLimitNotice(true)
-      clearTimeout(noticeTimeoutRef.current)
-      noticeTimeoutRef.current = setTimeout(() => setShowLimitNotice(false), LIMIT_NOTICE_MS)
-    }
   }
 
-  // Cap the call once the session connects
-  useEffect(() => {
-    if (!session.isConnected) return
-    limitTimeoutRef.current = setTimeout(() => endCall(true), CALL_TIME_LIMIT_MS)
-    return () => clearTimeout(limitTimeoutRef.current)
-  }, [session.isConnected])
-
-  useEffect(() => () => clearTimeout(noticeTimeoutRef.current), [])
-
   const startCall = () => {
-    setShowLimitNotice(false)
     setStarting(true)
     // unlock audio playback while still inside the click; the agent's voice arrives seconds later,
     // after the browser's user-activation window, and would otherwise be blocked (Safari / iOS)
@@ -56,5 +35,5 @@ export function useVoiceDemo() {
       .finally(() => setStarting(false))
   }
 
-  return { session, isConnecting, isConnected: session.isConnected, showLimitNotice, startCall, endCall }
+  return { session, isConnecting, isConnected: session.isConnected, startCall, endCall }
 }

@@ -6,7 +6,7 @@ follow up. One prompt and one lead pipeline serve both channels:
 
 | | Chat bubble | Call bubble |
 |---|---|---|
-| Runs in | `netlify/functions/chat.js` (Gemini) | LiveKit agent `immoops-ines` (outside this repo) |
+| Runs in | `netlify/functions/chat.js` (Gemini) | LiveKit Cloud agent `immoops-camille` (separate project, see below) |
 | Prompt | `buildPrompt('chat')` | `GET /.netlify/functions/agent-prompt` |
 | Saves leads via | `saveLead()` directly | `POST /.netlify/functions/lead` |
 
@@ -24,85 +24,31 @@ Leads go to the **IMMOOPS** Airtable base: table **Leads** (`Source` = `Chatbot`
 | `GEMINI_API_KEY` | chat | Gemini API key |
 | `AIRTABLE_TOKEN` | chat, lead | Airtable personal access token with `data.records:write` on the IMMOOPS base |
 | `LEAD_API_SECRET` | lead | any long random string, shared with the voice agent |
-| `LIVEKIT_AGENT_NAME` | token | optional, defaults to `immoops-ines` |
+| `LIVEKIT_AGENT_NAME` | token | optional, defaults to `immoops-camille`; must match `AGENT_NAME` in the agent |
 
-## Wiring the LiveKit voice agent
+## The LiveKit voice agent
 
-The agent needs two env vars: `IMMOOPS_SITE_URL` (e.g. `https://immoops.com`) and
-`LEAD_API_SECRET` (same value as on Netlify). Then, in the agent code:
+Source: the `oussna-voice-ai` project (local folder next to this repo), deployed to LiveKit
+Cloud (project `realstate`, region eu-central) with `lk agent deploy`. In `src/agent.py`:
 
-```python
-SITE_URL = os.environ["IMMOOPS_SITE_URL"].rstrip("/")
-LEAD_API_SECRET = os.environ["LEAD_API_SECRET"]
+- `AGENT_NAME = "immoops-camille"`: the name `token.js` dispatches.
+- At the start of each call it loads Camille's prompt from
+  `GET /.netlify/functions/agent-prompt?canal=appel` (fetched while joining the room). If the
+  site is unreachable it uses the short `FALLBACK_INSTRUCTIONS` in `src/prompt.py`.
+- Its `enregistrer_lead` tool posts to `/.netlify/functions/lead` with
+  `Authorization: Bearer <LEAD_API_SECRET>`, along with the call transcript so far.
+- Pipeline: Deepgram nova-3 (fr) → gpt-4o-mini → ElevenLabs `eleven_flash_v2_5`, multilingual
+  turn detector, preemptive generation, endpointing delay 0.3–1.5 s. The greeting is spoken
+  with `session.say()` (no LLM round trip).
 
+LiveKit agent secrets (`lk agent update-secrets`): `OPENAI_API_KEY`, `DEEPGRAM_API_KEY`,
+`ELEVEN_API_KEY`, `LEAD_API_SECRET` (same value as on Netlify) and optionally
+`IMMOOPS_SITE_URL` (defaults to `https://immoops.com`).
 
-async def load_camille_prompt() -> str:
-    """Camille's shared instructions, as maintained in the immoops repo."""
-    async with httpx.AsyncClient(timeout=5.0) as client:
-        resp = await client.get(f"{SITE_URL}/.netlify/functions/agent-prompt", params={"canal": "appel"})
-        resp.raise_for_status()
-        return resp.text
-
-
-class Camille(Agent):
-    def __init__(self, instructions: str) -> None:
-        super().__init__(instructions=instructions)
-
-    @function_tool
-    async def enregistrer_lead(
-        self,
-        context: RunContext,
-        nom: str,
-        besoin: str,
-        consentement: bool,
-        email: str | None = None,
-        telephone: str | None = None,
-        agence: str | None = None,
-    ):
-        """Enregistre les coordonnées d'un visiteur qui accepte explicitement d'être
-        recontacté par ImmoOps. Nécessite au moins un email ou un téléphone.
-
-        Args:
-            nom: nom du visiteur
-            besoin: le besoin exprimé, résumé en une phrase
-            consentement: true uniquement si le visiteur a explicitement accepté d'être recontacté
-            email: email du visiteur, confirmé en l'épelant
-            telephone: téléphone du visiteur, confirmé chiffre par chiffre
-            agence: nom de l'agence ou du réseau, et ville si connue
-        """
-        payload = {
-            "nom": nom, "besoin": besoin, "consentement": consentement,
-            "email": email or "", "telephone": telephone or "", "agence": agence or "",
-        }
-        try:
-            async with httpx.AsyncClient(timeout=8.0) as client:
-                resp = await client.post(
-                    f"{SITE_URL}/.netlify/functions/lead",
-                    headers={"Authorization": f"Bearer {LEAD_API_SECRET}"},
-                    json=payload,
-                )
-                result = resp.json()
-        except Exception as e:
-            logger.warning(f"lead not saved: {e}")
-            return "Enregistrement indisponible : propose au visiteur de réserver lui-même un créneau sur le site."
-        if result.get("ok"):
-            return "Coordonnées enregistrées. Dis au visiteur qu'Oussama le recontacte très vite."
-        return result.get("error", "Enregistrement indisponible.")
-
-
-async def entrypoint(ctx: JobContext):
-    instructions = await load_camille_prompt()
-    session = AgentSession(...)  # unchanged: STT / LLM / TTS / VAD
-    await session.start(agent=Camille(instructions), room=ctx.room)
-    await ctx.connect()
-```
-
-The lead endpoint also accepts an optional `transcript` string, stored in ChatSessions with
-the lead, if you want the call transcript saved alongside it.
+Renaming the agent: deploy the agent first, then the site (or set `LIVEKIT_AGENT_NAME` on
+Netlify), otherwise calls dispatch a name no worker answers and show "Camille est indisponible".
 
 ## Call length
 
-Web calls are capped at 30 seconds (`CALL_TIME_LIMIT_MS` in `src/hooks/useVoiceDemo.ts`, and
-`CALL_LIMIT_S` in `src/components/layout/AgentBubbles.tsx` for the on-screen timer) to limit
-API spend. That is too short for Camille to present ImmoOps *and* take a name, agency and
-phone number; raise both once she collects leads by phone.
+Web calls have no time limit: the call runs until the visitor hangs up (the on-screen timer
+only counts up). Add a cap on the agent side (LiveKit) if API spend becomes a concern.

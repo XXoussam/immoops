@@ -5,7 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon, VolumeHighIcon } from '@hugeicons/core-free-icons'
 import { AgentSessionProvider } from '../agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
-import { ChatPanel, LimitNotice } from '../demo/AgentPanels'
+import { ChatPanel } from '../demo/AgentPanels'
 import { useVoiceDemo } from '../../hooks/useVoiceDemo'
 import { AGENT_BUBBLES } from '../../lib/constants'
 import { OPEN_AGENT_EVENT, type AgentKind } from '../../lib/agentEvents'
@@ -60,7 +60,6 @@ function BubbleFace({ kind }: { kind: Exclude<Panel, null> }) {
   )
 }
 
-const CALL_LIMIT_S = 30
 const AGENT_JOIN_TIMEOUT_S = 15
 const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
 
@@ -132,7 +131,7 @@ function StatusLine({ label, seconds }: { label: string; seconds?: number }) {
           <span key={i} className="size-1 rounded-full bg-purple" style={{ animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite` }} />
         ))}
       </span>
-      {seconds !== undefined && <span className="ml-2 tabular-nums">{mmss(seconds)} / {mmss(CALL_LIMIT_S)}</span>}
+      {seconds !== undefined && <span className="ml-2 tabular-nums">{mmss(seconds)}</span>}
     </span>
   )
 }
@@ -148,7 +147,7 @@ function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => 
 
   useEffect(() => {
     const startedAt = Date.now()
-    const id = setInterval(() => setSeconds(Math.min(CALL_LIMIT_S, Math.floor((Date.now() - startedAt) / 1000))), 250)
+    const id = setInterval(() => setSeconds(Math.floor((Date.now() - startedAt) / 1000)), 250)
     return () => clearInterval(id)
   }, [])
 
@@ -184,7 +183,7 @@ function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => 
 
 /* ─── Voice call view — mounted on first open, so no LiveKit room exists until then ── */
 function PhonePanel({ onClose }: { onClose: () => void }) {
-  const { session, isConnecting, isConnected, showLimitNotice, startCall, endCall } = useVoiceDemo()
+  const { session, isConnecting, isConnected, startCall, endCall } = useVoiceDemo()
   const copy = AGENT_BUBBLES.phone
 
   if (isConnected) {
@@ -198,7 +197,6 @@ function PhonePanel({ onClose }: { onClose: () => void }) {
   return (
     <CallLayout
       onClose={onClose}
-      notice={showLimitNotice && <div className="relative mx-4 h-0"><LimitNotice /></div>}
       visualizer={<AgentAudioVisualizerAura state={isConnecting ? 'connecting' : 'idle'} color="#6D4AFF" themeMode="light" size="lg" />}
       status={isConnecting
         ? <StatusLine label={copy.status.connecting} />
