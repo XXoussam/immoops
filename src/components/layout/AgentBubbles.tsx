@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from 'react'
-import { useTrackToggle, useVoiceAssistant } from '@livekit/components-react'
+import { useAudioPlayback, useTrackToggle, useVoiceAssistant } from '@livekit/components-react'
 import { Track } from 'livekit-client'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon } from '@hugeicons/core-free-icons'
+import { Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon, VolumeHighIcon } from '@hugeicons/core-free-icons'
 import { AgentSessionProvider } from '../agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
 import { ChatPanel, LimitNotice } from '../demo/AgentPanels'
@@ -61,6 +61,7 @@ function BubbleFace({ kind }: { kind: Exclude<Panel, null> }) {
 }
 
 const CALL_LIMIT_S = 30
+const AGENT_JOIN_TIMEOUT_S = 15
 const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
 
 function RoundButton({ label, icon, onClick, disabled, tone }: {
@@ -138,8 +139,10 @@ function StatusLine({ label, seconds }: { label: string; seconds?: number }) {
 
 /* Live call: needs the session context for the agent state and the mic toggle; mounted only while connected */
 function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => void }) {
-  const { state, audioTrack } = useVoiceAssistant()
+  const { state, audioTrack, agent } = useVoiceAssistant()
   const mic = useTrackToggle({ source: Track.Source.Microphone })
+  // browsers (Safari especially) can block the agent's audio until a click unlocks it
+  const { canPlayAudio, startAudio } = useAudioPlayback()
   const copy = AGENT_BUBBLES.phone
   const [seconds, setSeconds] = useState(0)
 
@@ -149,13 +152,22 @@ function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => 
     return () => clearInterval(id)
   }, [])
 
+  // the room is up but the voice agent never joined (worker down, dispatch failed…)
+  const agentMissing = state === 'failed' || (!agent && seconds >= AGENT_JOIN_TIMEOUT_S)
+  const status = agentMissing
+    ? <p className="mx-auto max-w-[260px] text-[13px] leading-snug text-[#B91C1C]">{copy.unavailable}</p>
+    : <StatusLine label={copy.status[state] ?? copy.status.connecting} seconds={seconds} />
+
   return (
     <CallLayout
       onClose={onClose}
       visualizer={<AgentAudioVisualizerAura state={state} audioTrack={audioTrack} color="#6D4AFF" themeMode="light" size="lg" />}
-      status={<StatusLine label={copy.status[state] ?? copy.status.listening} seconds={seconds} />}
+      status={status}
       controls={
         <>
+          {!canPlayAudio && (
+            <RoundButton label={copy.enableSound} icon={VolumeHighIcon} onClick={() => startAudio()} tone="go" />
+          )}
           <RoundButton
             label={mic.enabled ? copy.mute : copy.unmute}
             icon={mic.enabled ? Mic01Icon : MicOff01Icon}

@@ -48,6 +48,9 @@ export function useVoiceDemo() {
   const startCall = () => {
     setShowLimitNotice(false)
     setStarting(true)
+    // unlock audio playback while still inside the click; the agent's voice arrives seconds later,
+    // after the browser's user-activation window, and would otherwise be blocked (Safari / iOS)
+    session.room.startAudio().catch(() => {})
     session.start({ tracks: { microphone: { enabled: true } } })
       .catch(() => endCall())
       .finally(() => setStarting(false))

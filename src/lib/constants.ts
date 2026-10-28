@@ -256,7 +256,10 @@ export const AGENT_BUBBLES = {
     intro: 'Parlez à Camille de votre agence, directement depuis votre navigateur. Autorisez le micro pour démarrer.',
     cta: 'Appeler',
     connecting: 'Connexion…',
-    status: { listening: 'Écoute', thinking: 'Réflexion', speaking: 'Parle', connecting: 'Connexion…' } as Record<string, string>,
+    /* keys are LiveKit agent states; anything not listed (connecting, initializing…) shows `connecting` */
+    status: { idle: 'Écoute', listening: 'Écoute', thinking: 'Réflexion', speaking: 'Parle', connecting: 'Connexion…' } as Record<string, string>,
+    unavailable: 'Camille est indisponible pour le moment. Réessayez dans un instant.',
+    enableSound: 'Activer le son',
     mute: 'Muet',
     unmute: 'Réactiver',
     hangUp: 'Raccrocher',
