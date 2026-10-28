@@ -623,26 +623,26 @@
   .hub-line, .hub-line-v { animation: none; }
 }
 
-/* ── /demos agent card: floating eyes scanning data ── */
-@keyframes scan-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes scan-look  { from { transform: translateX(-7px); } to { transform: translateX(7px); } }
-@keyframes scan-sweep { from { transform: translateX(0); } to { transform: translateX(76px); } }
-.scan-eyes {
+/* ── /demos agent card: floating eyes, pupils gliding and bumping side to side ── */
+@keyframes eyes-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes pupil-bump {
+  0%, 8%    { transform: translateX(-3.5px); }
+  38%       { transform: translateX(3.5px); }
+  43%       { transform: translateX(2.3px); }
+  48%, 58%  { transform: translateX(3.5px); }
+  88%       { transform: translateX(-3.5px); }
+  93%       { transform: translateX(-2.3px); }
+  98%, 100% { transform: translateX(-3.5px); }
+}
+.floating-eyes {
   width: fit-content;
-  animation: scan-float 4s ease-in-out infinite;
+  animation: eyes-float 4s ease-in-out infinite;
   filter: drop-shadow(0 0 14px rgba(192, 132, 252, 0.45));
 }
-/* gaze and beam share one timing so the eyes follow the beam */
-.scan-eyes-look,
-.scan-eyes-beam {
+.floating-eyes-pupil {
   transform-box: view-box;
-  animation-duration: 2.4s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+  animation: pupil-bump 3.2s ease-in-out infinite;
 }
-.scan-eyes-look { animation-name: scan-look; }
-.scan-eyes-beam { animation-name: scan-sweep; }
 @media (prefers-reduced-motion: reduce) {
-  .scan-eyes, .scan-eyes-look, .scan-eyes-beam { animation: none; }
+  .floating-eyes, .floating-eyes-pupil { animation: none; }
 }
