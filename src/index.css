@@ -623,17 +623,23 @@
   .hub-line, .hub-line-v { animation: none; }
 }
 
-/* ── /demos agent card: floating eyes, pupils gliding and bumping side to side ── */
+/* ── /demos agent card: floating eyes with lively pupils ── */
 @keyframes eyes-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes pupil-bump {
-  0%, 8%    { transform: translateX(-3.5px); }
-  38%       { transform: translateX(3.5px); }
-  43%       { transform: translateX(2.3px); }
-  48%, 58%  { transform: translateX(3.5px); }
-  88%       { transform: translateX(-3.5px); }
-  93%       { transform: translateX(-2.3px); }
-  98%, 100% { transform: translateX(-3.5px); }
+/* Gaze path: short darts between pauses, mostly reading downward, with the odd glance up or aside.
+   Every point keeps the (dilated) pupil inside the eye. */
+@keyframes pupil-wander {
+  0%, 6%    { transform: translate(0, 0); }
+  9%, 19%   { transform: translate(-2.5px, 5px); }
+  22%, 30%  { transform: translate(2.5px, 5px); }
+  33%, 41%  { transform: translate(0, 6px); }
+  44%, 50%  { transform: translate(-2.8px, -1.5px); }
+  53%, 59%  { transform: translate(2.8px, -4px); }
+  62%, 66%  { transform: translate(0, -5.5px); }
+  69%, 79%  { transform: translate(-1.5px, 3px); }
+  82%, 88%  { transform: translate(2.8px, 0.5px); }
+  92%, 100% { transform: translate(0, 0); }
 }
+@keyframes pupil-dilate { 0%, 70%, 100% { transform: scale(1); } 80%, 88% { transform: scale(1.1); } }
 .floating-eyes {
   width: fit-content;
   animation: eyes-float 4s ease-in-out infinite;
@@ -641,8 +647,13 @@
 }
 .floating-eyes-pupil {
   transform-box: view-box;
-  animation: pupil-bump 3.2s ease-in-out infinite;
+  animation: pupil-wander 9s ease-in-out infinite;
+}
+.floating-eyes-iris {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pupil-dilate 5.3s ease-in-out infinite;  /* off-beat with the gaze so it never repeats in step */
 }
 @media (prefers-reduced-motion: reduce) {
-  .floating-eyes, .floating-eyes-pupil { animation: none; }
+  .floating-eyes, .floating-eyes-pupil, .floating-eyes-iris { animation: none; }
 }

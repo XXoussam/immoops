@@ -3,7 +3,7 @@ import { CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icon
 import { AGENT_CHANNELS, DEMOS_PAGE } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 
-/* The agent: two floating eyes whose pupils glide side to side and bump against the edge */
+/* The agent: two floating eyes whose pupils dart around, mostly reading downward, and dilate now and then */
 function FloatingEyes() {
   const eyes = [20, 44]  // eye centres (x); both eyes are 16 × 26, centred on y = 20
   return (
@@ -14,8 +14,10 @@ function FloatingEyes() {
             <g key={cx}>
               <rect x={cx - 8} y="7" width="16" height="26" rx="8" fill="#FFFFFF" />
               <g className="floating-eyes-pupil">
-                <circle cx={cx} cy="21" r="4.2" fill="#0F1117" />
-                <circle cx={cx - 1.4} cy="19.4" r="1.2" fill="#FFFFFF" />
+                <g className="floating-eyes-iris">
+                  <circle cx={cx} cy="21" r="4.2" fill="#0F1117" />
+                  <circle cx={cx - 1.4} cy="19.4" r="1.2" fill="#FFFFFF" />
+                </g>
               </g>
             </g>
           ))}
