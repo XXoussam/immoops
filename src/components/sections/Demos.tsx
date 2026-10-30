@@ -9,15 +9,6 @@ export function Demos() {
 
   return (
     <section id="demos" className="section bg-purple-dark">
-      {/* the agent, large and faint behind the content; clipped here, not on the section, so the seam marks stay visible */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <img
-          src="/robot-hero.webp"
-          alt=""
-          className={`home-camille-bg select-none transition-opacity duration-1000 ${isVisible ? 'is-visible' : ''}`}
-        />
-      </div>
-
       <div
         ref={ref}
         className={`container-main relative transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}

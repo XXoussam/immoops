@@ -623,24 +623,22 @@
   .hub-line, .hub-line-v { animation: none; }
 }
 
-/* ── Agent card (homepage + /demos): a searchlight sweeps, the eye follows it ── */
-@keyframes searchlight-sweep { from { transform: translateX(-130px); } to { transform: translateX(200px); } }
-@keyframes searchlight-follow { from { transform: translateX(-9px); } to { transform: translateX(9px); } }
+/* ── Agent card (homepage + /demos): the eye's beam, gaze and blinks are animated in JS (AgentHub.tsx) ── */
 @keyframes searchlight-rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-/* beam and gaze share one timing so the eye tracks the light */
-.searchlight-beam,
-.searchlight-iris {
-  transform-box: view-box;
-  animation-duration: 5s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+/* the eye's dark box fades out on all four sides (two gradients intersected) */
+.eye-box {
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-composite: intersect;
 }
-.searchlight-beam { animation-name: searchlight-sweep; }
-.searchlight-iris { animation-name: searchlight-follow; }
 .searchlight-rec { animation: searchlight-rec 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .searchlight-beam, .searchlight-iris, .searchlight-rec { animation: none; }
+  .searchlight-rec { animation: none; }
 }
 
 /* ── Homepage Camille section: the agent image, large and faint in the background ── */
@@ -656,8 +654,8 @@
   -webkit-mask-image: radial-gradient(ellipse 55% 60% at 60% 45%, #000 35%, transparent 80%);
   mask-image: radial-gradient(ellipse 55% 60% at 60% 45%, #000 35%, transparent 80%);
 }
-.home-camille-bg.is-visible { opacity: 0.25; }
+.home-camille-bg.is-visible { opacity: 0.12; }
 @media (max-width: 767px) {
   .home-camille-bg { right: -40%; height: 90%; }
-  .home-camille-bg.is-visible { opacity: 0.16; }
+  .home-camille-bg.is-visible { opacity: 0.08; }
 }

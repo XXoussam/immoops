@@ -1,6 +1,5 @@
 import { DEMOS_PAGE } from '../../lib/constants'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
-import { AgentHub } from './AgentHub'
 
 export function DemosHero() {
   const { ref, isVisible } = useScrollReveal()
@@ -19,8 +18,6 @@ export function DemosHero() {
           </div>
           <p className="body2 lg:pb-2 lg:text-right" style={{ color: 'rgba(255,255,255,0.6)' }}>{hero.description}</p>
         </div>
-
-        <AgentHub />
       </div>
     </section>
   )
