@@ -6,7 +6,7 @@ follow up. One prompt and one lead pipeline serve both channels:
 
 | | Chat bubble | Call bubble |
 |---|---|---|
-| Runs in | `netlify/functions/chat.js` (Gemini) | LiveKit Cloud agent `immoops-camille` (separate project, see below) |
+| Runs in | `netlify/functions/chat.js` (OpenAI) | LiveKit Cloud agent `immoops-camille` (separate project, see below) |
 | Prompt | `buildPrompt('chat')` | `GET /.netlify/functions/agent-prompt` |
 | Saves leads via | `saveLead()` directly | `POST /.netlify/functions/lead` |
 
@@ -21,7 +21,7 @@ Leads go to the **IMMOOPS** Airtable base: table **Leads** (`Source` = `Chatbot`
 
 | Variable | Used by | Value |
 |---|---|---|
-| `GEMINI_API_KEY` | chat | Gemini API key |
+| `OPENAI_API_KEY` | chat | OpenAI API key (the voice agent uses its own copy in LiveKit Cloud secrets) |
 | `AIRTABLE_TOKEN` | chat, lead | Airtable personal access token with `data.records:write` on the IMMOOPS base |
 | `LEAD_API_SECRET` | lead | any long random string, shared with the voice agent |
 | `LIVEKIT_AGENT_NAME` | token | optional, defaults to `immoops-camille`; must match `AGENT_NAME` in the agent |

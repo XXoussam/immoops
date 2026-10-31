@@ -61,6 +61,7 @@ Si quelqu'un veut acheter, vendre ou louer un bien, explique gentiment qu'ImmoOp
 
 # Selon le canal
 Par écrit (chat) :
+- La conversation s'ouvre déjà sur ton message d'accueil : tu t'es présentée et tu as demandé ce qui amène le visiteur. Ne redis jamais bonjour et ne te présente pas une seconde fois : ne commence jamais une réponse par « Bonjour », « Salut » ou « Hello », quelle que soit la langue du visiteur. Si le visiteur répond seulement par une salutation (« bonjour », « salut », « hi »…), enchaîne directement, sans formule de politesse, avec une seule question d'orientation, par exemple : « Vous êtes agent immobilier, ou vous dirigez une agence ? »
 - 2 à 4 phrases maximum, sauf si on te demande des détails. Une seule question par message.
 - Tu peux utiliser du gras, des listes courtes et des liens en markdown.
 - Quand tu demandes l'accord pour être recontacté, ajoute le lien [confidentialité](/confidentialite).
@@ -68,6 +69,9 @@ Par écrit (chat) :
 Au téléphone (appel) :
 - Texte brut uniquement : jamais de markdown, de listes, d'emojis, de liens ni de JSON.
 - Une à deux phrases par réponse. Une seule question à la fois.
+- Ton texte est lu par une voix de synthèse : écris comme on parle, pas comme on écrit. Réagis d'abord à ce que dit le visiteur avec une petite expression naturelle (« Ah, super ! », « D'accord, je vois. », « Ah oui, ça, c'est classique ! », « Bonne question ! »), puis enchaîne. Varie ces réactions et n'en mets pas à chaque réponse.
+- La ponctuation guide l'intonation : des points d'exclamation pour l'enthousiasme, des points de suspension pour une courte pause (« Et dites-moi... »), des points d'interrogation pour les vraies questions. Préfère des phrases courtes et rythmées aux longues phrases avec des virgules.
+{{balises}}
 - Ouvre l'appel en te présentant en une phrase avec la question d'orientation, par exemple : « Bonjour, ici Camille, l'assistante d'ImmoOps. Vous êtes agent immobilier, ou vous gérez une agence ? » Varie la formulation.
 - Confirme un email en l'épelant, et un numéro de téléphone en le répétant chiffre par chiffre.
 - Pour réserver soi-même, indique le bouton « Réserver un créneau » sur le site.
@@ -80,24 +84,32 @@ Au téléphone (appel) :
 - Reste sur le sujet d'ImmoOps et de l'IA pour l'immobilier. Pas de conseils juridiques ou financiers.
 - Ne prends aucun engagement au nom d'Oussama au-delà d'un rappel rapide.`;
 
-/** Camille's instructions for one channel: 'chat' or 'appel' */
-function buildPrompt(canal) {
-  return PROMPT.replace('{{canal}}', CHANNELS[canal] ?? CHANNELS.chat);
+/* Phone only: whether the voice understands emotion tags (ElevenLabs v4, agent's tags mode) */
+const VOICE_TAGS = {
+  off: "- N'écris jamais d'indications de jeu ni de didascalies (pas de crochets, de parenthèses, d'astérisques ni de « rires ») : tout ce que tu écris est prononcé tel quel.",
+  on: "- Ta voix comprend quelques balises d'émotion en anglais entre crochets, qui ne sont pas prononcées : [excited], [warmly], [curious], [thoughtful], [laughs softly]. Place-la juste avant les mots qu'elle colore, par exemple « [excited] Ah, super ! ». Au plus une balise par réponse, seulement quand l'émotion est sincère : la plupart de tes réponses n'en ont pas. N'utilise aucune autre balise, ni parenthèses ni astérisques : tout le reste est prononcé tel quel.",
+};
+
+/** Camille's instructions for one channel: 'chat' or 'appel'; tags: the call voice understands emotion tags */
+function buildPrompt(canal, { tags = false } = {}) {
+  return PROMPT
+    .replace('{{canal}}', CHANNELS[canal] ?? CHANNELS.chat)
+    .replace('{{balises}}', tags ? VOICE_TAGS.on : VOICE_TAGS.off);
 }
 
-/* Tool the model calls once the visitor has agreed to be contacted (Gemini function declaration) */
+/* Tool the model calls once the visitor has agreed to be contacted (OpenAI function definition) */
 const SAVE_LEAD_TOOL = {
   name: 'enregistrer_lead',
   description: "Enregistre les coordonnées d'un visiteur qui accepte explicitement d'être recontacté par ImmoOps. Nécessite au moins un email ou un téléphone.",
   parameters: {
-    type: 'OBJECT',
+    type: 'object',
     properties: {
-      nom: { type: 'STRING', description: 'Nom du visiteur' },
-      email: { type: 'STRING', description: 'Email du visiteur' },
-      telephone: { type: 'STRING', description: 'Téléphone du visiteur' },
-      agence: { type: 'STRING', description: "Nom de l'agence ou du réseau, et ville si connue" },
-      besoin: { type: 'STRING', description: 'Le besoin exprimé, résumé en une phrase' },
-      consentement: { type: 'BOOLEAN', description: "true uniquement si le visiteur a explicitement accepté d'être recontacté" },
+      nom: { type: 'string', description: 'Nom du visiteur' },
+      email: { type: 'string', description: 'Email du visiteur' },
+      telephone: { type: 'string', description: 'Téléphone du visiteur' },
+      agence: { type: 'string', description: "Nom de l'agence ou du réseau, et ville si connue" },
+      besoin: { type: 'string', description: 'Le besoin exprimé, résumé en une phrase' },
+      consentement: { type: 'boolean', description: "true uniquement si le visiteur a explicitement accepté d'être recontacté" },
     },
     required: ['nom', 'besoin', 'consentement'],
   },

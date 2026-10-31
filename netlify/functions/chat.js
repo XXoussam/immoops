@@ -14,28 +14,30 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-/* GEMINI_MODEL can override the model without a code change */
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+/* OPENAI_MODEL can override the model without a code change (same default as the voice agent) */
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 
-async function generate(systemPrompt, contents, withTools) {
-  if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not set');
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
+/* tools: true offers the lead tool, 'none' keeps it declared (a tool reply is in the history) but forces text */
+async function generate(messages, tools) {
+  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not set');
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    // key in a header rather than the URL, so it never shows up in logged URLs
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
     body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents,
-      ...(withTools && { tools: [{ functionDeclarations: [SAVE_LEAD_TOOL] }] }),
-      // no thinking: 2.5 Flash otherwise spends the output budget (and seconds) before replying,
-      // which can leave an empty answer or hit Netlify's 10 s function timeout
-      generationConfig: { temperature: 0.7, maxOutputTokens: 1024, thinkingConfig: { thinkingBudget: 0 } },
+      model: OPENAI_MODEL,
+      messages,
+      temperature: 0.7,
+      max_tokens: 1024,
+      ...(tools && {
+        tools: [{ type: 'function', function: SAVE_LEAD_TOOL }],
+        tool_choice: tools === 'none' ? 'none' : 'auto',
+      }),
     }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    // e.g. 400 API_KEY_INVALID (revoked key), 403 PERMISSION_DENIED, 404 model not found, 429 quota
-    throw new Error(`Gemini ${res.status} ${data.error?.status ?? ''}: ${data.error?.message ?? 'no details'}`);
+    // e.g. 401 invalid key, 404 model not found, 429 quota or rate limit
+    throw new Error(`OpenAI ${res.status} ${data.error?.code ?? ''}: ${data.error?.message ?? 'no details'}`);
   }
   return data;
 }
@@ -57,32 +59,37 @@ exports.handler = async (event) => {
       .slice(-MAX_MESSAGES)
       .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content ?? '').slice(0, MAX_CHARS) }));
 
-    const contents = messages.map((m) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }));
     const systemPrompt = buildPrompt('chat') + (leadAlreadySaved ? ALREADY_SAVED : '');
+    const conversation = [{ role: 'system', content: systemPrompt }, ...messages];
 
     let reply = '';
     let leadSaved = false;
     // at most one tool round-trip, then the model must answer in text
     for (let round = 0; round < 2 && !reply; round++) {
-      const data = await generate(systemPrompt, contents, !leadAlreadySaved && round === 0);
-      const parts = data.candidates?.[0]?.content?.parts ?? [];
-      const call = parts.find((p) => p.functionCall)?.functionCall;
+      const tools = leadAlreadySaved ? false : round === 0 ? true : 'none';
+      const data = await generate(conversation, tools);
+      const message = data.choices?.[0]?.message ?? {};
+      const call = message.tool_calls?.[0];
 
       if (!call) {
-        reply = parts.map((p) => p.text).filter(Boolean).join('');
-        if (!reply) console.error('chat fn: empty reply from Gemini', data.candidates?.[0]?.finishReason ?? data.promptFeedback);
+        reply = message.content ?? '';
+        if (!reply) console.error('chat fn: empty reply from OpenAI', data.choices?.[0]?.finish_reason);
         break;
       }
       const transcript = messages
         .map((m) => `${m.role === 'assistant' ? 'Assistant' : 'Client'}: ${m.content}`)
         .join('\n');
-      const result = await saveLead(call.args, { canal: 'chat', transcript });
+      let args = {};
+      try {
+        args = JSON.parse(call.function.arguments || '{}');
+      } catch {
+        // malformed arguments: saveLead rejects them and the model asks again
+      }
+      const result = await saveLead(args, { canal: 'chat', transcript });
       leadSaved = result.ok;
-      contents.push({ role: 'model', parts });
-      contents.push({ role: 'user', parts: [{ functionResponse: { name: call.name, response: result } }] });
+      // answer only the first call: the others are dropped from the assistant turn
+      conversation.push({ role: 'assistant', content: message.content ?? null, tool_calls: [call] });
+      conversation.push({ role: 'tool', tool_call_id: call.id, content: JSON.stringify(result) });
     }
 
     return {

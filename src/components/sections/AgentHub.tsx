@@ -17,6 +17,8 @@ const EYE_C: Pt = [120, 58]
 const EYE_TOP: Pt[] = [[56, 58], [84, 20], [156, 20], [184, 58]]
 const EYE_BOTTOM: Pt[] = [[184, 58], [156, 94], [84, 94], [56, 58]]
 const ALMOND_D = 'M56 58 C 84 20, 156 20, 184 58 C 156 94, 84 94, 56 58 Z'
+/* size of the eye (and its beam) inside the box, scaled around the eye's centre */
+const EYE_SCALE = 0.8
 
 const bez = (p: Pt[], t: number): Pt => {
   const u = 1 - t
@@ -236,6 +238,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
           </linearGradient>
         </defs>
 
+        <g transform={`translate(${EYE_C[0]} ${EYE_C[1]}) scale(${EYE_SCALE}) translate(${-EYE_C[0]} ${-EYE_C[1]})`}>
         {/* the beam, behind the eye */}
         <g ref={beamGroupRef}>
           <polygon ref={beamRef} fill="url(#eye-beam-fall)" filter="url(#eye-beam-grain)" />
@@ -270,6 +273,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
             <ellipse cx="110" cy="46" rx="2.6" ry="1.9" fill="#FFFFFF" opacity="0.85" />
             <circle cx="114.5" cy="49" r="0.9" fill="#FFFFFF" opacity="0.7" />
           </g>
+        </g>
         </g>
       </svg>
       </div>
