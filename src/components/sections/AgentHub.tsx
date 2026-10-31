@@ -183,7 +183,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
   return (
     <div ref={wrapRef} className="relative aspect-[2/1] w-full">
       {/* translucent dark box with a hairline border */}
-      <div className="eye-box absolute inset-0 overflow-hidden rounded-[10px] bg-black/45">
+      <div className="eye-box absolute inset-0 overflow-hidden rounded-[5px] bg-black/45">
       <svg viewBox="0 0 240 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
           {/* soft edges, smooth falloff, with a fine film grain only where the light falls */}
