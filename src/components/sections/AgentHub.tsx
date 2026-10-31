@@ -277,6 +277,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
         </g>
       </svg>
       </div>
+      <span className="eye-corners" aria-hidden="true" />
 
       <p className="absolute bottom-2.5 left-7 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em]">
         <span className="searchlight-rec size-1.5 rounded-full bg-purple-light" aria-hidden="true" />

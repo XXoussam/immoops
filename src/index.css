@@ -625,6 +625,24 @@
 
 /* ── Agent card (homepage + /demos): the eye's beam, gaze and blinks are animated in JS (AgentHub.tsx) ── */
 @keyframes searchlight-rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+/* viewfinder brackets on the four corners of the eye's box, drawn as 8 hairline bars */
+.eye-corners {
+  --c: rgba(255, 255, 255, 0.6);
+  --l: 14px; /* length of each arm */
+  --w: 1.5px; /* thickness */
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
+}
 /* the eye's dark box fades out on all four sides (two gradients intersected) */
 .eye-box {
   -webkit-mask-image:
