@@ -3,6 +3,11 @@
   publish = "dist"
   functions = "netlify/functions"
 
+# Not secrets: the agent's public name (also the default in token.js) and the token URL built
+# into the frontend. Every other env var stays covered by Netlify's secrets scanning.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "LIVEKIT_AGENT_NAME,VITE_LIVEKIT_TOKEN_URL"
+
 [dev]
   command = "npm run dev"
   port = 8888
