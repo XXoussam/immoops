@@ -25,9 +25,6 @@ it re-reads Camille at the start of every call (cached 60 s).
 Leads go to the **IMMOOPS** Airtable base: table **Leads** (`Source` = `Chatbot` or
 `Appel IA`) plus the conversation in **ChatSessions**.
 
-`agent-prompt.js` and `lead.js` are legacy endpoints kept for voice agents deployed before
-`agent-config`/`agent-tool`; delete them once the new agent is live.
-
 ## Netlify environment variables
 
 | Variable | Used by | Value |
