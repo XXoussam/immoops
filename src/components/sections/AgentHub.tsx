@@ -182,7 +182,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
   const fibres = Array.from({ length: 36 }, (_, i) => i * 10 + ((i * 37) % 7))
   return (
     <div ref={wrapRef} className="relative aspect-[2/1] w-full">
-      {/* translucent dark box with feathered edges: it fades into the card instead of ending on a hard border */}
+      {/* translucent dark box with a hairline border and corner brackets */}
       <div className="eye-box absolute inset-0 overflow-hidden bg-black/45">
       <svg viewBox="0 0 240 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
@@ -319,10 +319,7 @@ export function AgentHub({ agentTitle }: { agentTitle?: string }) {
         className="flex flex-col justify-center border border-purple/50 px-7 py-8 lg:w-[26%]"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
-        {/* bleeds into the card's padding: its feathered edges blend into the card */}
-        <div className="-mx-7 -mt-4">
-          <SearchlightEye slogan={hub.slogan} />
-        </div>
+        <SearchlightEye slogan={hub.slogan} />
         <p className="label-white mt-5">[{hub.agentLabel}]</p>
         <p className="h4 text-white">{agentTitle ?? hub.agentTitle}</p>
         <ol className="mt-5 flex flex-col gap-3">
