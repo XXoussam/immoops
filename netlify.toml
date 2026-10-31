@@ -15,8 +15,5 @@
   framework = "vite"
 
 # Prerendered routes are served as real files (dist/<route>/index.html).
-# Anything else falls back to the noindex SPA shell instead of the homepage.
-[[redirects]]
-  from = "/*"
-  to = "/app.html"
-  status = 200
+# Anything else gets dist/404.html (prerendered "Page introuvable", noindex) with a real 404 status:
+# Netlify does that by itself when no file matches, so no catch-all redirect.

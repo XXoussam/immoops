@@ -1,6 +1,6 @@
 // Post-build: renders every route to static HTML so search engines and AI crawlers
 // (Googlebot, GPTBot, ClaudeBot, PerplexityBot…) receive the full page content.
-// Also writes sitemap.xml and the SPA fallback shell (app.html).
+// Also writes sitemap.xml and the 404 page (404.html).
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -31,8 +31,9 @@ for (const route of [...INDEXABLE_ROUTES, ...NOINDEX_ROUTES]) {
   console.log(`  ✓ ${route}  (${(body.length / 1024).toFixed(1)} kB html)`)
 }
 
-// SPA fallback for unknown URLs: empty shell, noindex (avoids serving the homepage as a soft 404)
-writeFileSync(join(dist, 'app.html'), page(renderHeadTags(getSeo('/__not-found')), ''))
+// 404 page for unknown URLs (noindex): Netlify serves dist/404.html with a real 404 status
+writeFileSync(join(dist, '404.html'), page(renderHeadTags(getSeo('/__not-found')), render('/__not-found')))
+console.log('  ✓ 404.html')
 
 // sitemap.xml
 const today = new Date().toISOString().slice(0, 10)

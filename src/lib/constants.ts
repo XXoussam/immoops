@@ -256,6 +256,16 @@ export const AGENT_BUBBLES = {
 }
 
 /* Camille's chat window (floating chat bubble) */
+/* 404 page (unknown URLs; Netlify serves the prerendered dist/404.html with a 404 status) */
+export const NOT_FOUND_PAGE = {
+  label: 'Erreur 404',
+  title: 'Page introuvable',
+  text: "Cette page n'existe pas ou a été déplacée. Camille la cherche encore… En attendant, voici où aller.",
+  home: "Retour à l'accueil",
+  demos: 'Voir les démos',
+  booking: 'Réserver un audit gratuit',
+}
+
 export const CHAT_WIDGET = {
   name: CAMILLE.name,
   status: 'En ligne',

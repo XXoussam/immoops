@@ -11,6 +11,7 @@ import { ComingSoonPage } from './pages/ComingSoonPage'
 import { BlogPage } from './pages/BlogPage'
 import { EtudesDeCasPage } from './pages/EtudesDeCasPage'
 import { ArticlePage } from './pages/ArticlePage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/etudes-de-cas" element={<EtudesDeCasPage />} />
         <Route path="/webinaires" element={<ComingSoonPage />} />
         <Route path="/documentation" element={<ComingSoonPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <AgentBubbles />
     </div>
