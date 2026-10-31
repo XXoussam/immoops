@@ -264,6 +264,18 @@ export const CHAT_WIDGET = {
   error: 'Désolée, une erreur est survenue.',
   placeholder: 'Posez votre question…',
   send: 'Envoyer',
+  /* Voice notes: recorded in the chat, transcribed (netlify/functions/transcribe.js), answered in text */
+  voice: {
+    record: 'Envoyer une note vocale',
+    send: 'Envoyer la note vocale',
+    cancel: "Annuler l'enregistrement",
+    play: 'Écouter',
+    pause: 'Pause',
+    transcribing: 'Transcription…',
+    micError: "Micro indisponible : autorisez l'accès au micro dans votre navigateur.",
+    notUnderstood: "Désolée, je n'ai pas bien entendu votre note vocale. Vous pouvez réessayer, ou me l'écrire ?",
+    maxSeconds: 60,
+  },
   reset: 'Nouvelle conversation',
   minimize: 'Réduire',
   close: 'Fermer',

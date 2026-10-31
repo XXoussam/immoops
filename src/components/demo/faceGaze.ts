@@ -44,6 +44,13 @@ export function lookAtCaret(input: HTMLInputElement) {
   gaze.typingAt = performance.now()
 }
 
+/** Look at an element for a moment (e.g. the recording bar while the visitor speaks) */
+export function lookAt(el: Element) {
+  const r = el.getBoundingClientRect()
+  gaze.caret = { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  gaze.typingAt = performance.now()
+}
+
 export function setThinking(thinking: boolean) {
   if (gaze.thinking && !thinking) gaze.bounceAt = performance.now() // the reply is here
   gaze.thinking = thinking
