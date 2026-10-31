@@ -4,6 +4,8 @@ import { AiMessageBubble } from '../ui/message-bubble'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowUp02Icon, Calendar03Icon, Cancel01Icon, LinkSquare02Icon, MinusSignIcon, RefreshIcon } from '@hugeicons/core-free-icons'
 import { CAL_URL, CHAT_WIDGET } from '../../lib/constants'
+import { CamilleFace } from './CamilleFace'
+import { lookAtCaret, setThinking } from './faceGaze'
 
 const CHAT_URL = '/.netlify/functions/chat'
 
@@ -12,11 +14,7 @@ type ChatMessage = { role: 'user' | 'assistant'; content: string; card?: 'bookin
 
 const GREETING: ChatMessage = { role: 'assistant', content: CHAT_WIDGET.greeting }
 
-const AGENT_AVATAR = (
-  <div className="flex size-7 items-center justify-center rounded-full bg-ink font-sans text-xs font-semibold text-white">
-    {CHAT_WIDGET.name[0]}
-  </div>
-)
+const AGENT_AVATAR = <CamilleFace size={28} />
 
 function HeaderButton({ label, icon, onClick }: { label: string; icon: typeof Cancel01Icon; onClick: () => void }) {
   return (
@@ -56,7 +54,7 @@ function BookingCard() {
   )
 }
 
-/* ─── Chat panel (Gemini) ── */
+/* ─── Chat panel (Camille) ── */
 export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMinimize?: () => void }) {
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING])
   const [input, setInput] = useState('')
@@ -64,6 +62,10 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
   const messagesRef = useRef<HTMLDivElement>(null)
   const conversationRef = useRef(0)  // bumped on reset so late replies from the old conversation are dropped
   const leadSavedRef = useRef(false)  // once the visitor's details are saved, Camille stops asking for them
+
+  // Camille's faces look around while a reply is generated, and bounce when it arrives
+  useEffect(() => setThinking(loading), [loading])
+  useEffect(() => () => setThinking(false), [])
 
   useEffect(() => {
     const el = messagesRef.current
@@ -120,9 +122,7 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
     <div className="absolute inset-0 flex flex-col overflow-hidden rounded-[20px] bg-white font-sans text-ink">
       {/* Header */}
       <div className="flex shrink-0 items-center gap-3 border-b border-gray-line px-4 py-3">
-        <div className="flex size-9 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">
-          {CHAT_WIDGET.name[0]}
-        </div>
+        <CamilleFace size={36} />
         <div className="min-w-0">
           <p className="text-[15px] font-semibold leading-tight">{CHAT_WIDGET.name}</p>
           <p className="flex items-center gap-1.5 text-[13px] leading-tight text-ink-body">
@@ -188,7 +188,8 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
         <div className="flex items-center gap-2 rounded-full border border-gray-line py-1.5 pl-4 pr-1.5 transition-colors focus-within:border-purple">
           <input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => { setInput(e.target.value); lookAtCaret(e.target) }}
+            onSelect={(e) => lookAtCaret(e.currentTarget)}
             placeholder={CHAT_WIDGET.placeholder}
             aria-label={CHAT_WIDGET.placeholder}
             className="min-w-0 flex-1 bg-transparent text-[14px] text-ink outline-none placeholder:text-ink-body"
