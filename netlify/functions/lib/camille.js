@@ -1,11 +1,17 @@
 /*
  * Camille: the single AI agent behind the site's chat bubble and call bubble.
- * One prompt and one lead pipeline for both channels:
- *  - chat.js uses buildPrompt('chat') and saveLead() directly
- *  - the LiveKit voice agent fetches buildPrompt('appel') from agent-prompt.js
- *    and saves leads through lead.js
+ * Everything she knows and can do lives here (plus camille.json for model and greetings),
+ * shared by both channels:
+ *  - chat.js uses agentConfig('chat') and runTool() directly
+ *  - the LiveKit voice agent loads agentConfig('appel') from agent-config.js at the start of
+ *    each call (prompt, model, greeting, tool definitions) and runs tools through agent-tool.js
+ * To add a tool: define it in TOOLS below; both channels offer it after the next deploy.
  */
 const { randomBytes } = require('crypto');
+const SETTINGS = require('./camille.json');
+
+/* OPENAI_MODEL (Netlify env) can override the model for both channels without a code change */
+const MODEL = process.env.OPENAI_MODEL || SETTINGS.model;
 
 const CAL_URL = 'https://calendly.com/immoops/discovery_call';
 
@@ -193,4 +199,34 @@ async function saveLead(args, { canal = 'chat', transcript = '' } = {}) {
   return { ok: true };
 }
 
-module.exports = { buildPrompt, SAVE_LEAD_TOOL, saveLead };
+/* Camille's tools: the definition the model sees (OpenAI function format, also used by the voice
+   agent) and the code that runs it. run(args, { canal, transcript }) returns { ok, ... } or
+   { ok: false, error } where error is an instruction for the model. */
+const TOOLS = {
+  enregistrer_lead: { definition: SAVE_LEAD_TOOL, run: saveLead },
+};
+
+function toolDefinitions() {
+  return Object.values(TOOLS).map((t) => t.definition);
+}
+
+async function runTool(name, args, ctx) {
+  const tool = TOOLS[name];
+  if (!tool) return { ok: false, error: `Outil inconnu : ${name}` };
+  return tool.run(args || {}, ctx);
+}
+
+/** Everything a channel needs to run Camille: 'chat' or 'appel'; tags: the call voice understands emotion tags */
+function agentConfig(canal, { tags = false } = {}) {
+  return {
+    name: SETTINGS.name,
+    canal,
+    model: MODEL,
+    temperature: SETTINGS.temperature,
+    greeting: SETTINGS.greetings[canal] ?? SETTINGS.greetings.chat,
+    instructions: buildPrompt(canal, { tags }),
+    tools: toolDefinitions(),
+  };
+}
+
+module.exports = { agentConfig, buildPrompt, toolDefinitions, runTool };

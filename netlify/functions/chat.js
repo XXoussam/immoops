@@ -1,4 +1,4 @@
-const { buildPrompt, SAVE_LEAD_TOOL, saveLead } = require('./lib/camille');
+const { agentConfig, runTool } = require('./lib/camille');
 
 const ALREADY_SAVED = `
 
@@ -14,22 +14,22 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-/* OPENAI_MODEL can override the model without a code change (same default as the voice agent) */
-const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
+/* Camille's prompt, model and tools for the chat: the same agent as the call bubble (lib/camille.js) */
+const CAMILLE = agentConfig('chat');
 
-/* tools: true offers the lead tool, 'none' keeps it declared (a tool reply is in the history) but forces text */
+/* tools: true offers Camille's tools, 'none' keeps them declared (a tool reply is in the history) but forces text */
 async function generate(messages, tools) {
   if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not set');
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
     body: JSON.stringify({
-      model: OPENAI_MODEL,
+      model: CAMILLE.model,
       messages,
-      temperature: 0.7,
+      temperature: CAMILLE.temperature,
       max_tokens: 1024,
       ...(tools && {
-        tools: [{ type: 'function', function: SAVE_LEAD_TOOL }],
+        tools: CAMILLE.tools.map((fn) => ({ type: 'function', function: fn })),
         tool_choice: tools === 'none' ? 'none' : 'auto',
       }),
     }),
@@ -59,7 +59,7 @@ exports.handler = async (event) => {
       .slice(-MAX_MESSAGES)
       .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content ?? '').slice(0, MAX_CHARS) }));
 
-    const systemPrompt = buildPrompt('chat') + (leadAlreadySaved ? ALREADY_SAVED : '');
+    const systemPrompt = CAMILLE.instructions + (leadAlreadySaved ? ALREADY_SAVED : '');
     const conversation = [{ role: 'system', content: systemPrompt }, ...messages];
 
     let reply = '';
@@ -83,10 +83,10 @@ exports.handler = async (event) => {
       try {
         args = JSON.parse(call.function.arguments || '{}');
       } catch {
-        // malformed arguments: saveLead rejects them and the model asks again
+        // malformed arguments: the tool rejects them and the model asks again
       }
-      const result = await saveLead(args, { canal: 'chat', transcript });
-      leadSaved = result.ok;
+      const result = await runTool(call.function.name, args, { canal: 'chat', transcript });
+      if (call.function.name === 'enregistrer_lead' && result.ok) leadSaved = true;
       // answer only the first call: the others are dropped from the assistant turn
       conversation.push({ role: 'assistant', content: message.content ?? null, tool_calls: [call] });
       conversation.push({ role: 'tool', tool_call_id: call.id, content: JSON.stringify(result) });

@@ -1,0 +1,9 @@
+{
+  "name": "Camille",
+  "model": "gpt-4.1-mini",
+  "temperature": 0.7,
+  "greetings": {
+    "chat": "Bonjour ! Je suis Camille, l'assistante IA d'ImmoOps. On aide les agences immobilières à gagner du temps avec l'IA : agents vocaux, chatbots, relances automatiques… Qu'est-ce qui vous amène ?",
+    "appel": "Bonjour ! Ici Camille, l'assistante d'ImmoOps. Vous êtes agent immobilier, ou vous gérez une agence ?"
+  }
+}

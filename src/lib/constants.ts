@@ -1,5 +1,7 @@
 import { WorkflowSquare01Icon, MessageProgrammingIcon, AiBrain01Icon, VoiceIcon, UserCheck01Icon, ZapIcon, GroupIcon, BarChartIcon, Clock01Icon, Calendar03Icon, Mail01Icon, Call02Icon, WhatsappIcon, InstagramIcon, Message01Icon, Globe02Icon, UserIcon, UserMultipleIcon, PlugSocketIcon } from '@hugeicons/core-free-icons'
 import { N8nIcon } from './icons'
+/* Camille's name and greetings are shared with the chat and voice functions */
+import CAMILLE from '../../netlify/functions/lib/camille.json'
 
 export const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -256,9 +258,9 @@ export const AGENT_BUBBLES = {
 
 /* Camille's chat window (floating chat bubble) */
 export const CHAT_WIDGET = {
-  name: 'Camille',
+  name: CAMILLE.name,
   status: 'En ligne',
-  greeting: "Bonjour ! Je suis Camille, l'assistante IA d'ImmoOps. On aide les agences immobilières à gagner du temps avec l'IA : agents vocaux, chatbots, relances automatiques… Qu'est-ce qui vous amène ?",
+  greeting: CAMILLE.greetings.chat,
   error: 'Désolée, une erreur est survenue.',
   placeholder: 'Posez votre question…',
   send: 'Envoyer',

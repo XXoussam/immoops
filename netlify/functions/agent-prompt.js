@@ -1,6 +1,7 @@
 const { buildPrompt } = require('./lib/camille');
 
-/* Camille's instructions as plain text, for the LiveKit voice agent to load at the start of each call.
+/* LEGACY: for voice agents deployed before agent-config.js; delete once the new agent is live.
+   Camille's instructions as plain text, for the LiveKit voice agent to load at the start of each call.
    GET /.netlify/functions/agent-prompt?canal=appel  (canal defaults to "appel")
    &tags=1 when the agent's voice understands emotion tags like [excited] */
 exports.handler = async (event) => {
