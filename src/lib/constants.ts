@@ -239,7 +239,6 @@ export const AGENT_BUBBLES = {
   phone: {
     label: 'Appeler Camille, notre assistante IA',
     title: 'Camille',
-    badge: 'IA',
     subtitle: 'Assistante IA ImmoOps',
     intro: 'Parlez à Camille de votre agence, directement depuis votre navigateur. Autorisez le micro pour démarrer.',
     cta: 'Appeler',

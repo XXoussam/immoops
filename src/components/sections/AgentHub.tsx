@@ -182,7 +182,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
   const fibres = Array.from({ length: 36 }, (_, i) => i * 10 + ((i * 37) % 7))
   return (
     <div ref={wrapRef} className="relative aspect-[2/1] w-full">
-      {/* translucent dark box with a hairline border and corner brackets */}
+      {/* translucent dark box with a hairline border */}
       <div className="eye-box absolute inset-0 overflow-hidden bg-black/45">
       <svg viewBox="0 0 240 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
@@ -277,7 +277,6 @@ function SearchlightEye({ slogan }: { slogan: string }) {
         </g>
       </svg>
       </div>
-      <span className="eye-corners" aria-hidden="true" />
 
       <p className="absolute bottom-2.5 left-7 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em]">
         <span className="searchlight-rec size-1.5 rounded-full bg-purple-light" aria-hidden="true" />
@@ -316,7 +315,7 @@ export function AgentHub({ agentTitle }: { agentTitle?: string }) {
 
       {/* Agent */}
       <div
-        className="flex flex-col justify-center border border-purple/50 px-7 py-8 lg:w-[26%]"
+        className="flex flex-col justify-center border border-purple/50 px-6 py-6 lg:w-[24%] lg:self-center"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
         <SearchlightEye slogan={hub.slogan} />
@@ -332,11 +331,11 @@ export function AgentHub({ agentTitle }: { agentTitle?: string }) {
         </ol>
       </div>
 
-      <span className="hub-line hidden w-10 self-center lg:block xl:w-14" aria-hidden="true" />
+      <span className="hub-line hidden min-w-10 self-center lg:block lg:flex-1" aria-hidden="true" />
       <span className="hub-line-v my-3 lg:hidden" aria-hidden="true" />
 
       {/* CRM */}
-      <div className="flex flex-col justify-center bg-white px-7 py-8 lg:flex-1">
+      <div className="flex flex-col justify-center bg-white px-6 py-6 lg:w-[26%] lg:self-center">
         <HugeiconsIcon icon={Database01Icon} size={28} color="#6D4AFF" strokeWidth={1.5} />
         <p className="label mt-5">[{hub.crmLabel}]</p>
         <ul className="mt-1 flex flex-col">

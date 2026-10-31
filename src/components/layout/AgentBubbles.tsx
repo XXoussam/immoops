@@ -6,6 +6,8 @@ import { Call02Icon, CallEnd01Icon, Cancel01Icon, Mic01Icon, MicOff01Icon, Volum
 import { AgentSessionProvider } from '../agents-ui/agent-session-provider'
 import { AgentAudioVisualizerAura } from '../agents-ui/agent-audio-visualizer-aura'
 import { ChatPanel } from '../demo/AgentPanels'
+import { CamilleFace } from '../demo/CamilleFace'
+import { setThinking } from '../demo/faceGaze'
 import { useVoiceDemo } from '../../hooks/useVoiceDemo'
 import { AGENT_BUBBLES } from '../../lib/constants'
 import { OPEN_AGENT_EVENT, type AgentKind } from '../../lib/agentEvents'
@@ -112,7 +114,7 @@ function CallLayout({ visualizer, status, controls, onClose, notice }: {
         <div className="flex h-[200px] w-[200px] items-center justify-center">{visualizer}</div>
         <p className="mt-2 flex items-center gap-2 text-[22px] font-semibold leading-tight">
           {copy.title}
-          <span className="rounded-md bg-ink px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white">{copy.badge}</span>
+          <CamilleFace size={26} />
         </p>
         <p className="mt-1 text-[14px] text-ink-body">{copy.subtitle}</p>
         <div className="mt-4 min-h-[22px] text-[14px] text-ink-body">{status}</div>
@@ -139,6 +141,11 @@ function StatusLine({ label, seconds }: { label: string; seconds?: number }) {
 /* Live call: needs the session context for the agent state and the mic toggle; mounted only while connected */
 function LiveCall({ onHangUp, onClose }: { onHangUp: () => void; onClose: () => void }) {
   const { state, audioTrack, agent } = useVoiceAssistant()
+  // Camille's face looks around while she prepares an answer, and bounces when she starts speaking
+  useEffect(() => {
+    setThinking(state === 'thinking')
+    return () => setThinking(false)
+  }, [state])
   const mic = useTrackToggle({ source: Track.Source.Microphone })
   // browsers (Safari especially) can block the agent's audio until a click unlocks it
   const { canPlayAudio, startAudio } = useAudioPlayback()

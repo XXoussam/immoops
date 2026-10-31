@@ -625,25 +625,7 @@
 
 /* ── Agent card (homepage + /demos): the eye's beam, gaze and blinks are animated in JS (AgentHub.tsx) ── */
 @keyframes searchlight-rec { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-/* viewfinder brackets on the four corners of the eye's box, drawn as 8 bars over its border */
-.eye-corners {
-  --c: rgba(255, 255, 255, 0.75);
-  --l: 14px; /* length of each arm */
-  --w: 2px; /* thickness */
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
-    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
-    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
-    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
-}
-/* the eye's dark box: square, with a hairline border (corner brackets on top, see .eye-corners) */
+/* the eye's dark box: square, with a hairline border */
 .eye-box {
   border: 1px solid rgba(255, 255, 255, 0.16);
 }
