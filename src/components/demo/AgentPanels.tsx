@@ -7,6 +7,7 @@ import { CAL_URL, CHAT_WIDGET } from '../../lib/constants'
 import { blobToBase64, formatSeconds, useVoiceRecorder, type VoiceRecording } from '../../hooks/useVoiceRecorder'
 import { CamilleFace } from './CamilleFace'
 import { lookAt, lookAtCaret, setThinking } from './faceGaze'
+import { RecordingWave } from './RecordingWave'
 import { VoiceNote, type VoiceClip } from './VoiceNote'
 
 const CHAT_URL = '/.netlify/functions/chat'
@@ -259,8 +260,8 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
       <form onSubmit={onSubmit} className="shrink-0 px-4 pb-4 pt-1">
         {micError && <p className="mb-1.5 px-1 text-[12px] leading-snug text-[#DC2626]">{CHAT_WIDGET.voice.micError}</p>}
         {recorder.recording ? (
-          /* recording: delete | ● level meter, timer | send */
-          <div ref={recordBarRef} className="flex items-center gap-2 rounded-full border border-purple py-1.5 pl-1.5 pr-1.5">
+          /* recording: delete | scrolling wave, timer | send */
+          <div ref={recordBarRef} className="flex items-center gap-2 rounded-full border border-gray-line py-1.5 pl-1.5 pr-1.5">
             <button
               type="button"
               onClick={recorder.cancel}
@@ -269,22 +270,13 @@ export function ChatPanel({ onClose, onMinimize }: { onClose: () => void; onMini
             >
               <HugeiconsIcon icon={Delete02Icon} size={18} strokeWidth={1.5} />
             </button>
-            <span className="size-2 shrink-0 animate-pulse rounded-full bg-[#EF4444]" aria-hidden="true" />
-            <div className="flex h-6 flex-1 items-center gap-[3px] overflow-hidden" aria-hidden="true">
-              {Array.from({ length: 18 }, (_, i) => (
-                <span
-                  key={i}
-                  className="w-[3px] rounded-full bg-purple transition-[height] duration-100"
-                  style={{ height: `${Math.round(18 + 82 * recorder.level * (0.45 + 0.55 * Math.abs(Math.sin(i * 1.9 + recorder.seconds))))}%` }}
-                />
-              ))}
-            </div>
+            <RecordingWave wave={recorder.wave} className="h-7 min-w-0 flex-1" />
             <span className="font-mono text-[12px] tabular-nums text-ink-body">{formatSeconds(recorder.seconds)}</span>
             <button
               type="button"
               onClick={finishRecording}
               aria-label={CHAT_WIDGET.voice.send}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-purple text-white"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink text-white"
             >
               <HugeiconsIcon icon={ArrowUp02Icon} size={18} strokeWidth={2} />
             </button>

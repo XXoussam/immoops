@@ -37,6 +37,11 @@ async function computePeaks(blob: Blob): Promise<number[]> {
   }
 }
 
+/* live loudness history while recording, newest last; read by RecordingWave every frame */
+export type VoiceWave = { levels: number[]; lastAt: number; interval: number }
+const SAMPLE_MS = 70
+const MAX_SAMPLES = 160
+
 export const formatSeconds = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
 
 /**
@@ -46,7 +51,7 @@ export const formatSeconds = (s: number) => `${Math.floor(s / 60)}:${String(Math
 export function useVoiceRecorder({ maxSeconds = 60, onLimit }: { maxSeconds?: number; onLimit?: (clip: VoiceRecording) => void } = {}) {
   const [recording, setRecording] = useState(false)
   const [seconds, setSeconds] = useState(0)
-  const [level, setLevel] = useState(0) // live loudness 0..1, for the meter while recording
+  const waveRef = useRef<VoiceWave>({ levels: [], lastAt: 0, interval: SAMPLE_MS })
   const recorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const startedRef = useRef(0)
@@ -65,22 +70,26 @@ export function useVoiceRecorder({ maxSeconds = 60, onLimit }: { maxSeconds?: nu
     recorderRef.current = recorder
     startedRef.current = performance.now()
 
-    // live level and timer
+    // live loudness for the wave, and the timer
     const ctx = new AudioContext()
     const analyser = ctx.createAnalyser()
     analyser.fftSize = 512
     ctx.createMediaStreamSource(stream).connect(analyser)
     const buf = new Uint8Array(analyser.fftSize)
-    let raf = 0, lastUpdate = 0
+    const wave = waveRef.current
+    wave.levels = []
+    wave.lastAt = performance.now()
+    let raf = 0
     const tick = (now: number) => {
-      if (now - lastUpdate > 80) { // ~12 updates a second is plenty for the meter
-        lastUpdate = now
+      if (now - wave.lastAt >= SAMPLE_MS) {
+        wave.lastAt = now
         analyser.getByteTimeDomainData(buf)
         let sum = 0
         for (const v of buf) sum += ((v - 128) / 128) ** 2
-        setLevel(Math.min(1, Math.sqrt(sum / buf.length) * 4))
-        const elapsed = (performance.now() - startedRef.current) / 1000
-        setSeconds(Math.floor(elapsed))
+        wave.levels.push(Math.min(1, Math.sqrt(sum / buf.length) * 4))
+        if (wave.levels.length > MAX_SAMPLES) wave.levels.shift()
+        const elapsed = (now - startedRef.current) / 1000
+        setSeconds(Math.floor(elapsed)) // re-renders only when the second changes
         if (elapsed >= limitRef.current.maxSeconds) {
           void finishRef.current(true).then((clip) => clip && limitRef.current.onLimit?.(clip))
           return
@@ -102,7 +111,6 @@ export function useVoiceRecorder({ maxSeconds = 60, onLimit }: { maxSeconds?: nu
     const recorder = recorderRef.current
     recorderRef.current = null
     setRecording(false)
-    setLevel(0)
     if (!recorder) return Promise.resolve(null)
     return new Promise<VoiceRecording | null>((resolve) => {
       recorder.onstop = async () => {
@@ -127,7 +135,7 @@ export function useVoiceRecorder({ maxSeconds = 60, onLimit }: { maxSeconds?: nu
     cleanupRef.current()
   }, [])
 
-  return { recording, seconds, level, start, stop, cancel }
+  return { recording, seconds, wave: waveRef, start, stop, cancel }
 }
 
 /** base64 of a blob, without the data: prefix */
