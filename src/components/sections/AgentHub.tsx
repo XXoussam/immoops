@@ -183,7 +183,7 @@ function SearchlightEye({ slogan }: { slogan: string }) {
   return (
     <div ref={wrapRef} className="relative aspect-[2/1] w-full">
       {/* translucent dark box with a hairline border */}
-      <div className="eye-box absolute inset-0 overflow-hidden bg-black/45">
+      <div className="eye-box absolute inset-0 overflow-hidden rounded-[10px] bg-black/45">
       <svg viewBox="0 0 240 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
           {/* soft edges, smooth falloff, with a fine film grain only where the light falls */}
@@ -315,7 +315,7 @@ export function AgentHub({ agentTitle }: { agentTitle?: string }) {
 
       {/* Agent */}
       <div
-        className="flex flex-col justify-center border border-purple/50 px-6 py-6 lg:w-[24%] lg:self-center"
+        className="flex flex-col justify-center rounded-[16px] border border-purple/50 px-6 py-6 lg:w-[24%] lg:self-center"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
         <SearchlightEye slogan={hub.slogan} />
