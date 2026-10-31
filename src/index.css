@@ -619,8 +619,17 @@
   background-size: 1px 12px;
   animation: hub-flow-v 0.8s linear infinite;
 }
+/* curved channel → agent connectors (SVG paths, AgentHub.tsx): same dashes, flowing towards the agent */
+@keyframes hub-dash { to { stroke-dashoffset: -12; } }
+.hub-curve {
+  fill: none;
+  stroke: rgba(192, 132, 252, 0.85);
+  stroke-width: 1;
+  stroke-dasharray: 6 6;
+  animation: hub-dash 0.8s linear infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  .hub-line, .hub-line-v { animation: none; }
+  .hub-line, .hub-line-v, .hub-curve { animation: none; }
 }
 
 /* ── Agent card (homepage + /demos): the eye's beam, gaze and blinks are animated in JS (AgentHub.tsx) ── */

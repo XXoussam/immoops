@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle02Icon, Database01Icon } from '@hugeicons/core-free-icons'
 import { AGENT_CHANNELS, DEMOS_PAGE } from '../../lib/constants'
@@ -287,35 +287,91 @@ function SearchlightEye({ slogan }: { slogan: string }) {
   )
 }
 
+/*
+ * Channels → agent connectors (desktop layout): one dashed curve per channel, from its right edge to the
+ * agent card's left edge, fanning in on the card's middle. Recomputed whenever the section resizes.
+ */
+function useChannelCurves(
+  rowRef: RefObject<HTMLDivElement | null>,
+  cardRef: RefObject<HTMLDivElement | null>,
+  boxRefs: RefObject<(HTMLDivElement | null)[]>,
+) {
+  const [curves, setCurves] = useState({ paths: [] as string[], width: 0, height: 0 })
+  useEffect(() => {
+    const row = rowRef.current, card = cardRef.current
+    if (!row || !card) return
+    const desktop = window.matchMedia('(min-width: 1024px)')
+    const update = () => {
+      if (!desktop.matches) return setCurves({ paths: [], width: 0, height: 0 })
+      const r = row.getBoundingClientRect(), c = card.getBoundingClientRect()
+      const boxes = boxRefs.current.filter((b): b is HTMLDivElement => !!b)
+      const ex = c.left - r.left, ey = c.top + c.height / 2 - r.top
+      const paths = boxes.map((box, i) => {
+        const b = box.getBoundingClientRect()
+        const sx = b.right - r.left, sy = b.top + b.height / 2 - r.top
+        const ty = ey + (i - (boxes.length - 1) / 2) * 6 // a little fan where they reach the card
+        const k = (ex - sx) * 0.55
+        return `M ${sx} ${sy} C ${sx + k} ${sy}, ${ex - k} ${ty}, ${ex} ${ty}`
+      })
+      setCurves({ paths, width: r.width, height: r.height })
+    }
+    // fires once on observe, then on every resize of the section (plus once after mount, as a safety net)
+    const ro = new ResizeObserver(update)
+    ro.observe(row)
+    const first = setTimeout(update, 100)
+    desktop.addEventListener('change', update)
+    return () => { ro.disconnect(); clearTimeout(first); desktop.removeEventListener('change', update) }
+  }, [rowRef, cardRef, boxRefs])
+  return curves
+}
+
 /* Channels on the left feed one agent, which writes everything to one CRM (dark sections) */
 export function AgentHub({ agentTitle }: { agentTitle?: string }) {
   const { hub } = DEMOS_PAGE
+  const rowRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const boxRefs = useRef<(HTMLDivElement | null)[]>([])
+  const curves = useChannelCurves(rowRef, cardRef, boxRefs)
   return (
-    <div className="mt-14 flex flex-col lg:flex-row lg:items-stretch">
+    <div ref={rowRef} className="relative mt-14 flex flex-col lg:flex-row lg:items-stretch">
+      <svg
+        className="pointer-events-none absolute inset-0 hidden lg:block"
+        width={curves.width}
+        height={curves.height}
+        aria-hidden="true"
+      >
+        {curves.paths.map((d) => <path key={d} d={d} className="hub-curve" />)}
+      </svg>
+
       {/* Channels */}
       <div className="lg:w-[38%]">
         <p className="label-white">[{hub.channelsLabel}]</p>
         <ul className="grid grid-cols-2 gap-3 lg:flex lg:flex-col">
-          {AGENT_CHANNELS.map((c) => (
+          {AGENT_CHANNELS.map((c, i) => (
             <li key={c.key} className="flex items-center">
-              <div className="flex min-w-0 flex-1 items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-3">
+              <div
+                ref={(el) => { boxRefs.current[i] = el }}
+                className="flex min-w-0 flex-1 items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-3"
+              >
                 <HugeiconsIcon icon={c.Icon as never} size={20} color="#C084FC" strokeWidth={1.5} className="shrink-0" />
                 <span className="min-w-0">
                   <span className="block font-sans text-[15px] font-medium text-white">{c.label}</span>
                   <span className="hidden truncate font-sans text-[13px] text-white/45 lg:block">{c.short}</span>
                 </span>
               </div>
-              <span className="hub-line hidden w-10 lg:block xl:w-14" aria-hidden="true" />
             </li>
           ))}
         </ul>
       </div>
 
       <span className="hub-line-v my-3 lg:hidden" aria-hidden="true" />
+      {/* room for the curves */}
+      <span className="hidden shrink-0 lg:block lg:w-16 xl:w-24" aria-hidden="true" />
 
       {/* Agent */}
       <div
-        className="flex flex-col justify-center rounded-[16px] border border-purple/50 px-6 py-6 lg:w-[24%] lg:self-center"
+        ref={cardRef}
+        className="flex flex-col justify-center border border-purple/50 px-6 py-6 lg:w-[24%] lg:self-center"
         style={{ background: 'linear-gradient(160deg, rgba(109,74,255,0.28) 0%, rgba(109,74,255,0.08) 100%)', boxShadow: '0 0 60px rgba(109,74,255,0.25)' }}
       >
         <SearchlightEye slogan={hub.slogan} />
