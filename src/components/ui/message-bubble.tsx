@@ -98,7 +98,9 @@ export function AiMessageBubble({
     </div>
   );
   const avatarNode = avatar ?? defaultAvatar;
-  const isEmpty = !children && !content;
+  // toArray drops false/null children, e.g. `{m.voice && ...}` on a typed message, which would otherwise hide `content`
+  const hasChildren = React.Children.toArray(children).length > 0;
+  const isEmpty = !hasChildren && !content;
 
   return (
     <div
@@ -130,7 +132,7 @@ export function AiMessageBubble({
               : "rounded-2xl border border-gray-line bg-white text-ink",
           )}
         >
-          {children ? (
+          {hasChildren ? (
             <div className="[&_a]:text-purple [&_a]:underline [&_p]:m-0">
               {children}
             </div>
