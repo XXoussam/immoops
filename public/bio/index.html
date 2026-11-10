@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ImmoOps · Des agents IA pour ton agence immo</title>
+<meta name="description" content="Je monte des agents IA qui répondent à tes prospects en 2 minutes, 24 h/24, et rangent tout dans ton CRM. Diagnostic gratuit, sans engagement.">
+<!-- Instagram bio funnel: standalone static page in the Reels brand (ink / paper / yellow), not the purple site theme. No tracker, no cookie. -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0c0c0c">
+<meta property="og:title" content="ImmoOps · Des agents IA pour ton agence immo">
+<meta property="og:description" content="Diagnostic gratuit : on trouve où ton agence perd des leads et des heures.">
+<meta property="og:image" content="https://immoops.com/og-image.jpg">
+<link rel="icon" href="/favicon.svg">
+<link rel="preload" href="anton.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="archivo.woff" as="font" type="font/woff" crossorigin>
+<style>
+@font-face { font-family: Anton; src: url(anton.woff) format("woff"); font-display: swap; }
+@font-face { font-family: Archivo; src: url(archivo.woff) format("woff"); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: Caveat; src: url(caveat.woff) format("woff"); font-weight: 700; font-display: swap; }
+:root { --ink: #0c0c0c; --paper: #f2f1ec; --yellow: #F5D317; --card: #fbfaf6; --mute: #6b6a64; --line: rgba(0,0,0,.12); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { background: #050505; color: var(--ink); font: 500 17px/1.5 Archivo, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+main { max-width: 480px; margin: 0 auto; background: var(--paper); overflow: hidden; position: relative; }
+section { position: relative; padding: 64px 22px; }
+.dark { background: var(--ink); color: var(--paper); }
+.yel { background: var(--yellow); }
+/* paper grain, same idea as the covers */
+section::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.dark::after { mix-blend-mode: screen; opacity: .06; }
+section > * { position: relative; z-index: 1; }
+
+.brand { font: 800 13px/1 Archivo; letter-spacing: .3em; }
+.eyebrow { font: 700 12px/1.3 Archivo; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+h1, h2 { font-family: Anton, Impact, sans-serif; font-weight: 400; text-transform: uppercase; line-height: 1.04; letter-spacing: .005em; }
+h1 { font-size: clamp(44px, 12.6vw, 62px); }
+h2 { font-size: clamp(40px, 11.5vw, 54px); margin: 10px 0 26px; }
+.box { display: inline-block; background: var(--yellow); color: var(--ink); padding: .02em .14em .06em; transform: rotate(-2.5deg); margin-top: .08em; }
+.dark .box.inv { background: var(--paper); }
+.note { font: 700 30px/1 Caveat, cursive; display: inline-block; transform: rotate(-5deg); }
+.lead { font-size: 18px; line-height: 1.45; }
+.lead b, p b { font-weight: 800; }
+
+.btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 62px; padding: 16px 20px; background: var(--yellow); color: var(--ink);
+  font: 400 clamp(17px, 5vw, 21px)/1.1 Anton, Impact, sans-serif; white-space: nowrap; text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
+.dark .btn { box-shadow: 6px 6px 0 rgba(255,255,255,.9); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--ink); }
+.btn:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.btn.ghost { white-space: normal; text-align: center; background: transparent; color: inherit; border-color: currentColor; box-shadow: none; font: 800 15px/1 Archivo; letter-spacing: .1em; min-height: 54px; }
+.micro { margin-top: 14px; font: 600 13px/1.4 Archivo; letter-spacing: .04em; text-align: center; opacity: .75; }
+
+/* hero */
+.hero { padding: 22px 22px 0; min-height: min(100svh, 860px); display: flex; flex-direction: column; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+.top .eyebrow { text-align: right; }
+.hero .lead { margin: 18px 0 22px; max-width: 30ch; }
+.hero-av { position: relative; margin: 14px -22px 0; flex: 1; min-height: 200px; overflow: hidden; }
+.hero-av::before { content: ""; position: absolute; left: 62%; top: 30px; width: 420px; height: 420px; transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(245,211,23,.5), rgba(245,211,23,0)); }
+.hero-av img { position: absolute; left: 62%; top: 8px; width: 300px; transform: translateX(-50%); }
+.hero-av .note { position: absolute; z-index: 2; left: 18px; top: 26px; color: var(--yellow); font-size: 26px; }
+
+/* pains */
+.pain { display: grid; gap: 14px; }
+.pain li { list-style: none; background: var(--card); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 18px 16px 18px 98px; position: relative; min-height: 92px; }
+.pain li:nth-child(odd) { transform: rotate(-1deg); } .pain li:nth-child(even) { transform: rotate(.8deg); }
+.pain .n { position: absolute; left: 14px; top: 12px; font: 400 34px/1 Anton; background: var(--ink); color: var(--yellow); padding: 8px 0 11px; width: 72px; text-align: center; }
+.pain b { display: block; font: 800 18px/1.25 Archivo; }
+.pain span { display: block; font-size: 15px; line-height: 1.4; color: var(--mute); margin-top: 4px; }
+.after { margin-top: 30px; font: 800 20px/1.3 Archivo; }
+
+/* system */
+.sys { display: grid; gap: 30px; counter-reset: s; }
+.sys article { border-top: 2px solid rgba(255,255,255,.22); padding-top: 18px; display: grid; grid-template-columns: 62px 1fr; gap: 4px 14px; }
+.sys .num { font: 400 62px/.9 Anton; color: var(--yellow); grid-row: span 3; }
+.sys h3 { font: 400 28px/1.05 Anton; text-transform: uppercase; }
+.sys p { font-size: 16px; line-height: 1.45; opacity: .82; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chips i { font: 700 12px/1 Archivo; font-style: normal; letter-spacing: .06em; text-transform: uppercase; border: 1.5px solid rgba(255,255,255,.45); padding: 7px 9px; border-radius: 99px; }
+.gain { margin-top: 44px; text-align: center; }
+.gain .big { font: 400 clamp(96px, 30vw, 136px)/.9 Anton; background: var(--yellow); color: var(--ink); display: inline-block; padding: 0 .12em .06em; transform: rotate(-2deg); }
+.gain p { margin-top: 16px; font: 800 19px/1.3 Archivo; }
+.gain .note { color: var(--yellow); margin-top: 6px; }
+
+/* steps */
+.steps { list-style: none; display: grid; gap: 0; }
+.steps li { display: grid; grid-template-columns: 54px 1fr; gap: 14px; padding: 16px 0; border-bottom: 2px solid var(--line); }
+.steps .n { font: 400 30px/1 Anton; }
+.steps b { font: 800 18px/1.25 Archivo; display: block; }
+.steps span { font-size: 15px; line-height: 1.45; color: #3a3934; display: block; margin-top: 3px; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; }
+.facts div { background: var(--ink); color: var(--paper); padding: 16px 14px; }
+.facts b { display: block; font: 400 36px/1 Anton; color: var(--yellow); }
+.facts span { font: 600 13px/1.3 Archivo; display: block; margin-top: 6px; }
+
+/* about */
+.about { display: grid; grid-template-columns: 112px 1fr; gap: 16px; align-items: end; margin-bottom: 22px; }
+.about .ph { height: 150px; overflow: hidden; background: var(--yellow); border: 3px solid var(--ink); }
+.about .ph img { width: 150px; margin: 10px 0 0 -19px; }
+.about h2 { margin: 6px 0 0; font-size: 40px; }
+.tools { margin-top: 20px; font: 700 12px/1.9 Archivo; letter-spacing: .1em; text-transform: uppercase; opacity: .65; }
+
+/* faq */
+details { border-bottom: 2px solid rgba(255,255,255,.2); }
+summary { list-style: none; cursor: pointer; padding: 18px 34px 18px 0; font: 800 17px/1.3 Archivo; position: relative; min-height: 48px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; position: absolute; right: 2px; top: 10px; font: 400 32px/1 Anton; color: var(--yellow); }
+details[open] summary::after { content: "–"; }
+details p { padding: 0 0 18px; font-size: 16px; opacity: .82; }
+
+/* final */
+.final { text-align: center; padding-bottom: 130px; }
+.final h2 { font-size: clamp(46px, 13vw, 60px); }
+.final .lead { margin: 0 auto 26px; max-width: 28ch; }
+.alt { display: grid; gap: 10px; margin-top: 22px; }
+footer { background: var(--ink); color: rgba(255,255,255,.55); font: 500 12px/1.8 Archivo; text-align: center; padding: 22px 22px 110px; }
+footer a { color: inherit; }
+
+/* sticky CTA, shown once the hero button has scrolled away */
+.stick { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(12,12,12,.94);
+  transform: translateY(110%); transition: transform .25s ease; }
+.stick.on { transform: none; }
+.stick .btn { max-width: 452px; margin: 0 auto; min-height: 54px; font-size: 19px; box-shadow: none; border-color: var(--yellow); }
+
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+.rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } .stick { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+
+<section class="dark hero">
+  <div class="top"><span class="brand">IMMOOPS</span><span class="eyebrow">IA pour<br>agences immo</span></div>
+  <h1>Ton agence perd des leads <span class="box">pendant que tu dors.</span></h1>
+  <p class="lead">Je monte des <b>agents IA</b> qui répondent à tes prospects en 2 minutes, 24 h/24, et rangent tout dans ton CRM.</p>
+  <a class="btn" id="cta-hero" href="https://calendly.com/immoops/discovery_call?utm_source=instagram&utm_medium=bio&utm_content=hero">Réserver mon diagnostic gratuit →</a>
+  <p class="micro">Gratuit · en visio · sans engagement</p>
+  <div class="hero-av"><span class="note">c'est moi,<br>Oussama →</span><img src="av-calm.webp" alt="Avatar d'Oussama, fondateur d'ImmoOps" width="330" height="542"></div>
+</section>
+
+<section>
+  <p class="eyebrow">[ Le problème ]</p>
+  <h2>Ça te <span class="box">parle ?</span></h2>
+  <ul class="pain">
+    <li class="rv"><span class="n">40</span><b>messages non lus le lundi matin.</b><span>Portails, mails, WhatsApp : tout arrive en même temps.</span></li>
+    <li class="rv"><span class="n">J+3</span><b>Tu rappelles le prospect. Il a signé ailleurs.</b><span>Le premier qui répond gagne le mandat.</span></li>
+    <li class="rv"><span class="n">1 h</span><b>de compte rendu après chaque visite.</b><span>Le vendeur attend, et toi tu tapes au lieu de vendre.</span></li>
+  </ul>
+  <p class="after rv">Le problème, ce n'est pas ton équipe. C'est que personne ne peut répondre à tout, tout le temps.</p>
+</section>
+
+<section class="dark">
+  <p class="eyebrow">[ La solution ]</p>
+  <h2>Le système IA que <span class="box">je t'installe.</span></h2>
+  <div class="sys">
+    <article class="rv"><span class="num">1.</span><h3>Un agent IA sur tes leads</h3>
+      <p>Il répond en 2 minutes, qualifie le budget et le financement, et cale la visite dans ton agenda.</p>
+      <div class="chips"><i>WhatsApp</i><i>Mail</i><i>Site</i><i>Téléphone</i></div></article>
+    <article class="rv"><span class="num">2.</span><h3>Il lit tes annonces avant de répondre</h3>
+      <p>Surface, étage, DPE, charges : l'agent va chercher la bonne info dans ton CRM. Pas un chatbot qui invente.</p>
+      <div class="chips"><i>RAG</i><i>CRM</i><i>Annonces</i></div></article>
+    <article class="rv"><span class="num">3.</span><h3>Ton vocal devient un compte rendu</h3>
+      <p>30 secondes de vocal en sortant de la visite. Le vendeur reçoit son compte rendu, le CRM est à jour.</p>
+      <div class="chips"><i>Vocal</i><i>Compte rendu</i><i>Relances</i></div></article>
+  </div>
+  <div class="gain rv"><span class="big">10 h</span><p>gagnées par semaine</p><span class="note">(estimation pour une agence de 3)</span></div>
+</section>
+
+<section>
+  <p class="eyebrow">[ Comment ça se passe ]</p>
+  <h2>Du diagnostic au système <span class="box">qui tourne.</span></h2>
+  <ol class="steps">
+    <li class="rv"><span class="n">01</span><div><b>Diagnostic gratuit</b><span>On regarde ensemble où ton agence perd des leads et des heures.</span></div></li>
+    <li class="rv"><span class="n">02</span><div><b>Conception sur mesure</b><span>Un système pensé pour ton agence et les outils que tu utilises déjà.</span></div></li>
+    <li class="rv"><span class="n">03</span><div><b>Installation</b><span>Je branche les agents et les automatisations dans tes outils. Tu ne touches pas au code.</span></div></li>
+    <li class="rv"><span class="n">04</span><div><b>Formation et suivi</b><span>Ton équipe est formée, et je reste là pour mesurer et améliorer.</span></div></li>
+  </ol>
+  <div class="facts rv">
+    <div><b>48 h</b><span>pour un premier prototype</span></div>
+    <div><b>2 à 4 sem.</b><span>pour les premiers résultats</span></div>
+  </div>
+</section>
+
+<section class="yel">
+  <div class="about">
+    <div class="ph"><img src="av-shout.webp" alt="" width="150" height="246" loading="lazy"></div>
+    <div><p class="eyebrow">[ Qui est derrière ]</p><h2>Moi, c'est Oussama.</h2></div>
+  </div>
+  <p class="lead">Je construis des agents IA pour les agences immobilières françaises. <b>Pas un logiciel de plus avec un abonnement :</b> du sur-mesure, branché sur tes outils, livré clé en main.</p>
+  <p class="tools">Apimo · HubSpot · Salesforce · WhatsApp · Gmail · Outlook · Notion · n8n</p>
+  <div class="alt"><a class="btn ghost" href="https://immoops.com/demos">Tester Camille, notre IA de démo →</a></div>
+</section>
+
+<section class="dark">
+  <p class="eyebrow">[ Questions ]</p>
+  <h2>Avant de <span class="box">réserver.</span></h2>
+  <details><summary>Je dois m'y connaître en technique ?</summary><p>Non. Je m'occupe de tout, de la conception à l'installation. Tu utilises les outils livrés, pas le code derrière.</p></details>
+  <details><summary>Ça marche avec mon logiciel ?</summary><p>Oui dans la plupart des cas : Apimo, HubSpot, Salesforce, Google Workspace, WhatsApp, téléphonie… et le reste via API. On le vérifie pendant le diagnostic.</p></details>
+  <details><summary>Combien ça coûte ?</summary><p>Chaque projet est différent. Le diagnostic est gratuit, puis tu reçois un devis clair, sans engagement.</p></details>
+  <details><summary>En combien de temps je vois un résultat ?</summary><p>Un premier prototype peut être prêt en 48 h. Les premiers résultats arrivent en 2 à 4 semaines selon le projet.</p></details>
+  <details><summary>Et après la livraison ?</summary><p>Un suivi est inclus dans chaque mission, pour vérifier que les résultats sont là.</p></details>
+</section>
+
+<section class="final">
+  <span class="note">dernière étape ↓</span>
+  <h2>On regarde où ton agence <span class="box">en perd ?</span></h2>
+  <p class="lead">Un appel en visio. Tu repars avec les 2 ou 3 automatisations qui te feraient gagner le plus de temps.</p>
+  <a class="btn" href="https://calendly.com/immoops/discovery_call?utm_source=instagram&utm_medium=bio&utm_content=final">Réserver mon diagnostic gratuit →</a>
+  <p class="micro">Gratuit · sans engagement</p>
+  <div class="alt">
+    <a class="btn ghost" href="https://wa.me/33753674929">Plutôt WhatsApp ? Écris-moi</a>
+    <a class="btn ghost" href="https://immoops.com/">Voir le site complet</a>
+  </div>
+</section>
+
+<footer>© ImmoOps AI · <a href="https://immoops.com/mentions-legales">Mentions légales</a> · <a href="https://immoops.com/confidentialite">Confidentialité</a><br>Cette page ne dépose aucun cookie.</footer>
+</main>
+
+<div class="stick" id="stick"><a class="btn" href="https://calendly.com/immoops/discovery_call?utm_source=instagram&utm_medium=bio&utm_content=sticky">Réserver mon diagnostic gratuit →</a></div>
+
+<script>
+// Sticky CTA appears when the hero button leaves the screen and hides again over the final CTA.
+var stick = document.getElementById('stick'), seen = { hero: true, final: false };
+function sync() { stick.classList.toggle('on', !seen.hero && !seen.final); }
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(function (e) { seen.hero = e[0].isIntersecting; sync(); }).observe(document.getElementById('cta-hero'));
+  new IntersectionObserver(function (e) { seen.final = e[0].isIntersecting; sync(); }).observe(document.querySelector('.final .btn'));
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+} else { document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); }); stick.classList.add('on'); }
+</script>
+</body>
+</html>
