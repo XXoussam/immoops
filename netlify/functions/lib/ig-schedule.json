@@ -12,6 +12,12 @@
   "caption": "Agence de 3 à Toulouse, 40 messages non lus le lundi matin ? Voilà le système IA que je te monterais. 🤖\n\n1. Un agent IA sur tes leads : il répond en 2 minutes, même à minuit, qualifie le budget et cale la visite dans ton agenda. Et il invente rien : avant de répondre, il lit tes annonces et ton CRM (ça s'appelle du RAG).\n2. Une visite, un vocal : ça devient l'annonce, le compte rendu vendeur et le post Insta.\n3. Les estimations qui dorment dans ton CRM : relancées toutes seules.\n\nRésultat, à vue de nez : 10 h gagnées par semaine (estimation, pas une promesse).\n\nCommente « DIAGNOSTIC », je te dis où ton agence en perd.\n\n#immobiliertoulouse #agenceimmobilieretoulouse #immotoulouse #toulouse #agentimmobilier #IA"
  },
  {
+  "id": "reel11",
+  "at": "2026-11-16T20:00:00+01:00",
+  "trial": false,
+  "caption": "Agence immo : tes estimations de l'an dernier, c'est des mandats qui dorment. Un agent IA peut les réveiller. 💤→📞\n\n1. Il fouille ton CRM : chaque estimation de plus de 3 mois, sans mandat signé. Il vérifie dans ta pige si le bien est déjà en vente ailleurs.\n2. Il appelle un modèle de prix (il ne calcule pas lui-même). Ces modèles apprennent sur DVF, les vraies ventes signées chez le notaire. 4 familles :\n• Hédonique : chaque critère a son prix, on additionne.\n• Forêt aléatoire : des centaines d'arbres de décision qui votent.\n• Gradient boosting : chaque arbre corrige les erreurs du précédent.\n• Réseaux de neurones : lisent aussi photos et texte, mais demandent énormément de données.\n3. Il prépare la relance : nouveau prix, ventes autour, taux. Toi, tu relis et tu envoies.\n\nAucun modèle ne voit la cuisine refaite : le chiffre est un point de départ, tu ajustes. (Prix et message à l'écran = exemples.)\n\nUne estimation sans suite, c'est un mandat en pause. Tu veux le message de relance ? Commente « MANDATS ».\n\n📚 Sources :\n• DVF, ventes réelles publiées par la DGFiP (data.gouv.fr, « Demandes de valeurs foncières »)\n• S. Rosen, « Hedonic Prices and Implicit Markets », Journal of Political Economy, 1974\n• L. Breiman, « Random Forests », Machine Learning, 2001\n• T. Chen & C. Guestrin, « XGBoost », KDD 2016\n• « Real estate price estimation in French cities using geocoding and machine learning », Annals of Operations Research, 2022\n• Zillow, « Building the Neural Zestimate », 2021\n\n#immobiliertoulouse #agenceimmobilieretoulouse #toulouse #agentimmobilier #IA #estimationimmobiliere"
+ },
+ {
   "id": "reel02-trial",
   "at": "2026-11-17T12:30:00+01:00",
   "trial": true,
