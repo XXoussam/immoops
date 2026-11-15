@@ -1,5 +1,11 @@
 [
  {
+  "id": "reel10",
+  "at": "2026-11-15T20:00:00+01:00",
+  "trial": false,
+  "caption": "Un agent IA qui répond à tes clients en quelques secondes, sur tes 200 biens. Mais il sort ça d'où ? Le RAG, en 1 minute. 🧠\n\n1. Chunks : chaque PDF est découpé en morceaux qui se chevauchent un peu, pour ne pas couper une idée en deux.\n2. Vecteurs : un transformer transforme chaque morceau en ~1 000 nombres, sa position dans un « espace de sens ». « T3 lumineux à Saint-Cyprien » atterrit à côté de « 3 pièces ensoleillé rive gauche ».\n3. Index : un graphe (HNSW) retrouve les plus proches en millisecondes.\n4. Recherche hybride : le vectoriel capte le sens, les mots-clés (BM25) attrapent le numéro de mandat exact. Un reranker garde le top 5.\n5. Réponse : le LLM écrit avec tes 5 morceaux sous les yeux. Un examen à livre ouvert.\n\nEn vrai : ça réduit les inventions, ça ne les supprime pas. Une réponse sans sa source, poubelle.\n\nTu veux savoir ce que ça donnerait sur tes annonces ? Commente « DIAGNOSTIC ».\n\n#immobiliertoulouse #agenceimmobilieretoulouse #toulouse #agentimmobilier #IA #RAG"
+ },
+ {
   "id": "reel07-trial",
   "at": "2026-11-16T12:30:00+01:00",
   "trial": true,
