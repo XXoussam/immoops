@@ -8,6 +8,10 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "LIVEKIT_AGENT_NAME,VITE_LIVEKIT_TOKEN_URL"
 
+# Instagram posts planned in netlify/functions/lib/ig-schedule.json (media in public/ig/<id>/).
+[functions."ig-scheduler"]
+  schedule = "*/15 * * * *"
+
 [dev]
   command = "npm run dev"
   port = 8888
