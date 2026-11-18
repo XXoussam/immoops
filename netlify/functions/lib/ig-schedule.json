@@ -46,5 +46,11 @@
   "at": "2026-11-18T15:00:00+01:00",
   "trial": true,
   "caption": "Cet appel manqué vient peut-être de te coûter 8 000 €. On fait le calcul. 📞\n\nDisons 5 appels manqués par semaine. Le soir, le midi, le week-end, pendant une visite.\n× 52 semaines = 260 appels par an sur la messagerie.\nSoyons pessimistes : 1 seul sur 50 aurait fini en vente. Ça fait 5 ventes.\nÀ 8 000 € de commission : 40 000 € par an, partis chez celui qui a décroché.\n\n(C'est un exemple : 5 appels, 1 sur 50 et 8 000 € sont des hypothèses, pas des stats. Mets tes chiffres à la place.)\n\nUn agent IA, lui, décroche à chaque fois, 24 h/24 : budget, financement, visite calée dans ton agenda, tout rangé dans ton CRM.\n\nTu veux ton vrai chiffre ? Commente « DIAGNOSTIC », je te le calcule gratuitement.\n\n#immobiliertoulouse #agenceimmobilieretoulouse #immotoulouse #toulouse #agentimmobilier #IA"
+ },
+ {
+  "id": "reel13",
+  "at": "2026-11-19T20:00:00+01:00",
+  "trial": false,
+  "caption": "Ton agent IA propose un T3 à Saint-Cyprien… vendu il y a 3 semaines. 😬\n\nLe problème, c'est pas l'IA. C'est l'après : tes annonces changent tous les jours (prix, photos, diagnostics).\n\nFaut tout redécouper à chaque modif ? Non.\n🔑 Chaque chunk a une empreinte : un hash de son texte. Même hash → on touche à rien. Hash différent → on refait juste ce chunk.\n⚠️ Le piège : avec des chunks de taille fixe, une phrase ajoutée en haut décale tout le découpage. Toutes les empreintes changent. La parade : un chunk par section de l'annonce.\n🏷️ Prix, statut « vendu » : ce sont des métadonnées. Un filtre, zéro embedding à refaire.\n🔁 Le seul cas où tu refais tout : changer de modèle d'embedding. Anciens et nouveaux vecteurs parlent pas la même langue, et aucune erreur ne s'affiche.\n\nUn RAG, ça se livre pas. Ça s'entretient, comme un appart.\n\nCe soir : cherche une annonce vendue dans ton outil. Si elle sort encore, ton index dort.\n\n(Annonce à l'écran = exemple.)\n\n📚 Source : Bian et al., « Chunk Recomputation under Real Document Revisions », arXiv:2610.31019, 22 octobre 2026 (sur 120 révisions réelles : 57 à 68 % des embeddings à refaire avec un découpage en taille fixe).\n\n#RAG #IA #intelligenceartificielle #immobiliertoulouse #agentimmobilier #toulouse"
  }
 ]
