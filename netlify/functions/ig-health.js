@@ -1,7 +1,9 @@
 /*
  * Check for the Instagram scheduler: are the env vars set and does the token work? Never returns the token.
- * GET with header x-ig-secret: IG_SCHEDULER_SECRET  →  { env, account, scheduled }
+ * GET with header x-ig-secret: IG_SCHEDULER_SECRET  →  { env, account, scheduled, locks }
+ * locks: what ig-publish-background left in Blobs per post id (claimed / sent / verified / not-found), or the Blobs error.
  */
+const { getStore, connectLambda } = require('@netlify/blobs');
 const SCHEDULE = require('./lib/ig-schedule.json');
 
 exports.handler = async (event) => {
@@ -13,5 +15,14 @@ exports.handler = async (event) => {
   const d = await r.json();
   const account = d.username || `error: ${d.error && d.error.message}`;
   const scheduled = SCHEDULE.filter((p) => Date.parse(p.at) > Date.now()).map((p) => `${p.at} ${p.id}`);
-  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ env, account, scheduled }) };
+  let locks;
+  try {
+    connectLambda(event);
+    const store = getStore({ name: 'ig-publish', consistency: 'strong' });
+    const recent = SCHEDULE.filter((p) => Date.parse(p.at) > Date.now() - 2 * 86400 * 1000);
+    locks = Object.fromEntries(await Promise.all(recent.map(async (p) => [p.id, await store.get(p.id, { type: 'json' })])));
+  } catch (e) {
+    locks = `blobs error: ${e.message}`;
+  }
+  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ env, account, scheduled, locks }) };
 };
