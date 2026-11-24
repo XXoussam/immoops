@@ -2,7 +2,10 @@ import { ARTICLES } from './articles'
 import { FAQ_ITEMS, SERVICES } from './constants'
 
 /* ── Site identity — keep this description identical on LinkedIn, Malt, directories ── */
-export const SITE_URL = 'https://immoops.com'
+// Netlify serves www (apex 301s to it) and prerendered routes at /route/ (no slash 301s to it):
+// canonicals, sitemap and structured data must use that exact final URL, not one that redirects.
+export const SITE_URL = 'https://www.immoops.com'
+export const pageUrl = (path: string) => `${SITE_URL}${path === '/' ? '/' : `${path.replace(/\/+$/, '')}/`}`
 export const SITE_NAME = 'ImmoOps AI'
 export const ORG_DESCRIPTION =
   "ImmoOps AI conçoit et déploie des agents IA sur mesure pour les agences immobilières en France : agents vocaux, chatbots, qualification de leads et automatisation des workflows."
@@ -70,7 +73,7 @@ const breadcrumb = (items: { name: string; path: string }[]) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: it.name,
-    item: `${SITE_URL}${it.path}`,
+    item: pageUrl(it.path),
   })),
 })
 
@@ -143,7 +146,7 @@ export function getSeo(pathname: string): SeoData {
           ...(iso ? { datePublished: iso } : {}),
           author: { '@id': ORG_ID },
           publisher: { '@id': ORG_ID },
-          mainEntityOfPage: `${SITE_URL}${path}`,
+          mainEntityOfPage: pageUrl(path),
           image: OG_IMAGE,
         },
         breadcrumb([
@@ -169,7 +172,7 @@ export const NOINDEX_ROUTES: string[] = ['/webinaires', '/documentation']
 /** <head> tags as an HTML string (prerender) — mirrors what <SeoHead> sets on the client */
 export function renderHeadTags(seo: SeoData): string {
   const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const url = `${SITE_URL}${seo.path === '/' ? '/' : seo.path}`
+  const url = pageUrl(seo.path)
   const tags = [
     `<title>${esc(seo.title)}</title>`,
     `<meta name="description" content="${esc(seo.description)}" />`,

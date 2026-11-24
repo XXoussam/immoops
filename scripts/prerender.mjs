@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = join(root, 'dist')
 const server = await import(pathToFileURL(join(root, 'dist-ssr', 'entry-server.js')).href)
-const { render, getSeo, renderHeadTags, INDEXABLE_ROUTES, NOINDEX_ROUTES, SITE_URL, ARTICLES } = server
+const { render, getSeo, renderHeadTags, INDEXABLE_ROUTES, NOINDEX_ROUTES, pageUrl, ARTICLES } = server
 
 const template = readFileSync(join(dist, 'index.html'), 'utf8')
 if (!template.includes('<!--seo-head-->')) throw new Error('index.html is missing the <!--seo-head--> placeholder')
@@ -46,7 +46,7 @@ const lastmod = Object.fromEntries(ARTICLES.map((a) => [`/blog/${a.slug}`, iso(a
 const priority = (r) => (r === '/' ? '1.0' : ['/demos', '/blog'].includes(r) ? '0.8' : r.startsWith('/blog/') ? '0.7' : ['/mentions-legales', '/confidentialite', '/cookies'].includes(r) ? '0.2' : '0.6')
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${INDEXABLE_ROUTES.map((r) => `  <url><loc>${SITE_URL}${r === '/' ? '/' : r}</loc><lastmod>${lastmod[r] ?? today}</lastmod><priority>${priority(r)}</priority></url>`).join('\n')}
+${INDEXABLE_ROUTES.map((r) => `  <url><loc>${pageUrl(r)}</loc><lastmod>${lastmod[r] ?? today}</lastmod><priority>${priority(r)}</priority></url>`).join('\n')}
 </urlset>
 `
 writeFileSync(join(dist, 'sitemap.xml'), sitemap)

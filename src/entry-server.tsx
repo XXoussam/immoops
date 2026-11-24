@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
 import App from './App'
 
-export { getSeo, renderHeadTags, INDEXABLE_ROUTES, NOINDEX_ROUTES, SITE_URL } from './lib/seo'
+export { getSeo, renderHeadTags, INDEXABLE_ROUTES, NOINDEX_ROUTES, SITE_URL, pageUrl } from './lib/seo'
 export { ARTICLES } from './lib/articles'
 
 export function render(url: string): string {
